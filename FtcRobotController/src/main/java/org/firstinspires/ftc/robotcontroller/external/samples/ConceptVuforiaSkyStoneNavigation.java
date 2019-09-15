@@ -84,10 +84,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
-<<<<<<< HEAD
 @Disabled
-=======
->>>>>>> ashley-dev
 public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
@@ -111,12 +108,10 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-<<<<<<< HEAD
     private static final String VUFORIA_KEY =
             " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
 
-=======
->>>>>>> ashley-dev
+
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
@@ -155,11 +150,11 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-<<<<<<< HEAD
+
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-=======
+
         parameters.vuforiaLicenseKey = " -- ENTER KEY HERE <sample code> ---";
->>>>>>> ashley-dev
+
         parameters.cameraDirection   = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
