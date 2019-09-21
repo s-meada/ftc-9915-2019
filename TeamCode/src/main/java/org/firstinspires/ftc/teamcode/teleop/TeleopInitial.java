@@ -38,11 +38,22 @@ public class TeleopInitial extends OpMode {
 
         //init motors
         angleMotor = hardwareMap.dcMotor.get("angleMotor");
+        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        angleMotor.setTargetPosition(0);
+
         extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
+        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extensionMotor.setTargetPosition(0);
+
 
         //init servos
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
+
+        rotationServo.setPosition(0);
+        grabberServo.setPosition(0);
     }
 
     @Override
@@ -58,8 +69,17 @@ public class TeleopInitial extends OpMode {
         rightBack.setPower(speed+strafe-turn);
         leftBack.setPower(speed-strafe+turn);
 
-        angleMotor.setPower(gamepad2.right_stick_y);
-        extensionMotor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+
+        int currentPositionAngle = angleMotor.getCurrentPosition();
+        int positionChangeAngle = (int)(gamepad2.right_stick_y * 10);
+        angleMotor.setTargetPosition(currentPositionAngle + positionChangeAngle);
+        angleMotor.setPower(1);
+
+        int currentPositionExtension = extensionMotor.getCurrentPosition();
+        int positionChangeExtension = (int)((gamepad2.right_trigger - gamepad2.left_trigger) * 10);
+        extensionMotor.setTargetPosition(currentPositionExtension + positionChangeExtension);
+        extensionMotor.setPower(1);
+
         if(gamepad2.a) { //test positions TBD
             grabberServo.setPosition(1.0);
         }
