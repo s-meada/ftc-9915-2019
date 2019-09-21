@@ -63,17 +63,16 @@ public class TeleopInitial extends OpMode {
     @Override
     public void loop() {
 
-        //mecanum drive
-       /* double speed = -gamepad1.left_stick_y; //may or may not be reversed
+        mecanum drive
+        double speed = -gamepad1.left_stick_y; //may or may not be reversed
         double strafe = -gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
-        */
 
-//        leftFront.setPower(speed+strafe+turn);
-//        rightFront.setPower(speed-strafe-turn);
-//        rightBack.setPower(speed+strafe-turn);
-//        leftBack.setPower(speed-strafe+turn);
 
+        leftFront.setPower(speed+strafe+turn);
+        rightFront.setPower(speed-strafe-turn);
+        rightBack.setPower(speed+strafe-turn);
+        leftBack.setPower(speed-strafe+turn);
 
         int currentPositionAngle = angleMotor.getCurrentPosition();
         int positionChangeAngle = (int)(gamepad2.right_stick_y * 25);
@@ -84,6 +83,7 @@ public class TeleopInitial extends OpMode {
         int positionChangeExtension = (int)((gamepad2.right_trigger - gamepad2.left_trigger) * 50);
         extensionMotor.setTargetPosition(currentPositionExtension + positionChangeExtension);
         extensionMotor.setPower(1);
+
 
         if(gamepad2.a) { //test positions TBD
             grabberServo.setPosition(0.9);
@@ -99,6 +99,10 @@ public class TeleopInitial extends OpMode {
         if(gamepad2.x){
             rotationServo.setPosition(0); //y = 0; not tested
         }
+
+        int currentPositionRotation = rotationServo.getCurrentPosition();
+        int positionChangeRotation = (int) (gamepad2.left_stick_x * 25);
+
 
     }
 
