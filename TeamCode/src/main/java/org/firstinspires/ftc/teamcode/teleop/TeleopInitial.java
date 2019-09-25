@@ -23,20 +23,21 @@ public class TeleopInitial extends OpMode {
     //declare servos
     Servo rotationServo;
     Servo grabberServo;
+    Servo foundationServo;
 
     @Override
     public void init() {
 
         //init driving motors
-        /*
+
         rightFront = hardwareMap.dcMotor.get("RightFront");
         leftFront = hardwareMap.dcMotor.get("LeftFront");
         rightBack = hardwareMap.dcMotor.get("RightBack");
         leftBack = hardwareMap.dcMotor.get("LeftBack");
-        */
 
-//        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-//        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //init motors
         angleMotor = hardwareMap.dcMotor.get("angleMotor");
@@ -55,15 +56,17 @@ public class TeleopInitial extends OpMode {
         //init servos
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
+        foundationServo = hardwareMap.servo.get("foundationServo");
 
         rotationServo.setPosition(0);
         grabberServo.setPosition(0);    //pos 0 = closed?
+        foundationServo.setPosition(0.15);
     }
 
     @Override
     public void loop() {
 
-        mecanum drive
+        //mecanum drive
         double speed = -gamepad1.left_stick_y; //may or may not be reversed
         double strafe = -gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
@@ -100,10 +103,16 @@ public class TeleopInitial extends OpMode {
             rotationServo.setPosition(0); //y = 0; not tested
         }
 
-        int currentPositionRotation = rotationServo.getCurrentPosition();
+        double currentPositionRotation = rotationServo.getPosition();
         int positionChangeRotation = (int) (gamepad2.left_stick_x * 25);
 
+        if(gamepad2.dpad_down){
+            foundationServo.setPosition(0.82);
+        }
 
+        if(gamepad2.dpad_up){
+            foundationServo.setPosition(0.15);
+        }
     }
 
 
