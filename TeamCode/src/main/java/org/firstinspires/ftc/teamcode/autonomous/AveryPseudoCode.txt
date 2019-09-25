@@ -1,0 +1,6 @@
+1. Strafe right about 3 inches
+2. Drive forward until about 16 inches away from navigation target
+3. Strafe left until about 60 millimeters from range sensor aka wheels touching tray
+4. Swing down foundation mover servos
+5. Strafe right until very close to wall, about 1 inch, and stop
+6. Swing up foundation mover servos
