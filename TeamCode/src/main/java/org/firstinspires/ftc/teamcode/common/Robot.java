@@ -5,8 +5,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Hardware;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.TFOD_MODEL_ASSET;
+import static org.firstinspires.ftc.teamcode.common.RobotParameters.VUFORIA_KEY;
+
 public class Robot {
-    double wheelDiameter = 6;
+    double wheelDiameter = 4;
     double wheelInchesPerRotation = Math.PI * wheelDiameter;
     int motorTicksPerRotation = 1120;
     double gearRatioMotorToWheel = 40.0/80.0;
@@ -18,6 +26,22 @@ public class Robot {
     public DcMotor leftBackMotor;
     public DcMotor rightBackMotor;
 
+    TFObjectDetector tfod;
+    VuforiaLocalizer vuforia;
+    final String LABEL_FIRST_ELEMENT = "Stone";
+    final String LABEL_SECOND_ELEMENT = "Skystone";
+
+
+    public void initForRunToPosition(HardwareMap hardwareMap) {
+        this.init(hardwareMap);
+        setModeChassisMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void initRegular(HardwareMap hardwareMap) {
+        this.init(hardwareMap);
+        setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void init(HardwareMap hardwareMap) {
         this.leftFrontMotor = hardwareMap.dcMotor.get("LeftFront");
         this.rightFrontMotor = hardwareMap.dcMotor.get("RightFront");
@@ -27,10 +51,6 @@ public class Robot {
         this.rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        this.leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     // Drives forward if distanceInch is positive; drives backward if distanceInch is negative
@@ -49,11 +69,7 @@ public class Robot {
         this.leftBackMotor.setPower(direction * power);
         this.rightBackMotor.setPower(direction * power);
 
-        this.leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
         return !this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy();
     }
 
@@ -73,10 +89,7 @@ public class Robot {
         this.leftBackMotor.setPower(-direction * power);
         this.rightBackMotor.setPower(direction * power);
 
-        this.leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
         return !this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy();
     }
@@ -107,10 +120,7 @@ public class Robot {
         this.leftBackMotor.setTargetPosition(targetPosition);
         this.rightBackMotor.setTargetPosition(targetPosition);
 
-        this.leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
         return !this.leftFrontMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightBackMotor.isBusy();
     }
@@ -120,5 +130,43 @@ public class Robot {
         this.rightBackMotor.setPower(0.0);
         this.leftFrontMotor.setPower(0.0);
         this.rightFrontMotor.setPower(0.0);
+    }
+
+    public void setModeChassisMotors(DcMotor.RunMode runMode) {
+        this.leftFrontMotor.setMode(runMode);
+        this.rightFrontMotor.setMode(runMode);
+        this.leftBackMotor.setMode(runMode);
+        this.rightBackMotor.setMode(runMode);
+    }
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    public void initVuforia(HardwareMap hardwareMap) {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    public void initTfod(HardwareMap hardwareMap) {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }
