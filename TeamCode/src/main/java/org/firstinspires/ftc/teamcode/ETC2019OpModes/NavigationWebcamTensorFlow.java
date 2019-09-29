@@ -50,24 +50,12 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Navigation Webcam", group = "Concept")
-public class NavigationWebcam extends LinearOpMode {
+@TeleOp(name = "Navigation Webcam TensorFlow", group = "Concept")
+public class NavigationWebcamTensorFlow extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-     * web site at https://developer.vuforia.com/license-manager.
-     *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
-     */
     private static final String VUFORIA_KEY =
             "AeVx/h3/////AAABmbc0fWs0M04Kn6CzIdUY/b5tMdA1ygiEwl6jxaF8C6yqFLP0DkssAHsQohu4fRPmTVKx78HigiABoEY2dLnUAEh+Sp0nSS68lZWQ5nW8/e8s+1LKRcA6oYMeV7Yv+buLvDsZtFfYSAt8TqEwqhuiI/u4/BuaVrT8uCeqde14WwPyPer7g0y9/PnU0P0+jeaelBRACytDVaNoo/agAr1G5p69iFDOqisaYR1nahOkuZwkeB+UjY0eKU8xK988ridf2P1cjAyi6VQnYO7kpv0VSiF3fjdhcPv+OWuW9GHG+F9zcX0rdaleSpWPSI7lLPSMpItwrSbo6Mf2p8x1UbZlOkdbr7KSCXKE5l/bGHv9ILuP";
     /**
