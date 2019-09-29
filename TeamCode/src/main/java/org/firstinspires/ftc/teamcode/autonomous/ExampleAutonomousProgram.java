@@ -3,9 +3,13 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.common.Robot;
+
 @Autonomous(name = "Example Autonomous Program", group = "test")
 public class ExampleAutonomousProgram extends LinearOpMode {
     // Global variables go before runOpMode()
+    Robot robot = new Robot();
+
 
     int state = 1;
 
@@ -14,26 +18,33 @@ public class ExampleAutonomousProgram extends LinearOpMode {
     static final int STOP_DRIVING   = 2;
     static final int STATE_END      = 3;
 
+    double drivePower = 0.5;
+    double driveDistance = 24;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // init()
+        robot.initForRunToPosition(hardwareMap);
 
         waitForStart(); // MUST add this yourself
 
         while(opModeIsActive()) {  // MUST add this yourself
             // loop()
+            telemetry.addData("Current State", state);
+
             switch(state) {
                 case START_DRIVING:
-                    // Code for state 1
+                    // Code for this state
 
-
-                    goToNextState();
+                    // If-statement to ensure the robot is done driving before we go to the next state
+                    if(robot.drive(drivePower, driveDistance)) {
+                        goToNextState();
+                    }
                     break;
 
                 case STOP_DRIVING:
-                    // Code for state 2
-
-
+                    // Code for this state
+                    robot.stop();
                     goToNextState();
                     break;
 
@@ -42,7 +53,6 @@ public class ExampleAutonomousProgram extends LinearOpMode {
                     state = STATE_END;
                     break;
             }
-
 
         }
     }
