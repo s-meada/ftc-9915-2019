@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import static android.animation.ValueAnimator.REVERSE;
-
 @TeleOp(name="TeleopInitial",group="Skystone")
 public class TeleopInitial extends OpMode {
 
@@ -24,6 +22,12 @@ public class TeleopInitial extends OpMode {
     Servo rotationServo;
     Servo grabberServo;
     Servo foundationServo;
+
+    int armPosition = 0;
+    int extensionPosition = 0;
+
+    boolean slowMode = false;
+    double speedMultiplier = 1;
 
     @Override
     public void init() {
@@ -41,6 +45,7 @@ public class TeleopInitial extends OpMode {
 
         //init motors
         angleMotor = hardwareMap.dcMotor.get("angleMotor");
+        angleMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         angleMotor.setTargetPosition(0);
         angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -66,25 +71,48 @@ public class TeleopInitial extends OpMode {
     @Override
     public void loop() {
 
+
+        telemetry.addData("Angle:", armPosition);
+        telemetry.addData("Extension:",extensionPosition);
+
         //mecanum drive
         double speed = -gamepad1.left_stick_y; //may or may not be reversed
         double strafe = -gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
 
+        if (gamepad1.a) {
+            slowMode = true;
+        }
 
-        leftFront.setPower(speed+strafe+turn);
-        rightFront.setPower(speed-strafe-turn);
-        rightBack.setPower(speed+strafe-turn);
-        leftBack.setPower(speed-strafe+turn);
+        else if (gamepad1.b) {
+            slowMode = false;
+        }
+        speedMultiplier = slowMode ? 0.5 : 1.0;
+        leftFront.setPower(speedMultiplier*(speed+strafe+turn));
+        rightFront.setPower(speedMultiplier*(speed-strafe-turn));
+        rightBack.setPower(speedMultiplier*(speed+strafe-turn));
+        leftBack.setPower(speedMultiplier*(speed-strafe+turn));
 
-        int currentPositionAngle = angleMotor.getCurrentPosition();
-        int positionChangeAngle = (int)(gamepad2.right_stick_y * 25);
-        angleMotor.setTargetPosition(currentPositionAngle + positionChangeAngle);
+        armPosition += (int)(gamepad2.right_stick_y * 50);
+        if(armPosition > 1300) {
+            armPosition = 1300;
+        }
+        if(armPosition < 0) {
+            armPosition = 0;
+        }
+        angleMotor.setTargetPosition(armPosition);
         angleMotor.setPower(1);
 
-        int currentPositionExtension = extensionMotor.getCurrentPosition();
-        int positionChangeExtension = (int)((gamepad2.right_trigger - gamepad2.left_trigger) * 50);
-        extensionMotor.setTargetPosition(currentPositionExtension + positionChangeExtension);
+
+
+        extensionPosition += (int)((gamepad2.right_trigger - gamepad2.left_trigger) * 75);
+        if(extensionPosition > 1600) {
+            extensionPosition = 1600;
+        }
+        if(extensionPosition < 0) {
+            extensionPosition = 0;
+        }
+        extensionMotor.setTargetPosition(extensionPosition);
         extensionMotor.setPower(1);
 
 
