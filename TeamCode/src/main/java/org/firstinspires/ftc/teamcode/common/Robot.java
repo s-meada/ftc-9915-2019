@@ -3,46 +3,86 @@ package org.firstinspires.ftc.teamcode.common;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Hardware;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.TFOD_MODEL_ASSET;
-import static org.firstinspires.ftc.teamcode.common.RobotParameters.VUFORIA_KEY;
 
 public class Robot {
+
+    // --- Robot Geometry --- //
     double wheelDiameter = 4;
     double wheelInchesPerRotation = Math.PI * wheelDiameter;
     int motorTicksPerRotation = 1120;
-    double gearRatioMotorToWheel = 40.0/80.0;
+    double gearRatioMotorToWheel = 32.0/24.0;
     // double type for higher accuracy when multiplying by distanceInch in driveForward() method
     double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
 
+
+    // --- Constants --- //
+    // *EDIT THESE VALUES
+
+    // Arm
+    public static final int ANGLE_MOTOR_UP_LIMIT = 0;
+    public static final int ANGLE_MOTOR_DOWN_LIMIT = 0;
+
+    public static final int EXTENSION_MOTOR_RETRACTED_POSITION = 0;
+    public static final int EXTENSION_MOTOR_EXTENDED_POSITION = 0;
+
+    public static final double GRABBER_SERVO_OPEN_POSITION = 0.0;
+    public static final double GRABBER_SERVO_CLOSE_POSITION = 0.0;
+
+    public static final double ROTATION_SERVO_START_POSITION = 0.0;
+
+    // Foundation
+    public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
+    public static final double FOUNDATION_SERVO_DOWN_POSITION = 0.82;
+
+
+    // --- Robot Hardware Variables --- //
+
+    // Chassis motors
     public DcMotor leftFrontMotor;
     public DcMotor rightFrontMotor;
     public DcMotor leftBackMotor;
     public DcMotor rightBackMotor;
 
-    TFObjectDetector tfod;
-    VuforiaLocalizer vuforia;
-    final String LABEL_FIRST_ELEMENT = "Stone";
-    final String LABEL_SECOND_ELEMENT = "Skystone";
+    // Arm motors
+    public DcMotor angleMotor;
+    public DcMotor extensionMotor;
 
+    // Servos
+    public Servo rotationServo;
+    public Servo grabberServo;
+    public Servo foundationServo;
 
+    // Sensors
+    WebcamName webcam;
+
+    // --- Robot init() methods --- //
+    // The init() methods here have a hardwareMap parameter. When using them, just type "hardwareMap" as the argument.
+    // This allows the method to access your robot's configuration file to init the robot
+
+    /*
+     * Robot init() method for driving to a position. Use if you want to use the drive(), strafe(), or driveMecanum() methods
+     */
     public void initForRunToPosition(HardwareMap hardwareMap) {
         this.init(hardwareMap);
         setModeChassisMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    /*
+     * Robot init() method; use if you want to have the chassis motors run without a specified target position
+     */
     public void initRegular(HardwareMap hardwareMap) {
         this.init(hardwareMap);
         setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void init(HardwareMap hardwareMap) {
+    /*
+     * This init() method is called by the other init() methods. Do not call this method outside of this class.
+     */
+    private void init(HardwareMap hardwareMap) {
+        // Chassis
         this.leftFrontMotor = hardwareMap.dcMotor.get("LeftFront");
         this.rightFrontMotor = hardwareMap.dcMotor.get("RightFront");
         this.leftBackMotor = hardwareMap.dcMotor.get("LeftBack");
@@ -51,10 +91,38 @@ public class Robot {
         this.rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        // Arm
+        angleMotor = hardwareMap.dcMotor.get("angleMotor");
+        angleMotor.setTargetPosition(0);
+        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
+        extensionMotor.setTargetPosition(0);
+        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        rotationServo = hardwareMap.servo.get("rotationServo");
+        grabberServo = hardwareMap.servo.get("grabberServo");
+        foundationServo = hardwareMap.servo.get("foundationServo");
+
+        rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
+        grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+        foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
+
+        // Sensors
+        webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
     }
 
-    // Drives forward if distanceInch is positive; drives backward if distanceInch is negative
-    // Power must be positive
+
+    // --- Translation methods --- //
+
+    /*
+     * Drives forward if distanceInch is positive; drives backward if distanceInch is negative
+     * @param power: the power set to the motors, must be positive
+     * @param distanceInch: distance for robot to move in inches
+     * @return whether the robot has reached that distance
+     */
     public boolean drive(double power, double distanceInch) {
         // Getting the sign of the argument to determine which direction we're driving
         int direction = (int)Math.signum(distanceInch);
@@ -73,8 +141,12 @@ public class Robot {
         return !this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy();
     }
 
-    // Strafes right if distanceInch is positive; strafes left if distanceInch is negative
-    // Power must be positive
+    /*
+     * Strafes right if distanceInch is positive; strafes left if distanceInch is negative
+     * @param power: the power set to the motors, must be positive (signs are determined within the method)
+     * @param distanceInch: distance for robot to strafe in inches
+     * @return whether the robot has reached that distance
+     */
     public boolean strafe(double power, double distanceInch) {
         // Getting the sign of the argument to determine which direction we're strafing
         int direction = (int)Math.signum(distanceInch);
@@ -94,9 +166,9 @@ public class Robot {
         return !this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy();
     }
 
-    // Added for 2019 Training
     /*
-     * Autonomous mecanum drive method
+     * Mecanum drive method that takes x, y, w (rotation), and distance for
+     * moving to another position on the field with respect to the robot's current position
      * @param y: amount of movement forward/backward
      * @param x: amount of movement right/left
      * @param w: (turning) direction in radians
@@ -125,6 +197,9 @@ public class Robot {
         return !this.leftFrontMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightBackMotor.isBusy();
     }
 
+    /*
+     * Stop the robot by setting the power of all motors to 0.0
+     */
     public void stop() {
         this.leftBackMotor.setPower(0.0);
         this.rightBackMotor.setPower(0.0);
@@ -132,41 +207,14 @@ public class Robot {
         this.rightFrontMotor.setPower(0.0);
     }
 
+    /*
+     * Set the runMode of all the chassis motors
+     * @param runMode: the runMode the chassis motors should be set to
+     */
     public void setModeChassisMotors(DcMotor.RunMode runMode) {
         this.leftFrontMotor.setMode(runMode);
         this.rightFrontMotor.setMode(runMode);
         this.leftBackMotor.setMode(runMode);
         this.rightBackMotor.setMode(runMode);
-    }
-
-    /**
-     * Initialize the Vuforia localization engine.
-     */
-    public void initVuforia(HardwareMap hardwareMap) {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }
-
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-    public void initTfod(HardwareMap hardwareMap) {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 }
