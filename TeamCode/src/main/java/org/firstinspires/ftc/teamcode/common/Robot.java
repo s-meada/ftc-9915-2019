@@ -19,17 +19,16 @@ public class Robot {
 
 
     // --- Constants --- //
-    // *EDIT THESE VALUES
 
     // Arm
-    public static final int ANGLE_MOTOR_UP_LIMIT = 0;
+    public static final int ANGLE_MOTOR_UP_LIMIT = 1300;
     public static final int ANGLE_MOTOR_DOWN_LIMIT = 0;
 
     public static final int EXTENSION_MOTOR_RETRACTED_POSITION = 0;
-    public static final int EXTENSION_MOTOR_EXTENDED_POSITION = 0;
+    public static final int EXTENSION_MOTOR_EXTENDED_POSITION = 1600;
 
-    public static final double GRABBER_SERVO_OPEN_POSITION = 0.0;
-    public static final double GRABBER_SERVO_CLOSE_POSITION = 0.0;
+    public static final double GRABBER_SERVO_OPEN_POSITION = 0.3;
+    public static final double GRABBER_SERVO_CLOSE_POSITION = 0.9;
 
     public static final double ROTATION_SERVO_START_POSITION = 0.0;
 
