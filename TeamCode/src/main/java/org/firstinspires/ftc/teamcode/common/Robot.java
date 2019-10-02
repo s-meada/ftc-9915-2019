@@ -53,7 +53,7 @@ public class Robot {
     public Servo rotationServo;
     public Servo grabberServo;
     public Servo foundationServo;
-    public Servo tiltServo;
+    public Servo angleServo;
 
     // Sensors
     WebcamName webcam;
