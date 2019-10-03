@@ -110,10 +110,12 @@ public class Robot {
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
         foundationServo = hardwareMap.servo.get("foundationServo");
+        angleServo = hardwareMap.servo.get("angleServo");
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
+        angleServo.setPosition(0.0); // REPLACE with initial position of this servo
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -227,7 +229,8 @@ public class Robot {
     }
 
     /*
-     *
+     * Drive method for when the distance to drive is unspecified
+     * Before using this method, ensure the motors are in the run mode RUN_USING_ENCODER
      */
     public void drivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower){
         this.leftFrontMotor.setPower(leftFrontPower);
