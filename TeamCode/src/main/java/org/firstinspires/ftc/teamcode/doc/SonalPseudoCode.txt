@@ -1,0 +1,19 @@
+Preconditions:
+- the robot claw is gripping a skystone
+- the robot is oriented vertically and with the side holding the skystone nearest to the foundation
+- the foundation has already been moved
+- the skystone is already above the foundation
+- the alliance partner robot is leaning against the wall of the field in the building zone.
+
+Goal: To release the skystone onto the foundation and move backwards to park.
+
+Pseudocode:
+The position of the arm extension motor changes so that the arm is extended.
+The position of the arm angle motor changes so that the arm is lowered.
+The position of the claw servo changes so that the skystone is released onto the foundation.
+The position of the arm extension motor changes so that the arm is retracted.
+The position of the arm angle motor changes so that the arm is raised to its original position before the process of releasing the skystone.
+The robot runs to a position (backwards) in which the front of the robot is behind the horizontal position of the back of the foundation.
+The robot strafes to a position to the right until it is a bit to the left of the vertical centerline of the building zone, out of the vertical trajectory of the alliance partner robot.
+The robot runs to a position (backwards) until the color sensor senses red. 
+The robot stops.

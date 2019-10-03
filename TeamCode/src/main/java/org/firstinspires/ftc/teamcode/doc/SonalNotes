@@ -1,0 +1,70 @@
+Linear OpMode
+-not iterative
+-does steps linearlly
+
+extend LinearOpMode
+
+public void runOpMode() throws Interrupted Exception {
+
+a switch is a bunch of if statements
+
+swtich(variable):
+ case(valueOfVariable1);
+ [code
+ [code]
+ break;
+ 
+ case(valueofvariable2):
+ [code]
+ code
+ break;
+ 
+ default:
+   [code]
+   [code]
+   break;
+   
+   must have a default and break. default is basically like the else statement. the switch is good for testing out values of variables
+   
+   there are different states you can use
+   
+   int state;
+   protected static final int STRAFE
+   protected static final int TARGET_POSITION
+   
+   the switch is testing the state variable
+   
+   gotonextstate(); increments the state variable
+   
+   to make it go to a state, you can do:
+   public void gotostate (int newstate) _
+   state=newState;
+   
+   how to program rev gyro sensor
+   
+   BN005IMU gyroSensor;
+    bn.Parameters parameters = new .Parameters();
+    
+     @Override
+     public void init() {
+     gyroSensor = hardware map
+     gyroSensor.initatilizae(parameters);
+     
+     Override
+     public void loop() {
+     angles = gyrosensor.getangularorientation(AxesREference.INTRINSIC, AxesORder.ZYX, AngleUnit.DEGREES);
+     double turningAngle = angles.firstAngle(;
+     double slopAngle = angles.secondAngle;
+     double sideFlipAngle = agles.thirdAngle;
+     
+     an enum is a list of names you can set a variable to (if the variable is the enum's type)
+     public enum variableType {
+        value1, value2, value3
+     }
+     
+     Using the enum:
+     variableType.value
+     
+     public enum MovementDirection {
+         LEFT, RIGHT, FORWARD, BACK
+     }

@@ -1,0 +1,14 @@
+We should already know:
+- The location of the center of claw with respect to the location of the Webcam
+
+1. Use Vuforia to get the location of the center of the skystone
+2. Calculate the location of the center of the skystone with respect to the center of the claw (x, y)
+3. Move robot forward/backward so that the center of the skystone is 1.5 inches to the right of the center of the claw 
+4. Use the distance the robot is from the skystone to calculate how far arm needs to extend so that the claw is over the skystone
+5. Move arm up so that the claw is above the skystone
+6. Extend arm the calculated distance
+7. Open claw
+8. Move arm down (optimal distance to be tested)
+9. Close claw
+10. Move arm up so that the skystone is above the robot's chassis (and could fit inside robot)
+11. Retract arm close to the arm's initial position
