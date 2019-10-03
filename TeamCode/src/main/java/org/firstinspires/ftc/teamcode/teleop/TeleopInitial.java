@@ -21,10 +21,13 @@ public class TeleopInitial extends OpMode {
     //declare servos
     Servo rotationServo;
     Servo grabberServo;
+    Servo grabberServoTwo;
     Servo foundationServo;
+    Servo angleServo;
 
     int armPosition = 0;
     int extensionPosition = 0;
+    double rotationPosition = 0.0;
 
     boolean slowMode = false;
     double speedMultiplier = 1;
@@ -62,10 +65,13 @@ public class TeleopInitial extends OpMode {
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
         foundationServo = hardwareMap.servo.get("foundationServo");
+        angleServo = hardwareMap.servo.get("angleServo");
+        grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
 
         rotationServo.setPosition(0);
-        grabberServo.setPosition(0);    //pos 0 = closed?
+        grabberServo.setPosition(0.3);
         foundationServo.setPosition(0.15);
+        grabberServoTwo.setPosition(0.9);
     }
 
     @Override
@@ -77,7 +83,7 @@ public class TeleopInitial extends OpMode {
 
         //mecanum drive
         double speed = -gamepad1.left_stick_y; //may or may not be reversed
-        double strafe = -gamepad1.left_stick_x;
+        double strafe = gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
 
         if (gamepad1.a) {
@@ -93,9 +99,9 @@ public class TeleopInitial extends OpMode {
         rightBack.setPower(speedMultiplier*(speed+strafe-turn));
         leftBack.setPower(speedMultiplier*(speed-strafe+turn));
 
-        armPosition += (int)(gamepad2.right_stick_y * 50);
-        if(armPosition > 1300) {
-            armPosition = 1300;
+        armPosition += (int)(-1 * gamepad2.right_stick_y * 10);
+        if(armPosition > 1400) {
+            armPosition = 1400;
         }
         if(armPosition < 0) {
             armPosition = 0;
@@ -103,24 +109,27 @@ public class TeleopInitial extends OpMode {
         angleMotor.setTargetPosition(armPosition);
         angleMotor.setPower(1);
 
+        angleServo.setPosition(0.5 + (armPosition / 5376.0));
 
-
-        extensionPosition += (int)((gamepad2.right_trigger - gamepad2.left_trigger) * 75);
+        extensionPosition += (int)((gamepad2.right_trigger - gamepad2.left_trigger) * 15);
         if(extensionPosition > 1600) {
             extensionPosition = 1600;
         }
         if(extensionPosition < 0) {
             extensionPosition = 0;
         }
-        extensionMotor.setTargetPosition(extensionPosition);
+
+        extensionMotor.setTargetPosition(extensionPosition + (armPosition * 3 / 40));
         extensionMotor.setPower(1);
 
 
         if(gamepad2.a) { //test positions TBD
             grabberServo.setPosition(0.9);
+            grabberServoTwo.setPosition(0.3);
         }
         if(gamepad2.b) {
             grabberServo.setPosition(0.3);
+            grabberServoTwo.setPosition(0.9);
         }
 
         if(gamepad2.y){
@@ -130,9 +139,7 @@ public class TeleopInitial extends OpMode {
         if(gamepad2.x){
             rotationServo.setPosition(0); //y = 0; not tested
         }
-
-        double currentPositionRotation = rotationServo.getPosition();
-        int positionChangeRotation = (int) (gamepad2.left_stick_x * 25);
+        rotationServo.setPosition(rotationServo.getPosition() + (gamepad2.left_stick_x * 0.025));
 
         if(gamepad2.dpad_down){
             foundationServo.setPosition(0.82);
@@ -146,4 +153,3 @@ public class TeleopInitial extends OpMode {
 
 
 }
-//***Needs limits for angleMotor and extensionMotor***
