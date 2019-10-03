@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.common;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -58,10 +57,6 @@ public class Robot {
 
     // Sensors
     WebcamName webcam;
-    public DistanceSensor frontDistanceSensor;
-    public DistanceSensor sideDistanceSensor;
-    public DistanceSensor foundationDistanceSensor;
-
 
     // --- Robot init() methods --- //
     // The init() methods here have a hardwareMap parameter. When using them, just type "hardwareMap" as the argument.
@@ -117,9 +112,6 @@ public class Robot {
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
-        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
-        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
-        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
     }
 
 
@@ -224,15 +216,5 @@ public class Robot {
         this.rightFrontMotor.setMode(runMode);
         this.leftBackMotor.setMode(runMode);
         this.rightBackMotor.setMode(runMode);
-    }
-
-    /*
-     *
-     */
-    public void drivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower){
-        this.leftFrontMotor.setPower(leftFrontPower);
-        this.rightFrontMotor.setPower(rightFrontPower);
-        this.leftBackMotor.setPower(leftBackPower);
-        this.rightBackMotor.setPower(rightBackPower);
     }
 }
