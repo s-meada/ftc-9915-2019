@@ -31,11 +31,13 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
 
     double robotXDistanceFromSkystoneCenter;
     double robotYDistanceFromSkystoneCenter;
+    double distanceForArmToExtend;
 
     static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 1;
     static final int ADJUST_ROBOT_POSITION          = 2;
+    static final int CALCULATE                      = 3;
 
-    static final int STATE_END                      = 3; //EDIT as more states are added
+    static final int STATE_END                      = 4; //EDIT as more states are added
 
     //TODO: Add other states mentioned in pseudo code
 
@@ -136,7 +138,7 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
         final float CAMERA_FORWARD_DISPLACEMENT  = 0.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
         final float CAMERA_VERTICAL_DISPLACEMENT = 0.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT     = 7.0f * mmPerInch;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -181,16 +183,10 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
                         robotXDistanceFromSkystoneCenter = translation.get(0)/mmPerInch;
                         robotYDistanceFromSkystoneCenter = translation.get(1)/mmPerInch;
 
-                        telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                                robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter, translation.get(2) / mmPerInch);
+                        telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
+                                robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
 
-                        // express the rotation of the robot in degrees.
-                        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                        telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-
-                        telemetry.addLine("Skystone detected");
-//                        goToNextState();
-
+                        goToNextState();
                     }
                     else {
                         telemetry.addData("Visible Target", "none");
@@ -200,9 +196,16 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
                     break;
 
                 case ADJUST_ROBOT_POSITION:
-                    // TODO Add code
-                    telemetry.addLine("Done");
-                    telemetry.update();
+                    if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter - robot.Y_DISTANCE_FROM_CAMERA_TO_ARM)) {
+                        goToNextState();
+                    }
+                    break;
+
+                case CALCULATE:
+                    // TODO: ADD CODE - CALCULATE HOW MUCH THE ARM NEEDS TO EXTEND
+                    distanceForArmToExtend = robotXDistanceFromSkystoneCenter - robot.ARM_ORIGINAL_LENGTH_IN_FRONT_OF_ROBOT;
+
+
                     goToNextState();
                     break;
 
