@@ -34,8 +34,8 @@ public class SonalAutonomous2019 extends LinearOpMode {
 
 
     //cases
-    static final int ROBOT_EXTENDS_ARM = 1;
-    static final int ROBOT_RAISES_ARM = 2;
+    static final int ROBOT_RAISES_ARM = 1;
+    static final int ROBOT_EXTENDS_ARM = 2;
     static final int ROBOT_RELEASES_SKYSTONE = 3;
     static final int ROBOT_RETRACTS_ARM = 4;
     static final int ROBOT_LOWERS_ARM = 5;
@@ -56,13 +56,14 @@ public class SonalAutonomous2019 extends LinearOpMode {
             // loop()
             telemetry.addData("Current State", state);
             switch (state) {
-                case ROBOT_EXTENDS_ARM:
-                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_EXTENDED_POSITION);
-                    goToNextState();
-                    break;
 
                 case ROBOT_RAISES_ARM:
                     robot.angleMotor.setTargetPosition(500);
+                    goToNextState();
+                    break;
+
+                case ROBOT_EXTENDS_ARM:
+                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_EXTENDED_POSITION);
                     goToNextState();
                     break;
 
@@ -82,20 +83,24 @@ public class SonalAutonomous2019 extends LinearOpMode {
                     break;
 
                 case ROBOT_MOVES_BEHIND_FOUNDATION:
-                    robot.drive(drivePower, behindFoundationPosition);
-                    goToNextState();
+                    if (robot.drive(drivePower, behindFoundationPosition)) {
+                        goToNextState();
+                    }
                     break;
 
 
                 case ROBOT_STRAFES_CLOSER_TO_CENTER:
-                    robot.strafe(strafePower, towardsCenterPosition);
-                    goToNextState();
+                    if (robot.strafe(strafePower, towardsCenterPosition)) {
+                       goToNextState();
+                    }
+
                     break;
 
 
                 case ROBOT_MOVES_BACKWARDS:
-                    robot.drive(drivePower, towardsRedLinePosition);
-                    goToNextState();
+                    if (robot.drive(drivePower, towardsRedLinePosition)) {
+                        goToNextState();
+                    }
                     break;
 
 
