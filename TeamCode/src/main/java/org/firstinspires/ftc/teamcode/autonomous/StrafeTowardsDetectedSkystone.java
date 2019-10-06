@@ -53,10 +53,10 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
                     break;
 
                 case DETERMINE_SKYSTONE:
-                    //determine if there is a skystone and return boolean vuforia.skyStoneSeen()
                     if(!vuforia.skyStoneSeen(hardwareMap)){
 
                         robot.drive(drivePower, viewingPosition2);
+
 
                         if (robot.drive(drivePower, viewingPosition2)){
                             skyStonePosition += 1;
@@ -70,6 +70,13 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
                         if (robot.drive(drivePower, viewingPosition3)){
                             skyStonePosition += 1;
                         }
+
+                    }
+
+                    if(robot.drive(drivePower, viewingPosition2) && !vuforia.skyStoneSeen(hardwareMap)){
+                        skyStonePosition += 1;
+                        robot.drive(drivePower, viewingPosition3);
+
                     }
 
                     if (vuforia.skyStoneSeen(hardwareMap)){
@@ -82,10 +89,8 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
                 case STRAFE_TO_SKYSTONE:
                     telemetry.addData("Determined SkyStone Position:", skyStonePosition);
                     robot.strafe(strafePower,grabbingPosition);
-
                     break;
 
-                //For this purpose, the default state means that we are in the final state (or the tasks are finished)
                 default:
                     state = STATE_END;
                     break;
