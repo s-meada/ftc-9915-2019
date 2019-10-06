@@ -47,6 +47,7 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
                     robot.strafe(strafePower, viewingPosition1);
 
                     if(robot.strafe(strafePower, viewingPosition1)); {
+                        skyStonePosition += 1;
                         goToNextState();
                     }
                     break;
@@ -54,20 +55,20 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
                 case DETERMINE_SKYSTONE:
                     //determine if there is a skystone and return boolean vuforia.skyStoneSeen()
                     if(!vuforia.skyStoneSeen(hardwareMap)){
-                        skyStonePosition += 1;
+
                         robot.drive(drivePower, viewingPosition2);
 
                         if (robot.drive(drivePower, viewingPosition2)){
-                            //determine if there is a skystone and update boolean vuforia.skyStoneSeen()
+                            skyStonePosition += 1;
+
                         }
                     }
 
                     else if(!vuforia.skyStoneSeen(hardwareMap)){
-                        skyStonePosition += 1;
                         robot.drive(drivePower, viewingPosition3);
 
-                        if (robot.drive(drivePower, viewingPosition2)){
-                            //determine if there is a skystone and update boolean vuforia.skyStoneSeen()
+                        if (robot.drive(drivePower, viewingPosition3)){
+                            skyStonePosition += 1;
                         }
                     }
 
@@ -79,7 +80,7 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
 
 
                 case STRAFE_TO_SKYSTONE:
-
+                    telemetry.addData("Determined SkyStone Position:", skyStonePosition);
                     robot.strafe(strafePower,grabbingPosition);
 
                     break;
