@@ -20,6 +20,13 @@ public class Robot {
     double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
 
 
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // We will define some constants and conversions here
+    public static final float mmPerInch        = 25.4f;
+    public static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    // Constant for Stone Target
+    public static final float stoneZ = 2.00f * mmPerInch;
+
     // Arm - units: inches
     public final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
     public final double ARM_ORIGINAL_LENGTH_IN_FRONT_OF_ROBOT = 4.0;
