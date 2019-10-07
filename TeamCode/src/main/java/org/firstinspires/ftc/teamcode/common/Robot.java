@@ -10,6 +10,8 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 public class Robot {
 
+    public boolean encodersReseted = false;
+
     // --- Robot Geometry --- //
     // Wheels
     double wheelDiameter = 4;
@@ -72,8 +74,10 @@ public class Robot {
     // Sensors
     public WebcamName webcam;
     public DistanceSensor frontDistanceSensor;
+    //public DistanceSensor frontDistanceSensor;
+
     public DistanceSensor sideDistanceSensor;
-    public DistanceSensor foundationDistanceSensor;
+    //  public DistanceSensor foundationDistanceSensor;
 
 
     // --- Robot init() methods --- //
@@ -110,6 +114,7 @@ public class Robot {
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Arm
+
 //        angleMotor = hardwareMap.dcMotor.get("angleMotor");
 //        angleMotor.setTargetPosition(0);
 //        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -135,6 +140,30 @@ public class Robot {
 //        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
 //        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
 //        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
+
+        //angleMotor = hardwareMap.dcMotor.get("angleMotor");
+        //angleMotor.setTargetPosition(0);
+        //angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
+        //extensionMotor.setTargetPosition(0);
+        //extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //rotationServo = hardwareMap.servo.get("rotationServo");
+        //grabberServo = hardwareMap.servo.get("grabberServo");
+        foundationServo = hardwareMap.servo.get("foundationServo");
+
+        //rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
+        //grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+        foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
+
+        // Sensors
+        webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
+        //frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
+        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
+        //foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
     }
 
 
@@ -147,6 +176,10 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean drive(double power, double distanceInch) {
+        if(!encodersReseted) {
+            this.resetChassisEncoders();
+            encodersReseted = true;
+        }
         // Getting the sign of the argument to determine which direction we're driving
         int direction = (int)Math.signum(distanceInch);
 
@@ -161,7 +194,12 @@ public class Robot {
         this.rightBackMotor.setPower(direction * power);
 
         setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
-        return !this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy();
+        if (!this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy()) {
+            encodersReseted = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /*
@@ -171,6 +209,10 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean strafe(double power, double distanceInch) {
+        if(!encodersReseted) {
+            this.resetChassisEncoders();
+            encodersReseted = true;
+        }
         // Getting the sign of the argument to determine which direction we're strafing
         int direction = (int)Math.signum(distanceInch);
 
@@ -186,7 +228,12 @@ public class Robot {
 
         setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
-        return !this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy();
+        if (!this.leftFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.rightBackMotor.isBusy()) {
+            encodersReseted = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /*
@@ -199,6 +246,10 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean driveMecanum(double y, double x, double w, double distance) {
+        if(!encodersReseted) {
+            this.resetChassisEncoders();
+            encodersReseted = true;
+        }
         // y and x are negated to make the robot move in the right direction according to signs of the argument values
         y = -y;
         x = -x;
@@ -217,7 +268,12 @@ public class Robot {
 
         setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
-        return !this.leftFrontMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightBackMotor.isBusy();
+        if (!this.leftFrontMotor.isBusy() || !this.rightFrontMotor.isBusy() || !this.leftBackMotor.isBusy() || !this.rightBackMotor.isBusy()) {
+            encodersReseted = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /*
@@ -239,6 +295,12 @@ public class Robot {
         this.rightFrontMotor.setMode(runMode);
         this.leftBackMotor.setMode(runMode);
         this.rightBackMotor.setMode(runMode);
+    }
+
+    public void resetChassisEncoders() {
+        if(this.leftFrontMotor.getMode() != DcMotor.RunMode.STOP_AND_RESET_ENCODER) {
+            setModeChassisMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
     }
 
     /*
