@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static android.animation.ValueAnimator.REVERSE;
 
@@ -15,6 +16,7 @@ import static android.animation.ValueAnimator.REVERSE;
 @TeleOp(name="TeleopInitial_C",group="Skystone")
 public class TeleopInitial extends OpMode {
 
+    ElapsedTime timer = new ElapsedTime();
     public static final double ANGLE_MOTOR_COUNTS_PER_REV = 7168.0;
     public static final double EXTENSION_MOTOR_COUNTS_PER_REV = 537.6;
 
@@ -29,13 +31,15 @@ public class TeleopInitial extends OpMode {
     //declare servos
     Servo rotationServo;
     Servo grabberServo;
+    Servo grabberServoTwo;
     Servo verticalServo;
 
+    String rotationDirection = "up";
     int currentPositionAngle = 0;
     int currentPositionExtension = 0;
     double verticalServoAngleFactor = 1.333/ANGLE_MOTOR_COUNTS_PER_REV;
     double extensionMotorAngleFactor = EXTENSION_MOTOR_COUNTS_PER_REV/ANGLE_MOTOR_COUNTS_PER_REV;
-    boolean stoneTucked = false;
+    //boolean stoneTucked = false;
 
     @Override
     public void init() {
@@ -73,11 +77,13 @@ public class TeleopInitial extends OpMode {
         //init servos
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
+        grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
         verticalServo = hardwareMap.servo.get("verticalServo");
 
 
         rotationServo.setPosition(0.5);
         grabberServo.setPosition(0.5);    //pos 0 = closed?
+        grabberServo.setPosition(0.75);
         verticalServo.setPosition(0.5);   //vertical with arm horizontal
 
     }
@@ -87,7 +93,7 @@ public class TeleopInitial extends OpMode {
 
         //mecanum drive
         double speed = -gamepad1.left_stick_y; //may or may not be reversed
-        double strafe = -gamepad1.left_stick_x;
+        double strafe = gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
 
 
@@ -99,7 +105,7 @@ public class TeleopInitial extends OpMode {
 //
         int positionChangeAngle = (int)(-gamepad2.right_stick_y * 6);
         currentPositionAngle += positionChangeAngle;
-        if(currentPositionAngle > 1300) currentPositionAngle = 1300;
+        if(currentPositionAngle > 1400) currentPositionAngle = 1400;
         if(currentPositionAngle < 0) currentPositionAngle = 0;
         telemetry.addData("Angle",currentPositionAngle);
 
@@ -107,9 +113,16 @@ public class TeleopInitial extends OpMode {
 
         //calculates the adjustment to the vertical-position-holding servo and
         double verticalAngleOffset = (double)currentPositionAngle*verticalServoAngleFactor;
-        double verticalServoPosition = 0.5 + verticalAngleOffset;
-        if(stoneTucked) verticalServoPosition = 0.93;
-        verticalServo.setPosition(verticalServoPosition);
+        double verticalServoPosition = 0.55 + verticalAngleOffset;
+        //if(stoneTucked) verticalServoPosition = 0.93;
+        if (timer.seconds() > 0.5){
+            if (rotationDirection == "up") rotationServo.setPosition(0.5);
+            if (rotationDirection == "right") rotationServo.setPosition(0.18);
+            if (rotationDirection == "left") rotationServo.setPosition(0.82); //TEST
+        }
+        if (timer.seconds() > 1){
+            verticalServo.setPosition(verticalServoPosition);
+        }
 
 
         int extensionPositionOffset = (int)((double)currentPositionAngle*extensionMotorAngleFactor);
@@ -120,7 +133,7 @@ public class TeleopInitial extends OpMode {
         currentPositionExtension += positionChangeExtension;
         telemetry.addData("Extension ",currentPositionExtension);
 
-        if(currentPositionExtension > 1830 ) currentPositionExtension = 1830;
+        if(currentPositionExtension > 1730 ) currentPositionExtension = 1730;
         if(currentPositionExtension < 0) currentPositionExtension = 0;
 
         extensionMotor.setTargetPosition(currentPositionExtension + extensionPositionOffset);
@@ -129,24 +142,37 @@ public class TeleopInitial extends OpMode {
 
         if(gamepad2.a) { //test positions TBD
             grabberServo.setPosition(1.0);
+            grabberServoTwo.setPosition(0.25);
         }
         if(gamepad2.b) {
             grabberServo.setPosition(0.5);
+            grabberServoTwo.setPosition(0.75);
         }
 
-        if(gamepad2.y){
-            rotationServo.setPosition(0.5); //x = 0; not tested
+        if(gamepad2.dpad_right){
+            verticalServo.setPosition(0.5);
+            timer.reset();
+            rotationDirection = "right";
         }
 
-        if(gamepad2.x){
-            rotationServo.setPosition(0.17); //y = 0; not tested
+        if(gamepad2.dpad_up){
+            verticalServo.setPosition(0.5);
+            timer.reset();
+            rotationDirection = "up";
         }
 
-        if(gamepad2.dpad_up) stoneTucked = true;
-        if(gamepad2.dpad_down) stoneTucked = false;
+        if(gamepad2.dpad_left){
+            verticalServo.setPosition(0.5);
+            timer.reset();
+            rotationDirection = "left";
+        }
+        //if(gamepad2.dpad_up) stoneTucked = true;
+        //if(gamepad2.dpad_down) stoneTucked = false;
 
-//        double currentPositionRotation = rotationServo.getPosition();
-//        int positionChangeRotation = (int) (gamepad2.left_stick_x * 50);
+        double currentPositionRotation = rotationServo.getPosition();
+        int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
+        rotationServo.setPosition(currentPositionRotation + positionChangeRotation);
+
         telemetry.update();
 
     }
@@ -154,4 +180,3 @@ public class TeleopInitial extends OpMode {
 
 
 }
-//***Needs limits for angleMotor and extensionMotor***
