@@ -1,0 +1,6 @@
+documentation 10/6
+we found out that the app for the phone on the robot sometimes crashes causing the driver station phone to be disconnected from robot
+to fix: click the "Close app" option that eventually comes up on robot phone after crashed for a while, restart app
+
+we found that the drive and strafe methods would sometimes not do what we told them to do
+to fix: always reset encoders before driving/strafing to a position, added it to robot class that we made
