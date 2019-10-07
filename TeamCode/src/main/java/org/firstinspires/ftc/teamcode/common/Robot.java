@@ -11,12 +11,25 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 public class Robot {
 
     // --- Robot Geometry --- //
+    // Wheels
     double wheelDiameter = 4;
     double wheelInchesPerRotation = Math.PI * wheelDiameter;
     int motorTicksPerRotation = 1120;
     double gearRatioMotorToWheel = 32.0/24.0;
     // double type for higher accuracy when multiplying by distanceInch in driveForward() method
     double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
+
+
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // We will define some constants and conversions here
+    public static final float mmPerInch        = 25.4f;
+    public static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    // Constant for Stone Target
+    public static final float stoneZ = 2.00f * mmPerInch;
+
+    // Arm - units: inches
+    public final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
+    public final double ARM_ORIGINAL_LENGTH_IN_FRONT_OF_ROBOT = 4.0;
 
 
     // --- Constants --- //
@@ -57,7 +70,7 @@ public class Robot {
     public Servo angleServo;
 
     // Sensors
-    WebcamName webcam;
+    public WebcamName webcam;
     public DistanceSensor frontDistanceSensor;
     public DistanceSensor sideDistanceSensor;
     public DistanceSensor foundationDistanceSensor;
@@ -97,29 +110,31 @@ public class Robot {
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Arm
-        angleMotor = hardwareMap.dcMotor.get("angleMotor");
-        angleMotor.setTargetPosition(0);
-        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
-        extensionMotor.setTargetPosition(0);
-        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        rotationServo = hardwareMap.servo.get("rotationServo");
-        grabberServo = hardwareMap.servo.get("grabberServo");
-        foundationServo = hardwareMap.servo.get("foundationServo");
-
-        rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
-        grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
-        foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
+//        angleMotor = hardwareMap.dcMotor.get("angleMotor");
+//        angleMotor.setTargetPosition(0);
+//        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
+//        extensionMotor.setTargetPosition(0);
+//        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        rotationServo = hardwareMap.servo.get("rotationServo");
+//        grabberServo = hardwareMap.servo.get("grabberServo");
+//        foundationServo = hardwareMap.servo.get("foundationServo");
+//        angleServo = hardwareMap.servo.get("angleServo");
+//
+//        rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
+//        grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+//        foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
+//        angleServo.setPosition(0.0); // REPLACE with initial position of this servo
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
-        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
-        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
-        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
+//        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
+//        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
+//        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
     }
 
 
@@ -227,12 +242,21 @@ public class Robot {
     }
 
     /*
-     *
+     * Drive method for when the distance to drive is unspecified
+     * Before using this method, ensure the motors are in the run mode RUN_USING_ENCODER
      */
     public void drivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower){
         this.leftFrontMotor.setPower(leftFrontPower);
         this.rightFrontMotor.setPower(rightFrontPower);
         this.leftBackMotor.setPower(leftBackPower);
         this.rightBackMotor.setPower(rightBackPower);
+    }
+
+    /*
+     * Method for moving a motor so that its attachment moves a given distance
+     */
+    public boolean moveMotorToDistance(DcMotor motor, double power, int distanceIN) {
+        // ADD CODE
+        return !motor.isBusy();
     }
 }
