@@ -33,6 +33,11 @@ public class Robot {
     public final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
     public final double ARM_ORIGINAL_LENGTH_IN_FRONT_OF_ROBOT = 4.0;
 
+    public final double ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
+
+    public final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6 / ANGLE_MOTOR_TICKS_PER_ROTATION;
+    public final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
+
 
     // --- Constants --- //
 
@@ -316,9 +321,14 @@ public class Robot {
 
     /*
      * Method for moving a motor so that its attachment moves a given distance
+     * @param motor: the motor for the attachment
+     * @param externalGearInchesPerRotation: distance attachment moves per rotation of the gears/sprocket connected to the motor
+     * @param distanceIN: the distance for the attachment to move in inches
+     * @return whether the attachment has been move the given distance
      */
-    public boolean moveMotorToDistance(DcMotor motor, double power, int distanceIN) {
-        // ADD CODE
+    public boolean moveMotorToDistance(DcMotor motor, double motorTicksPerRotation, double externalGearInchesPerRotation, double power, int distanceIN) {
+        motor.setTargetPosition((int)((motorTicksPerRotation * distanceIN) / externalGearInchesPerRotation));
+        motor.setPower(power);
         return !motor.isBusy();
     }
 }
