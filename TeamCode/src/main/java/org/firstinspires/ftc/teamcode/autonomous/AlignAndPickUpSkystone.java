@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -35,9 +34,10 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
 
     static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 1;
     static final int ADJUST_ROBOT_POSITION          = 2;
-    static final int CALCULATE                      = 3;
+    static final int MOVE_ARM_UP                    = 3;
+    static final int EXTEND_ARM                     = 4;
 
-    static final int STATE_END                      = 4; //EDIT as more states are added
+    static final int STATE_END                      = 5; //EDIT as more states are added
 
     //TODO: Add other states mentioned in pseudo code
 
@@ -201,11 +201,15 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
                     }
                     break;
 
-                case CALCULATE:
-                    // TODO: ADD CODE - CALCULATE HOW MUCH THE ARM NEEDS TO EXTEND
+                case MOVE_ARM_UP:
+                    if(robot.moveMotorToDistance(robot.angleMotor, robot.ANGLE_MOTOR_TICKS_PER_ROTATION, robot.ANGLE_GEARS_INCHES_PER_ROTATION,0.5, 10)) {
+                        goToNextState();
+                    }
+                    break;
+
+                case EXTEND_ARM:
                     distanceForArmToExtend = robotXDistanceFromSkystoneCenter - robot.ARM_ORIGINAL_LENGTH_IN_FRONT_OF_ROBOT;
-
-
+                    robot.moveMotorToDistance(robot.extensionMotor, robot.EXTENSION_MOTOR_TICKS_PER_ROTATION,robot.EXTENSION_SPROCKETS_INCHES_PER_ROTATION, 0.5, (int)(distanceForArmToExtend));
                     goToNextState();
                     break;
 
