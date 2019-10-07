@@ -45,11 +45,9 @@ public class SkystoneVuforiaData {
         _hardwareMap = hardwareMap;
         _robot = robot;
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = robot.webcam;
-
         initializeVuforiaSkystone();
         initializeTrackables();
+
     }
 
     private void initializeVuforiaSkystone() {
@@ -61,9 +59,11 @@ public class SkystoneVuforiaData {
          */
 
         int cameraMonitorViewId = _hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", _hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        this.parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
+        this.parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
+        this.parameters.cameraName = _robot.webcam;
         /**
          * We also indicate which camera on the RC we wish to use.
          */
