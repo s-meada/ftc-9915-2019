@@ -1,4 +1,5 @@
 resetting encoder code from Sunday worked, moved the right distance
 didn't get measurements right, added 4 inches to measured distance from foundation to make sure robot reaches foundation, pulled back foundation further
+added timer to make robot wait for foundation servos to get in position before pulling back
 found out that the robot sometimes bounced back upon reaching foundation, made speed slower which fixed the problem
 tried robot starting from all three possible positions of the skyblock, worked for all three, also at the end should be able to move out and park without disturbing foundation too much
