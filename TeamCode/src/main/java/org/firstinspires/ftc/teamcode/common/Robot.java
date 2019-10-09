@@ -332,4 +332,14 @@ public class Robot {
         motor.setPower(power);
         return !motor.isBusy();
     }
+    public void moveArm(double angle, double extensionLength){
+        int angleMotorPosition = (int)(ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + 30.0) / (2 * Math.PI)); //Change angle offset
+        if (angleMotorPosition > 1400) angleMotorPosition = 1400;
+        if (angleMotorPosition < 0) angleMotorPosition = 0;
+        angleMotor.setTargetPosition(angleMotorPosition);
+        int extensionMotorPosition = (int)((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - 13.25)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
+        if (extensionMotorPosition > 1400) extensionMotorPosition = 1630;
+        if (extensionMotorPosition < 0) extensionMotorPosition = 0;
+        extensionMotor.setTargetPosition(extensionMotorPosition);
+    }
 }
