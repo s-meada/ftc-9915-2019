@@ -35,8 +35,9 @@ public class Robot {
 
     public final double ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
 
-    public final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6 / ANGLE_MOTOR_TICKS_PER_ROTATION;
+    public final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
     public final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
+    public final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION/ANGLE_MOTOR_TICKS_PER_ROTATION;
 
 
     // --- Constants --- //
