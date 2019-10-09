@@ -338,7 +338,7 @@ public class Robot {
         if (angleMotorPosition < 0) angleMotorPosition = 0;
         angleMotor.setTargetPosition(angleMotorPosition);
         int extensionMotorPosition = (int)((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - 13.25)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
-        if (extensionMotorPosition > 1400) extensionMotorPosition = 1630;
+        if (extensionMotorPosition > 1630) extensionMotorPosition = 1630;
         if (extensionMotorPosition < 0) extensionMotorPosition = 0;
         extensionMotor.setTargetPosition(extensionMotorPosition);
     }
