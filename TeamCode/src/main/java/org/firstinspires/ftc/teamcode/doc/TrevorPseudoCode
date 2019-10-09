@@ -1,0 +1,8 @@
+List:
+1. Strafe from parking position to predetermined position where block 1 is visable (see autonomous plan for numbering).
+2. Determine if block is a skystone. If block is a skystone, proceed to step 5. If the block is not a skystone, proceed to step 3.
+3. Drive backwards to the next predetermined position where block 2 is visable. Determine if block is a skystone. If block is a skystone, proceed to step 5. If not, proceed to step 4.
+4. Drive backwards to the next predetermined position where block 3 is visable. 
+5. End Strafe Towards Detected Skystone program
+
+
