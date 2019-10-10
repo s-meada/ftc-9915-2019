@@ -20,7 +20,7 @@ public class TeleopInitial extends OpMode {
     public static final double ANGLE_MOTOR_COUNTS_PER_REV = 7168.0;
     public static final double EXTENSION_MOTOR_COUNTS_PER_REV = 537.6;
 
-    boolean slowMode = false;
+    double speedMulitplier = 1.0;
 
     //declare motors
     DcMotor rightFront;
@@ -94,11 +94,11 @@ public class TeleopInitial extends OpMode {
     public void loop() {
 
         //mecanum drive
-        if (gamepad1.a) slowMode = true;
-        if (gamepad1.b) slowMode = false;
-        double speed = -gamepad1.left_stick_y; //may or may not be reversed
-        double strafe = gamepad1.left_stick_x;
-        double turn = gamepad1.right_stick_x;
+        if (gamepad1.a) speedMulitplier = 0.5;
+        if (gamepad1.b) speedMulitplier = 1.0;
+        double speed = -gamepad1.left_stick_y * speedMulitplier; //may or may not be reversed
+        double strafe = gamepad1.left_stick_x * speedMulitplier;
+        double turn = gamepad1.right_stick_x * speedMulitplier;
 
 
         leftFront.setPower(speed+strafe+turn);
