@@ -35,6 +35,7 @@ public class TeleopInitial extends OpMode {
     Servo grabberServo;
     Servo grabberServoTwo;
     Servo verticalServo;
+    Servo foundationServo;
 
     String rotationDirection = "up";
     int currentPositionAngle = 0;
@@ -81,12 +82,14 @@ public class TeleopInitial extends OpMode {
         grabberServo = hardwareMap.servo.get("grabberServo");
         grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
         verticalServo = hardwareMap.servo.get("verticalServo");
+        foundationServo = hardwareMap.servo.get("foundationServo");
 
 
         rotationServo.setPosition(0.5);
         grabberServo.setPosition(0.5);    //pos 0 = closed?
         grabberServo.setPosition(0.75);
         verticalServo.setPosition(0.5);   //vertical with arm horizontal
+        foundationServo.setPosition(0.5);
 
     }
 
@@ -106,7 +109,7 @@ public class TeleopInitial extends OpMode {
         rightBack.setPower(speed+strafe-turn);
         leftBack.setPower(speed-strafe+turn);
 
-//
+
         int positionChangeAngle = (int)(-gamepad2.right_stick_y * 6);
         currentPositionAngle += positionChangeAngle;
         if(currentPositionAngle > 1400) currentPositionAngle = 1400;
@@ -142,7 +145,9 @@ public class TeleopInitial extends OpMode {
 
         extensionMotor.setTargetPosition(currentPositionExtension + extensionPositionOffset);
 
+        if (gamepad1.x) foundationServo.setPosition(0.83);
 
+        if (gamepad1.y) foundationServo.setPosition(0.5);
 
         if(gamepad2.a) { //test positions TBD
             grabberServo.setPosition(1.0);
