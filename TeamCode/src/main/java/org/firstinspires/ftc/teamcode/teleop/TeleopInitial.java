@@ -40,7 +40,7 @@ public class TeleopInitial extends OpMode {
     String rotationDirection = "up";
     int currentPositionAngle = 0;
     int currentPositionExtension = 0;
-    double verticalServoAngleFactor = 1.333/ANGLE_MOTOR_COUNTS_PER_REV;
+    double verticalServoAngleFactor = 1.7/ANGLE_MOTOR_COUNTS_PER_REV;
     double extensionMotorAngleFactor = EXTENSION_MOTOR_COUNTS_PER_REV/ANGLE_MOTOR_COUNTS_PER_REV;
     //boolean stoneTucked = false;
 
@@ -87,7 +87,7 @@ public class TeleopInitial extends OpMode {
 
         rotationServo.setPosition(0.5);
         grabberServo.setPosition(0.5);    //pos 0 = closed?
-        grabberServo.setPosition(0.75);
+        grabberServoTwo.setPosition(0.75);
         verticalServo.setPosition(0.5);   //vertical with arm horizontal
         foundationServo.setPosition(0.5);
 
@@ -120,12 +120,12 @@ public class TeleopInitial extends OpMode {
 
         //calculates the adjustment to the vertical-position-holding servo and
         double verticalAngleOffset = (double)currentPositionAngle*verticalServoAngleFactor;
-        double verticalServoPosition = 0.55 + verticalAngleOffset;
+        double verticalServoPosition = 0.4 + verticalAngleOffset;
         //if(stoneTucked) verticalServoPosition = 0.93;
         if (timer.seconds() > 0.5){
             if (rotationDirection == "up") rotationServo.setPosition(0.5);
             if (rotationDirection == "right") rotationServo.setPosition(0.18);
-            if (rotationDirection == "left") rotationServo.setPosition(0.82); //TEST
+            if (rotationDirection == "left") rotationServo.setPosition(0.82);
         }
         if (timer.seconds() > 1){
             verticalServo.setPosition(verticalServoPosition);
