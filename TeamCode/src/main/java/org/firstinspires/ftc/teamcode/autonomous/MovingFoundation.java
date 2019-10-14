@@ -45,14 +45,14 @@ public class MovingFoundation extends LinearOpMode {
                     }
                     break;
 
-                case DRIVE_TO_FOUNDATION:
-
-                    robot.drivePower(0.5,-0.5,-0.5,0.5);
-                    if(robot.foundationDistanceSensor.getDistance(DistanceUnit.MM) < DISTANCE_FROM_FOUNDATION){
-                        robot.stop();
-                        goToNextState();
-                    }
-                    break;
+//                case DRIVE_TO_FOUNDATION:
+//
+//                    robot.drivePower(0.5,-0.5,-0.5,0.5);
+//                    if(robot.foundationDistanceSensor.getDistance(DistanceUnit.MM) < DISTANCE_FROM_FOUNDATION){
+//                        robot.stop();
+//                        goToNextState();
+//                    }
+//                    break;
 
                 case DRAG_FOUNDATION:
 
