@@ -22,7 +22,6 @@ public class Robot {
     double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
 
     // Arm - units: inches
-    public final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
     public final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
     public final double ARM_STARTING_LENGTH = 13.25;
     public final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 30.0;
@@ -51,10 +50,14 @@ public class Robot {
     public static final int EXTENSION_MOTOR_RETRACTED_LIMIT = 0;
     public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1630;
 
-    public static final double GRABBER_SERVO_OPEN_POSITION = 0.3;
-    public static final double GRABBER_SERVO_CLOSE_POSITION = 0.9;
+    public static final double GRABBER_SERVO_OPEN_POSITION = 0.5;
+    public static final double GRABBER_SERVO_CLOSE_POSITION = 1.0;
+    public static final double GRABBER_SERVO_TWO_OPEN_POSITION = 0.75;
+    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.25;
 
-    public static final double ROTATION_SERVO_START_POSITION = 0.0;
+    public static final double ROTATION_SERVO_START_POSITION = 0.47;
+
+    public static final double ANGLE_SERVO_INIT_POSITION = 0.92;
 
     // Foundation
     public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
@@ -76,6 +79,7 @@ public class Robot {
     // Servos
     public Servo rotationServo;
     public Servo grabberServo;
+    public Servo grabberServoTwo;
     public Servo foundationServo;
     public Servo angleServo;
 
@@ -136,13 +140,15 @@ public class Robot {
 
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
+        grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
         foundationServo = hardwareMap.servo.get("foundationServo");
-        angleServo = hardwareMap.servo.get("angleServo");
+        angleServo = hardwareMap.servo.get("verticalServo");
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+        grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
-        angleServo.setPosition(0.0); // REPLACE with initial position of this servo
+        angleServo.setPosition(ANGLE_SERVO_INIT_POSITION); // REPLACE with initial position of this servo
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
