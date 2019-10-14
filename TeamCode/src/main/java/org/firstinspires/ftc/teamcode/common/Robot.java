@@ -17,29 +17,29 @@ public class Robot {
     double wheelDiameter = 4;
     double wheelInchesPerRotation = Math.PI * wheelDiameter;
     int motorTicksPerRotation = 1120;
-    double gearRatioMotorToWheel = 32.0/24.0;
+    double gearRatioMotorToWheel = 32.0 / 24.0;
     // double type for higher accuracy when multiplying by distanceInch in driveForward() method
     double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
 
-
-    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
-    // We will define some constants and conversions here
-    public static final float mmPerInch        = 25.4f;
-    public static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
-    // Constant for Stone Target
-    public static final float stoneZ = 2.00f * mmPerInch;
-
     // Arm - units: inches
     public final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
-    public final double ARM_ORIGINAL_LENGTH_IN_FRONT_OF_ROBOT = 4.0;
+    public final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
     public final double ARM_STARTING_LENGTH = 13.25;
-    public final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = -30.0;
+    public final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 30.0;
     public final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
 
     public final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
     public final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
-    public final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION/ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
+    public final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION / ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
 
+
+    // --- Vuforia --- //
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // We will define some constants and conversions here
+    public static final float mmPerInch = 25.4f;
+    public static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    // Constant for Stone Target
+    public static final float stoneZ = 2.00f * mmPerInch;
 
     // --- Constants --- //
 
@@ -121,10 +121,12 @@ public class Robot {
         this.rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//         Arm
+        //Arm
+
 
         angleMotor = hardwareMap.dcMotor.get("angleMotor");
         angleMotor.setTargetPosition(0);
+        angleMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -162,17 +164,17 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean drive(double power, double distanceInch) {
-        if(!encodersReseted) {
+        if (!encodersReseted) {
             this.resetChassisEncoders();
             encodersReseted = true;
         }
         // Getting the sign of the argument to determine which direction we're driving
-        int direction = (int)Math.signum(distanceInch);
+        int direction = (int) Math.signum(distanceInch);
 
-        this.leftFrontMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
-        this.rightFrontMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
-        this.leftBackMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
-        this.rightBackMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
+        this.leftFrontMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
+        this.rightFrontMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
+        this.leftBackMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
+        this.rightBackMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
 
         this.leftFrontMotor.setPower(direction * power);
         this.rightFrontMotor.setPower(direction * power);
@@ -195,17 +197,17 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean strafe(double power, double distanceInch) {
-        if(!encodersReseted) {
+        if (!encodersReseted) {
             this.resetChassisEncoders();
             encodersReseted = true;
         }
         // Getting the sign of the argument to determine which direction we're strafing
-        int direction = (int)Math.signum(distanceInch);
+        int direction = (int) Math.signum(distanceInch);
 
-        this.leftFrontMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
-        this.rightFrontMotor.setTargetPosition(-(int)(distanceInch * robotTicksPerInch));
-        this.leftBackMotor.setTargetPosition(-(int)(distanceInch * robotTicksPerInch));
-        this.rightBackMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
+        this.leftFrontMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
+        this.rightFrontMotor.setTargetPosition(-(int) (distanceInch * robotTicksPerInch));
+        this.leftBackMotor.setTargetPosition(-(int) (distanceInch * robotTicksPerInch));
+        this.rightBackMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
 
         this.leftFrontMotor.setPower(direction * power);
         this.rightFrontMotor.setPower(-direction * power);
@@ -232,7 +234,7 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean driveMecanum(double y, double x, double w, double distance) {
-        if(!encodersReseted) {
+        if (!encodersReseted) {
             this.resetChassisEncoders();
             encodersReseted = true;
         }
@@ -240,12 +242,12 @@ public class Robot {
         y = -y;
         x = -x;
 
-        this.leftFrontMotor.setPower(y+x-w);
-        this.rightFrontMotor.setPower(y-x+w);
-        this.leftBackMotor.setPower(y-x-w);
-        this.rightBackMotor.setPower(y+x+w);
+        this.leftFrontMotor.setPower(y + x - w);
+        this.rightFrontMotor.setPower(y - x + w);
+        this.leftBackMotor.setPower(y - x - w);
+        this.rightBackMotor.setPower(y + x + w);
 
-        int targetPosition = -(int)(robotTicksPerInch * distance);
+        int targetPosition = -(int) (robotTicksPerInch * distance);
 
         this.leftFrontMotor.setTargetPosition(targetPosition);
         this.rightFrontMotor.setTargetPosition(targetPosition);
@@ -284,7 +286,7 @@ public class Robot {
     }
 
     public void resetChassisEncoders() {
-        if(this.leftFrontMotor.getMode() != DcMotor.RunMode.STOP_AND_RESET_ENCODER) {
+        if (this.leftFrontMotor.getMode() != DcMotor.RunMode.STOP_AND_RESET_ENCODER) {
             setModeChassisMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
     }
@@ -293,7 +295,7 @@ public class Robot {
      * Drive method for when the distance to drive is unspecified
      * Before using this method, ensure the motors are in the run mode RUN_USING_ENCODER
      */
-    public void drivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower){
+    public void drivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower) {
         this.leftFrontMotor.setPower(leftFrontPower);
         this.rightFrontMotor.setPower(rightFrontPower);
         this.leftBackMotor.setPower(leftBackPower);
@@ -301,6 +303,7 @@ public class Robot {
     }
 
     /*
+<<<<<<< HEAD
      * Method for moving a motor so that its attachment moves a given distance
      * @param motor: the motor for the attachment
      * @param externalGearInchesPerRotation: distance attachment moves per rotation of the gears/sprocket connected to the motor
@@ -308,22 +311,26 @@ public class Robot {
      * @return whether the attachment has been move the given distance
      */
     public boolean moveMotorToDistance(DcMotor motor, double motorTicksPerRotation, double externalGearInchesPerRotation, double power, int distanceIN) {
-        motor.setTargetPosition((int)((motorTicksPerRotation * distanceIN) / externalGearInchesPerRotation));
+        motor.setTargetPosition((int) ((motorTicksPerRotation * distanceIN) / externalGearInchesPerRotation));
         motor.setPower(power);
         return !motor.isBusy();
     }
-    public boolean moveArm(double angle, double extensionLength){
-        int angleMotorPosition = (int)(ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
+
+    public boolean moveArm(double angle, double extensionLength) {
+        int angleMotorPosition = (int) (ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
         if (angleMotorPosition > ANGLE_MOTOR_UP_LIMIT) angleMotorPosition = ANGLE_MOTOR_UP_LIMIT;
-        if (angleMotorPosition < ANGLE_MOTOR_DOWN_LIMIT) angleMotorPosition = ANGLE_MOTOR_DOWN_LIMIT;
+        if (angleMotorPosition < ANGLE_MOTOR_DOWN_LIMIT)
+            angleMotorPosition = ANGLE_MOTOR_DOWN_LIMIT;
         this.angleMotor.setTargetPosition(angleMotorPosition);
         this.angleMotor.setPower(1.0);
 
-        int extensionMotorPosition = (int)((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - ARM_STARTING_LENGTH)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
-        if (extensionMotorPosition > EXTENSION_MOTOR_EXTENDED_LIMIT) extensionMotorPosition = EXTENSION_MOTOR_EXTENDED_LIMIT;
-        if (extensionMotorPosition < EXTENSION_MOTOR_RETRACTED_LIMIT) extensionMotorPosition = EXTENSION_MOTOR_RETRACTED_LIMIT;
+        int extensionMotorPosition = (int) ((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - ARM_STARTING_LENGTH)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
+        if (extensionMotorPosition > EXTENSION_MOTOR_EXTENDED_LIMIT)
+            extensionMotorPosition = EXTENSION_MOTOR_EXTENDED_LIMIT;
+        if (extensionMotorPosition < EXTENSION_MOTOR_RETRACTED_LIMIT)
+            extensionMotorPosition = EXTENSION_MOTOR_RETRACTED_LIMIT;
 
-        int extensionPositionOffset = (int)((double)angleMotorPosition * EXTENSION_MOTOR_ANGLE_FACTOR);
+        int extensionPositionOffset = (int) ((double) angleMotorPosition * EXTENSION_MOTOR_ANGLE_FACTOR);
 
         this.extensionMotor.setTargetPosition(extensionMotorPosition + extensionPositionOffset);
         this.extensionMotor.setPower(1.0);
