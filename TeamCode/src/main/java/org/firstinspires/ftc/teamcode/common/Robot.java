@@ -91,6 +91,8 @@ public class Robot {
     public DistanceSensor sideDistanceSensor;
     public DistanceSensor foundationDistanceSensor;
 
+    // LED Light Strip
+    public DcMotor light;
 
     // --- Robot init() methods --- //
     // The init() methods here have a hardwareMap parameter. When using them, just type "hardwareMap" as the argument.
@@ -156,6 +158,8 @@ public class Robot {
 //        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
 //        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
 
+        // Light
+        light = hardwareMap.dcMotor.get("light");
     }
 
 
