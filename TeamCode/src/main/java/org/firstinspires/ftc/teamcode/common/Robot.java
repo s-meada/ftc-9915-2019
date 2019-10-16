@@ -53,6 +53,9 @@ public class Robot {
     public static final double GRABBER_SERVO_OPEN_POSITION = 0.3;
     public static final double GRABBER_SERVO_CLOSE_POSITION = 0.9;
 
+    public static final double GRABBER_SERVO_TWO_OPEN_POSITION = 0.75;
+    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.5;
+
     public static final double ROTATION_SERVO_START_POSITION = 0.47;
 
     // Foundation
@@ -87,6 +90,7 @@ public class Robot {
     public DistanceSensor sideDistanceSensor;
     //  public DistanceSensor foundationDistanceSensor;
 
+    public DcMotor light;
 
     // --- Robot init() methods --- //
     // The init() methods here have a hardwareMap parameter. When using them, just type "hardwareMap" as the argument.
@@ -143,7 +147,7 @@ public class Robot {
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
-        grabberServoTwo.setPosition(0.75); // REPLACE with initial position of this servo
+        grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION); // REPLACE with initial position of this servo
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
         verticalServo.setPosition(0.5); // REPLACE with initial position of this servo
 
@@ -152,6 +156,8 @@ public class Robot {
 //        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
 //        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
 //        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
+
+        light = hardwareMap.dcMotor.get("light");
     }
 
 
