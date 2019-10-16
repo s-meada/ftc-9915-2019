@@ -23,7 +23,7 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
     double robotYDistanceFromSkystoneCenter;
     double distanceForArmToExtend;
     int armUpAngle = 20;
-    int armAngleOnSkystone = -30;
+    int armAngleOnSkystone = -40;
 
     static final int MOVE_ARM_UP                    = 1;
     static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
@@ -31,13 +31,12 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
     static final int MOVE_ARM_OUT                   = 4;
     static final int MOVE_SERVOS                    = 5;
     static final int MOVE_ARM_DOWN                  = 6;
-    static final int GRAB_SKYSTONE                  = 7;
-//    static final int RAISE_AND_RETRACT_ARM          = 8;
-//    static final int PUT_ARM_DOWN                   = 9;
+    static final int STRAFE_TO_SKYSTONE             = 7;
+    static final int GRAB_SKYSTONE                  = 8;
+    static final int PUT_ARM_DOWN                   = 9;
+    static final int STRAFE_AWAY_FROM_SKYSTONE      = 10;
 
-    static final int STATE_END                      = 8; //EDIT as more states are added
-
-    //TODO: Add other states mentioned in pseudo code
+    static final int STATE_END                      = 11;
 
     int state = 1;
 
@@ -57,25 +56,26 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
             switch(state) {
                 case MOVE_ARM_UP:
                     if(robot.moveArm(armUpAngle, 0)) {
+                        robot.light.setPower(1);
                         goToNextState();
                     }
                     break;
 
                 case FIND_CENTER_OF_SKYSTONE_VS_ARM:
                     // The getSkystoneCoordinates() method returns null if the skystone is not detected
-                    try {
-                        HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
+                    HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
+                    if(skyStoneCoordinates != null){
                         robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
                         robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
                         telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
                                 robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
+                        robot.light.setPower(0);
                         goToNextState();
                     }
-                    catch(NullPointerException e) {
+                    else {
                         telemetry.addLine("No Skystone Detected");
                     }
                     telemetry.update();
-
                     break;
 
                 case ADJUST_ROBOT_POSITION:
@@ -102,6 +102,12 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
 
                 case MOVE_ARM_DOWN:
                     if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
+                        goToNextState();
+                    }
+                    break;
+
+                case STRAFE_TO_SKYSTONE:
+                    if(robot.strafe(0.75, 5)) {
                         timer.reset();
                         goToNextState();
                     }
@@ -110,22 +116,22 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
                 case GRAB_SKYSTONE:
                     robot.grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
                     robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
-                    if(timer.milliseconds() > 250) {
+                    if(timer.milliseconds() > 700) {
                         goToNextState();
                     }
                     break;
-//
-//                case RAISE_AND_RETRACT_ARM:
-//                    if(robot.moveArm(armUpAngle, 0)) {
-//                        goToNextState();
-//                    }
-//                    break;
-//
-//                case PUT_ARM_DOWN:
-//                    if(robot.moveArm(10, 0)){
-//                        goToNextState();
-//                    }
-//                    break;
+
+                case PUT_ARM_DOWN:
+                    if(robot.moveArm(-25, 16)){
+                        goToNextState();
+                    }
+                    break;
+
+                case STRAFE_AWAY_FROM_SKYSTONE:
+                    if(robot.strafe(0.75, -10)) {
+                        goToNextState();
+                    }
+                    break;
 
                 default:
                     state = STATE_END;
