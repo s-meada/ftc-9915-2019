@@ -24,7 +24,7 @@ public class Robot {
     // Arm - units: inches
     public final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
     public final double ARM_STARTING_LENGTH = 13.25;
-    public final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 30.0;
+    public final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 3.0;
     public final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
 
     public final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
@@ -333,5 +333,15 @@ public class Robot {
         this.extensionMotor.setPower(1.0);
 
         return !this.angleMotor.isBusy() && !this.extensionMotor.isBusy();
+    }
+
+    /*
+     * Method for moving the arm to a given (x, y) point
+     * @param x: the x-component of the arm's new location
+     * @param y: the y-component of the arm's new location
+     * @return whether the arm has finished moving to the new (x, y) point
+     */
+    public boolean moveArmXY(double x, double y) {
+        return moveArm(Math.toDegrees(Math.atan2(y, x)), Math.hypot(x, y));
     }
 }
