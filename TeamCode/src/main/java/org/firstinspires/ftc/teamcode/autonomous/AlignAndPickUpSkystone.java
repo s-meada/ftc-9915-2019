@@ -22,7 +22,7 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
     double robotXDistanceFromSkystoneCenter;
     double robotYDistanceFromSkystoneCenter;
     double distanceForArmToExtend;
-    int armUpAngle = 20;
+    int armUpAngle = 45;
     int armAngleOnSkystone = -40;
 
     static final int MOVE_ARM_UP                    = 1;
