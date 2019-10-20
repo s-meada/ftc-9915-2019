@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 
 import static org.firstinspires.ftc.teamcode.autonomous.AlignAndPickUpSkystone.STATE_END;
 import static org.firstinspires.ftc.teamcode.common.Robot.ANGLE_MOTOR_DOWN_LIMIT;
-
 import static org.firstinspires.ftc.teamcode.common.Robot.ANGLE_MOTOR_UP_LIMIT;
 import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_EXTENDED_LIMIT;
 import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_RETRACTED_LIMIT;
