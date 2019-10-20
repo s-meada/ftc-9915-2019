@@ -10,18 +10,22 @@ The robot strafes to a position to the right until it is a bit to the left of th
 The robot runs to a position (backwards) until the color sensor senses red.
 The robot stops.*/
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.common.Robot;
 
 import static org.firstinspires.ftc.teamcode.autonomous.AlignAndPickUpSkystone.STATE_END;
 import static org.firstinspires.ftc.teamcode.common.Robot.ANGLE_MOTOR_DOWN_LIMIT;
-import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_EXTENDED_POSITION;
-import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_RETRACTED_POSITION;
-import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POSITION;
 
+import static org.firstinspires.ftc.teamcode.common.Robot.ANGLE_MOTOR_UP_LIMIT;
+import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_EXTENDED_LIMIT;
+import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_RETRACTED_LIMIT;
+
+import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POSITION;
+@Autonomous(name="Sonal", group ="Autonomous2019")
 public class SonalAutonomous2019 extends LinearOpMode {
-    
+
     Robot robot = new Robot();
     int state;
     //variables
@@ -34,16 +38,15 @@ public class SonalAutonomous2019 extends LinearOpMode {
 
 
     //cases
-    static final int ROBOT_RAISES_ARM = 1;
-    static final int ROBOT_EXTENDS_ARM = 2;
-    static final int ROBOT_RELEASES_SKYSTONE = 3;
+    static final int ROBOT_MOVES_ARM = 1;
+    static final int ROBOT_RELEASES_SKYSTONE = 2;
+    static final int ROBOT_RAISES_ARM = 3;
     static final int ROBOT_RETRACTS_ARM = 4;
-    static final int ROBOT_LOWERS_ARM = 5;
-    static final int ROBOT_MOVES_BEHIND_FOUNDATION = 6;
-    static final int ROBOT_STRAFES_CLOSER_TO_CENTER = 7;
-    static final int ROBOT_MOVES_BACKWARDS = 8;
-    static final int ROBOT_STOPS = 9;
-    static final int END_STATE = 10;
+    static final int ROBOT_MOVES_BEHIND_FOUNDATION = 5;
+    static final int ROBOT_STRAFES_CLOSER_TO_CENTER = 6;
+    static final int ROBOT_MOVES_BACKWARDS = 7;
+    static final int ROBOT_STOPS = 8;
+    static final int END_STATE = 9;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -57,14 +60,10 @@ public class SonalAutonomous2019 extends LinearOpMode {
             telemetry.addData("Current State", state);
             switch (state) {
 
-                case ROBOT_RAISES_ARM:
-                    robot.angleMotor.setTargetPosition(500);
-                    goToNextState();
-                    break;
-
-                case ROBOT_EXTENDS_ARM:
-                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_EXTENDED_POSITION);
-                    goToNextState();
+                case ROBOT_MOVES_ARM:
+                    if (robot.moveArm(0, 16)) {
+                        goToNextState();
+                    }
                     break;
 
                 case ROBOT_RELEASES_SKYSTONE:
@@ -72,15 +71,20 @@ public class SonalAutonomous2019 extends LinearOpMode {
                     goToNextState();
                     break;
 
-                case ROBOT_RETRACTS_ARM:
-                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_RETRACTED_POSITION);
-                    goToNextState();
+                case ROBOT_RAISES_ARM:
+                    if (robot.moveArm(5, 16)) {
+                        goToNextState();
+                    }
                     break;
 
-                case ROBOT_LOWERS_ARM:
-                    robot.angleMotor.setTargetPosition(ANGLE_MOTOR_DOWN_LIMIT);
-                    goToNextState();
+
+                case ROBOT_RETRACTS_ARM:
+                    if (robot.moveArm(5, 14)) {
+                        goToNextState();
+                    }
                     break;
+
+
 
                 case ROBOT_MOVES_BEHIND_FOUNDATION:
                     if (robot.drive(drivePower, behindFoundationPosition)) {
@@ -111,7 +115,7 @@ public class SonalAutonomous2019 extends LinearOpMode {
 
 
                 default:
-                    state = STATE_END;
+                    state = END_STATE;
                     break;
             }
 
