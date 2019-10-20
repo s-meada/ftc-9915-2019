@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 
 import static org.firstinspires.ftc.teamcode.autonomous.AlignAndPickUpSkystone.STATE_END;
 import static org.firstinspires.ftc.teamcode.common.Robot.ANGLE_MOTOR_DOWN_LIMIT;
-import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_EXTENDED_POSITION;
-import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_RETRACTED_POSITION;
+import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_EXTENDED_LIMIT;
+import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_RETRACTED_LIMIT;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POSITION;
 
 public class SonalAutonomous2019 extends LinearOpMode {
@@ -63,7 +63,7 @@ public class SonalAutonomous2019 extends LinearOpMode {
                     break;
 
                 case ROBOT_EXTENDS_ARM:
-                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_EXTENDED_POSITION);
+                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_EXTENDED_LIMIT);
                     goToNextState();
                     break;
 
@@ -73,7 +73,7 @@ public class SonalAutonomous2019 extends LinearOpMode {
                     break;
 
                 case ROBOT_RETRACTS_ARM:
-                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_RETRACTED_POSITION);
+                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_RETRACTED_LIMIT);
                     goToNextState();
                     break;
 
