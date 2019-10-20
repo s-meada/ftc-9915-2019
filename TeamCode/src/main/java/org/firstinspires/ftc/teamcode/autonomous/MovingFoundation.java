@@ -29,14 +29,10 @@ public class MovingFoundation extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.initForRunToPosition(hardwareMap);
-
+        boolean isBlue = false;
         waitForStart();
 
         while(opModeIsActive()) {
-
-            telemetry.addData("Current State: ", state);
-            telemetry.addData("Distance in inches: ", robot.sideDistanceSensor.getDistance(DistanceUnit.INCH));
-            telemetry.update();
 
             switch(state) {
                 case DRIVE_AWAY_FROM_BLOCK:
@@ -49,34 +45,59 @@ public class MovingFoundation extends LinearOpMode {
 
                 case DRIVE_TO_WALL_1:
 
-                    if (robot.drive(0.5,55)) {
-                        robot.stop();
-                        goToNextState();
+                    if (isBlue) {
+                        if (robot.drive(0.5, 55)) {
+                            robot.stop();
+                            goToNextState();
+                        }
+                    } else {
+                        if (robot.drive(-0.5, 55)) {
+                            robot.stop();
+                            goToNextState();
+                        }
                     }
                     break;
 
                 case DRIVE_TO_WALL_2:
 
                     robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.drivePower(0.5,0.5,0.5,0.5);
-                    if (robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
-                        robot.stop();
-                        goToNextState();
+                    if (isBlue) {
+                        robot.drivePower(0.5,0.5,0.5,0.5);
+                        if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
+                            robot.stop();
+                            goToNextState();
+                        }
+                    } else {
+                        robot.drivePower(-0.5,-0.5,-0.5,-0.5);
+                        if (robot.redDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
+                            robot.stop();
+                            goToNextState();
+                        }
                     }
                     break;
 
                 case DRIVE_TO_WALL_3:
                     robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
-                    if (robot.drive(0.5,12.0)) {
-                        robot.stop();
-                        goToNextState();
+                    if (isBlue) {
+                        if (robot.drive(0.5,12.0)) {
+                            robot.stop();
+                            goToNextState();
+                        }
+                    } else {
+                        if (robot.drive(-0.5, 12.0)) {
+                            robot.stop();
+                            goToNextState();
+                        }
                     }
                     break;
 
                 case DRIVE_TO_FOUNDATION:
-
-                    double distance = robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) - 1.0;
-
+                    double distance;
+                    if (isBlue) {
+                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) - 1.0;
+                    } else {
+                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) - 1.0;
+                    }
                     if (robot.strafe(0.75,distance)) {
                         robot.stop();
                         goToNextState();

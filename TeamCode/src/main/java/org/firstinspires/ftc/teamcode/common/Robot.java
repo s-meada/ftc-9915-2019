@@ -85,11 +85,9 @@ public class Robot {
 
     // Sensors
     public WebcamName webcam;
-    public DistanceSensor frontDistanceSensor;
-    //public DistanceSensor frontDistanceSensor;
 
-    public DistanceSensor sideDistanceSensor;
-    public DistanceSensor foundationDistanceSensor;
+    public DistanceSensor blueDistanceSensor;
+    public DistanceSensor redDistanceSensor;
 
     // LED Light Strip
     public DcMotor light;
@@ -154,9 +152,8 @@ public class Robot {
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
-//        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
-//        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
-//        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
+        blueDistanceSensor = hardwareMap.get(DistanceSensor.class, "blueDistanceSensor");
+        redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
 
         // Light
         light = hardwareMap.dcMotor.get("light");
