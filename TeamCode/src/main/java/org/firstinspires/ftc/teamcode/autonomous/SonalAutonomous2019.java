@@ -34,21 +34,22 @@ public class SonalAutonomous2019 extends LinearOpMode {
 
 
     //cases
-    static final int ROBOT_RAISES_ARM = 1;
-    static final int ROBOT_EXTENDS_ARM = 2;
-    static final int ROBOT_RELEASES_SKYSTONE = 3;
-    static final int ROBOT_RETRACTS_ARM = 4;
-    static final int ROBOT_LOWERS_ARM = 5;
-    static final int ROBOT_MOVES_BEHIND_FOUNDATION = 6;
-    static final int ROBOT_STRAFES_CLOSER_TO_CENTER = 7;
-    static final int ROBOT_MOVES_BACKWARDS = 8;
-    static final int ROBOT_STOPS = 9;
-    static final int END_STATE = 10;
+    static final int ROBOT_MOVES_ARM = 1;
+    static final int ROBOT_RELEASES_SKYSTONE = 2;
+    static final int ROBOT_RETRACTS_ARM = 3;
+    static final int ROBOT_LOWERS_ARM = 4;
+    static final int ROBOT_MOVES_BEHIND_FOUNDATION = 5;
+    static final int ROBOT_STRAFES_CLOSER_TO_CENTER = 6;
+    static final int ROBOT_MOVES_BACKWARDS = 7;
+    static final int ROBOT_STOPS = 8;
+    static final int END_STATE = 9;
 
     @Override
     public void runOpMode() throws InterruptedException {
         // init()
         robot.initForRunToPosition(hardwareMap);
+
+
 
         waitForStart(); // MUST add this yourself
 
@@ -57,13 +58,8 @@ public class SonalAutonomous2019 extends LinearOpMode {
             telemetry.addData("Current State", state);
             switch (state) {
 
-                case ROBOT_RAISES_ARM:
-                    robot.angleMotor.setTargetPosition(500);
-                    goToNextState();
-                    break;
-
-                case ROBOT_EXTENDS_ARM:
-                    robot.extensionMotor.setTargetPosition(EXTENSION_MOTOR_EXTENDED_LIMIT);
+                case ROBOT_MOVES_ARM:
+                    robot.moveArm(500, EXTENSION_MOTOR_EXTENDED_LIMIT);
                     goToNextState();
                     break;
 
