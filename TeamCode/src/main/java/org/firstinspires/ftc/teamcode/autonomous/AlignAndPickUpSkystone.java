@@ -24,6 +24,8 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
     double distanceForArmToExtend;
     int armUpAngle = 45;
     int armAngleOnSkystone = -40;
+    double distanceFromSkystoneOffset = 0;
+    int maxArmExtensionDistance = 25;
 
     static final int MOVE_ARM_UP                    = 1;
     static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
@@ -86,6 +88,10 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
 
                 case MOVE_ARM_OUT:
                     distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 7.75;
+                    if(distanceForArmToExtend > maxArmExtensionDistance) {
+                        distanceFromSkystoneOffset = distanceForArmToExtend - maxArmExtensionDistance;
+                    }
+
                     telemetry.addData("Distance from skystone", distanceForArmToExtend);
                     telemetry.update();
                     if(robot.moveArm(armUpAngle, distanceForArmToExtend)) {
@@ -122,7 +128,7 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
                     break;
 
                 case PUT_ARM_DOWN:
-                    if(robot.moveArm(-25, 16)){
+                    if(robot.moveArm(5, 16)){
                         goToNextState();
                     }
                     break;
@@ -142,12 +148,12 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
         }
     }
 
-    // Increment the state variable to go to the next state
+    // Increment the subState variable to go to the next subState
     public void goToNextState() {
         state++;
     }
 
-    // Go to a specific state
+    // Go to a specific subState
     public void goToState(int newState) {
         state = newState;
     }

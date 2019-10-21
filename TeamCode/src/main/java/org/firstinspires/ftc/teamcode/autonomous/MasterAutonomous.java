@@ -37,8 +37,7 @@ public class MasterAutonomous extends LinearOpMode {
     // Capital letters and underscores for constants
     static final int STRAFE_TO_VIEWING_POSITION = 1;
     static final int DETECT_SKYSTONE = 2;
-    static final int STRAFE_TO_SKYSTONE = 3;
-    static final int STATE_END = 4;
+    static final int STATE_END = 3;
 
     int skyStonePosition = 1;
     double strafePower = 0.5;
@@ -57,8 +56,8 @@ public class MasterAutonomous extends LinearOpMode {
     double distanceForArmToExtend;
     int armUpAngle = 45;
     int armAngleOnSkystone = -40;
-    int distanceFromSkystoneOffset = 0;
-    int maxArmExtensionSDistance;
+    double distanceFromSkystoneOffset = 0;
+    int maxArmExtensionDistance = 25;
 
     static final int MOVE_ARM_UP                    = 1;
     static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
@@ -94,14 +93,14 @@ public class MasterAutonomous extends LinearOpMode {
         robot.initForRunToPosition(hardwareMap);
         SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap,robot);
 
-        vision.targetsSkyStone.activate();
-
         waitForStart(); // MUST add this yourself
 
         vision.targetsSkyStone.activate();
 
         while(opModeIsActive()) {  // MUST add this yourself
-           switch (masterState) {
+           telemetry.addData("Master State", masterState);
+           telemetry.update();
+            switch (masterState) {
                case STRAFE_TO_SKYSTONE_V2:
                    if(StrafeTowardsDetectedSkystoneV2(vision)) {
                        goToNextMasterState();
@@ -172,11 +171,12 @@ public class MasterAutonomous extends LinearOpMode {
 
 
             case DETECT_SKYSTONE:
-                HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
+                HashMap <String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
                 if(skyStoneCoordinates != null){
                     skyStoneCoordinateX = skyStoneCoordinates.get("X");
                     skyStoneCoordinateY = skyStoneCoordinates.get("Y");
                     telemetry.addData("Skystone Coordinates", "(" + skyStoneCoordinateX + "," + skyStoneCoordinateY+")");
+                    goToNextSubState();
                 }
 
                 else{
@@ -184,12 +184,6 @@ public class MasterAutonomous extends LinearOpMode {
                 }
 
                 telemetry.update();
-                break;
-
-            case STRAFE_TO_SKYSTONE:
-                if(robot.drive(0.75, -skyStoneCoordinateY + 7.75)){
-                    goToNextSubState();
-                }
                 break;
 
             default:
@@ -232,15 +226,16 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ADJUST_ROBOT_POSITION:
+                // TODO: This state diagonal-strafes the robot back to the wall
                 if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter - 1.0)) {
-                    goToNextSubState();
+                    goToSubState(STATE_END_2);
                 }
                 break;
 
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 7.75;
-                if(distanceForArmToExtend > maxArmExtensionSDistance) {
-//                        distanceFromSkystoneOffset = distanceForArmToExtend - maxArmExtensionSDistance;
+                if(distanceForArmToExtend > maxArmExtensionDistance) {
+                    distanceFromSkystoneOffset = distanceForArmToExtend - maxArmExtensionDistance;
                 }
 
                 telemetry.addData("Distance from skystone", distanceForArmToExtend);
@@ -279,7 +274,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case PUT_ARM_DOWN:
-                if(robot.moveArm(-25, 16)){
+                if(robot.moveArm(5, 16)){
                     goToNextSubState();
                 }
                 break;
@@ -292,7 +287,6 @@ public class MasterAutonomous extends LinearOpMode {
 
             default:
                 subState = STATE_END_2;
-                isComplete = true;
                 telemetry.update();
                 break;
         }
