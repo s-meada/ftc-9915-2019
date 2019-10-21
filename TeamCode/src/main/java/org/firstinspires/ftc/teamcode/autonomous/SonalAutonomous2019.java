@@ -22,17 +22,21 @@ import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_EXTEND
 import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_RETRACTED_LIMIT;
 
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POSITION;
+import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_OPEN_POSITION;
+
 @Autonomous(name="Sonal", group ="Autonomous2019")
 public class SonalAutonomous2019 extends LinearOpMode {
 
     Robot robot = new Robot();
-    int state;
+    int state = 1;
     //variables
     double drivePower = -0.5;
     double strafePower = -0.75;
     double behindFoundationPosition = 32;
-    double towardsCenterPosition = 12;
+    double towardsCenterPosition = 18;
     double towardsRedLinePosition = 25;
+    boolean blueAlliance = true;
+
 
 
 
@@ -42,21 +46,24 @@ public class SonalAutonomous2019 extends LinearOpMode {
     static final int ROBOT_RAISES_ARM = 3;
     static final int ROBOT_RETRACTS_ARM = 4;
     static final int ROBOT_MOVES_BEHIND_FOUNDATION = 5;
-    static final int ROBOT_STRAFES_CLOSER_TO_CENTER = 6;
-    static final int ROBOT_MOVES_BACKWARDS = 7;
-    static final int ROBOT_STOPS = 8;
-    static final int END_STATE = 9;
+    static final int ROBOT_LOWERS_ARM = 6;
+    static final int ROBOT_STRAFES_CLOSER_TO_CENTER = 7;
+    static final int ROBOT_MOVES_BACKWARDS = 8;
+    static final int ROBOT_STOPS = 9;
+    static final int END_STATE = 10;
 
     @Override
     public void runOpMode() throws InterruptedException {
         // init()
         robot.initForRunToPosition(hardwareMap);
+        robot.angleServo.setPosition(0.5);
 
         waitForStart(); // MUST add this yourself
 
         while (opModeIsActive()) {  // MUST add this yourself
             // loop()
             telemetry.addData("Current State", state);
+            telemetry.update();
             switch (state) {
 
                 case ROBOT_MOVES_ARM:
@@ -67,23 +74,22 @@ public class SonalAutonomous2019 extends LinearOpMode {
 
                 case ROBOT_RELEASES_SKYSTONE:
                     robot.grabberServo.setPosition(GRABBER_SERVO_OPEN_POSITION);
+                    robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_OPEN_POSITION);
                     goToNextState();
                     break;
 
                 case ROBOT_RAISES_ARM:
-                    if (robot.moveArm(5, 16)) {
+                    if (robot.moveArm(2, 16)) {
                         goToNextState();
                     }
                     break;
 
 
                 case ROBOT_RETRACTS_ARM:
-                    if (robot.moveArm(5, 14)) {
+                    if (robot.moveArm(2, 14)) {
                         goToNextState();
                     }
                     break;
-
-
 
                 case ROBOT_MOVES_BEHIND_FOUNDATION:
                     if (robot.drive(drivePower, behindFoundationPosition)) {
@@ -91,10 +97,23 @@ public class SonalAutonomous2019 extends LinearOpMode {
                     }
                     break;
 
+                case ROBOT_LOWERS_ARM:
+                    if (robot.moveArm(-10,14)) {
+                        goToNextState();
+                    }
+                    break;
+
 
                 case ROBOT_STRAFES_CLOSER_TO_CENTER:
-                    if (robot.strafe(strafePower, towardsCenterPosition)) {
-                       goToNextState();
+                    if (blueAlliance) {
+                        if (robot.strafe(strafePower, towardsCenterPosition)) {
+                            goToNextState();
+                        }
+                    }
+                    else if (!(blueAlliance)) {
+                        if (robot.strafe(-strafePower, towardsCenterPosition)) {
+                            goToNextState();
+                        }
                     }
 
                     break;
