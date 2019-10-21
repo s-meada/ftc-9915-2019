@@ -50,13 +50,13 @@ public class Robot {
     public static final int EXTENSION_MOTOR_RETRACTED_LIMIT = 0;
     public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1630;
 
-    public static final double GRABBER_SERVO_OPEN_POSITION = 0.3;
-    public static final double GRABBER_SERVO_CLOSE_POSITION = 0.9;
+    public static final double GRABBER_SERVO_OPEN_POSITION = 0.5;
+    public static final double GRABBER_SERVO_CLOSE_POSITION = 1;
 
     public static final double GRABBER_SERVO_TWO_OPEN_POSITION = 0.75;
-    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.5;
+    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.20;
 
-    public static final double ROTATION_SERVO_START_POSITION = 0.47;
+    public static final double ROTATION_SERVO_START_POSITION = 0.49;
 
     // Foundation
     public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
@@ -322,21 +322,18 @@ public class Robot {
         return !motor.isBusy();
     }
 
-    public boolean moveArm(double angle, double extensionLength) {
-        int angleMotorPosition = (int) (ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
+    public boolean moveArm(double angle, double extensionLength){
+        int angleMotorPosition = (int)(ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
         if (angleMotorPosition > ANGLE_MOTOR_UP_LIMIT) angleMotorPosition = ANGLE_MOTOR_UP_LIMIT;
-        if (angleMotorPosition < ANGLE_MOTOR_DOWN_LIMIT)
-            angleMotorPosition = ANGLE_MOTOR_DOWN_LIMIT;
+        if (angleMotorPosition < ANGLE_MOTOR_DOWN_LIMIT) angleMotorPosition = ANGLE_MOTOR_DOWN_LIMIT;
         this.angleMotor.setTargetPosition(angleMotorPosition);
         this.angleMotor.setPower(1.0);
 
-        int extensionMotorPosition = (int) ((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - ARM_STARTING_LENGTH)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
-        if (extensionMotorPosition > EXTENSION_MOTOR_EXTENDED_LIMIT)
-            extensionMotorPosition = EXTENSION_MOTOR_EXTENDED_LIMIT;
-        if (extensionMotorPosition < EXTENSION_MOTOR_RETRACTED_LIMIT)
-            extensionMotorPosition = EXTENSION_MOTOR_RETRACTED_LIMIT;
+        int extensionMotorPosition = (int)((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - ARM_STARTING_LENGTH)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
+        if (extensionMotorPosition > EXTENSION_MOTOR_EXTENDED_LIMIT) extensionMotorPosition = EXTENSION_MOTOR_EXTENDED_LIMIT;
+        if (extensionMotorPosition < EXTENSION_MOTOR_RETRACTED_LIMIT) extensionMotorPosition = EXTENSION_MOTOR_RETRACTED_LIMIT;
 
-        int extensionPositionOffset = (int) ((double) angleMotorPosition * EXTENSION_MOTOR_ANGLE_FACTOR);
+        int extensionPositionOffset = (int)((double)angleMotorPosition * EXTENSION_MOTOR_ANGLE_FACTOR);
 
         this.extensionMotor.setTargetPosition(extensionMotorPosition + extensionPositionOffset);
         this.extensionMotor.setPower(1.0);

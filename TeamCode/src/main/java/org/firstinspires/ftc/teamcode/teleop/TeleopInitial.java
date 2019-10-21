@@ -39,10 +39,10 @@ public class TeleopInitial extends OpMode {
     Servo foundationServo;
 
     String rotationDirection = "up";
-    double currentPositionAngle = -30;
+    double currentPositionAngle = -3;
     double currentPositionExtension = 13.25;
-    double verticalServoAngleFactor = 1.7 / ANGLE_MOTOR_COUNTS_PER_REV;
-    double extensionMotorAngleFactor =  EXTENSION_MOTOR_COUNTS_PER_REV / ANGLE_MOTOR_COUNTS_PER_REV;
+    double verticalServoAngleFactor = 1.7 ;
+//    double extensionMotorAngleFactor =  EXTENSION_MOTOR_COUNTS_PER_REV / ANGLE_MOTOR_COUNTS_PER_REV;
     //boolean stoneTucked = false;
 
     @Override
@@ -115,18 +115,18 @@ public class TeleopInitial extends OpMode {
         if (gamepad1.right_bumper) robot.light.setPower(1.0);
         if (gamepad1.left_bumper) robot.light.setPower(0.0);
 
-        double positionChangeAngle = -gamepad2.right_stick_y * 0.3;
+        double positionChangeAngle = -gamepad2.right_stick_y * 0.5;
         currentPositionAngle += positionChangeAngle;
         if (currentPositionAngle > 70.3125) currentPositionAngle = 70.3125;
-        if (currentPositionAngle < -30) currentPositionAngle = -30;
+        if (currentPositionAngle < -3) currentPositionAngle = -3;
 
-        double extensionPositionOffset = currentPositionAngle * extensionMotorAngleFactor * 0.2;
+//        double extensionPositionOffset = (currentPositionAngle * extensionMotorAngleFactor * 0.2);
         double positionChangeExtension = ((gamepad2.right_trigger - gamepad2.left_trigger) * 0.2);
         currentPositionExtension += positionChangeExtension;
-        if (currentPositionExtension + extensionPositionOffset > 25) currentPositionExtension = 25.0 - extensionPositionOffset;
-        if (currentPositionExtension + extensionPositionOffset < 0) currentPositionExtension = 0.0;
+        if (currentPositionExtension > 25) currentPositionExtension = 25.0;
+        if (currentPositionExtension < 13.25) currentPositionExtension = 13.25;
 
-        robot.moveArm(currentPositionAngle, currentPositionExtension + extensionPositionOffset);
+        robot.moveArm(currentPositionAngle, currentPositionExtension);
 //        if(currentPositionAngle   > 1400) currentPositionAngle = 1400;
 //        if(currentPositionAngle < 0) currentPositionAngle = 0;
         telemetry.addData("Angle", currentPositionAngle);
@@ -134,12 +134,12 @@ public class TeleopInitial extends OpMode {
 
 //        angleMotor.setTargetPosition(currentPositionAngle);
 
-        double verticalAngleOffset = (robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (currentPositionAngle + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360) * verticalServoAngleFactor;
-        double verticalServoPosition = 0.4 + verticalAngleOffset;
+        double verticalAngleOffset = ((currentPositionAngle + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360) * verticalServoAngleFactor;
+        double verticalServoPosition = 0.5 + verticalAngleOffset;
         if (timer.seconds() > 0.5 && timer.seconds() < 1) {
-            if (rotationDirection == "up") robot.rotationServo.setPosition(0.47);
-            if (rotationDirection == "left") robot.rotationServo.setPosition(0.82);
-            if (rotationDirection == "right") robot.rotationServo.setPosition(0.11);
+            if (rotationDirection == "up") robot.rotationServo.setPosition(0.49);
+            if (rotationDirection == "left") robot.rotationServo.setPosition(0.84);
+            if (rotationDirection == "right") robot.rotationServo.setPosition(0.13);
         }
         if (timer.seconds() > 1) {
             robot.verticalServo.setPosition(verticalServoPosition);
@@ -166,12 +166,19 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad2.a) {
             robot.grabberServo.setPosition(1.0);
-            robot.grabberServoTwo.setPosition(0.25);
+            robot.grabberServoTwo.setPosition(0.20);
         }
         if (gamepad2.b) {
             robot.grabberServo.setPosition(0.5);
             robot.grabberServoTwo.setPosition(0.75);
         }
+        if (gamepad2.dpad_down) {
+            robot.grabberServo.setPosition(0.9);
+            robot.grabberServoTwo.setPosition(0.3);
+        }
+
+        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
+        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
 
         if(gamepad2.dpad_right) {
             robot.verticalServo.setPosition(0.5);
