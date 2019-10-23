@@ -18,82 +18,19 @@ public class TeleopInitial extends OpMode {
     Robot robot = new Robot();
 
     ElapsedTime timer = new ElapsedTime();
-    public static final double ANGLE_MOTOR_COUNTS_PER_REV = 7168.0;
-    public static final double EXTENSION_MOTOR_COUNTS_PER_REV = 537.6;
 
     double speedMulitplier = 1.0;
 
-    //declare motors
-    DcMotor rightFront;
-    DcMotor leftFront;
-    DcMotor rightBack;
-    DcMotor leftBack;
-    DcMotor angleMotor;
-    DcMotor extensionMotor;
-
-    //declare servos
-    Servo rotationServo;
-    Servo grabberServo;
-    Servo grabberServoTwo;
-    Servo verticalServo;
-    Servo foundationServo;
-
     String rotationDirection = "up";
+    double x = 13.25;
+    double y = -1;
     double currentPositionAngle = -3;
     double currentPositionExtension = 13.25;
     double verticalServoAngleFactor = 1.7 ;
-//    double extensionMotorAngleFactor =  EXTENSION_MOTOR_COUNTS_PER_REV / ANGLE_MOTOR_COUNTS_PER_REV;
-    //boolean stoneTucked = false;
 
     @Override
     public void init() {
-
         robot.initRegular(hardwareMap);
-        //init driving motors
-
-//        rightFront = hardwareMap.dcMotor.get("RightFront");
-//        leftFront = hardwareMap.dcMotor.get("LeftFront");
-//        rightBack = hardwareMap.dcMotor.get("RightBack");
-//        leftBack = hardwareMap.dcMotor.get("LeftBack");
-//
-//
-//        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-//        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-//
-//        //init motors
-//
-//        angleMotor = hardwareMap.dcMotor.get("angleMotor");
-//        angleMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-//        angleMotor.setTargetPosition(0);
-//        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        angleMotor.setPower(1);
-//
-//
-//        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
-//        extensionMotor.setTargetPosition(0);
-//        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        extensionMotor.setPower(1);
-//
-//
-//
-//        //init servos
-//        rotationServo = hardwareMap.servo.get("rotationServo");
-//        grabberServo = hardwareMap.servo.get("grabberServo");
-//        grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
-//        verticalServo = hardwareMap.servo.get("verticalServo");
-//        foundationServo = hardwareMap.servo.get("foundationServo");
-//
-//
-//        rotationServo.setPosition(0.47);
-//        grabberServo.setPosition(0.5);
-//        grabberServoTwo.setPosition(0.75);
-//        verticalServo.setPosition(0.5);
-//        foundationServo.setPosition(0.5);
-
-        //init driving motor
-
     }
 
     @Override
@@ -102,7 +39,7 @@ public class TeleopInitial extends OpMode {
         //mecanum drive
         if (gamepad1.a) speedMulitplier = 0.5;
         if (gamepad1.b) speedMulitplier = 1.0;
-        double speed = -gamepad1.left_stick_y * speedMulitplier;
+        double speed = (-gamepad1.left_stick_y * speedMulitplier) + (-gamepad2.left_stick_y * 0.3);
         double strafe = gamepad1.left_stick_x * speedMulitplier;
         double turn = -gamepad1.right_stick_x * speedMulitplier;
 
@@ -115,26 +52,34 @@ public class TeleopInitial extends OpMode {
         if (gamepad1.right_bumper) robot.light.setPower(1.0);
         if (gamepad1.left_bumper) robot.light.setPower(0.0);
 
-        double positionChangeAngle = -gamepad2.right_stick_y * 0.5;
-        currentPositionAngle += positionChangeAngle;
-        if (currentPositionAngle > 70.3125) currentPositionAngle = 70.3125;
-        if (currentPositionAngle < -3) currentPositionAngle = -3;
+//        double positionChangeAngle = -gamepad2.right_stick_y * 0.5;
+//        currentPositionAngle += positionChangeAngle;
+//        if (currentPositionAngle > 70.3125) currentPositionAngle = 70.3125;
+//        if (currentPositionAngle < -3) currentPositionAngle = -3;
+//
+////        double extensionPositionOffset = (currentPositionAngle * extensionMotorAngleFactor * 0.2);
+//        double positionChangeExtension = ((gamepad2.right_trigger - gamepad2.left_trigger) * 0.2);
+//        currentPositionExtension += positionChangeExtension;
+//        if (currentPositionExtension > 25) currentPositionExtension = 25.0;
+//        if (currentPositionExtension < 13.25) currentPositionExtension = 13.25;
+//
+//        robot.moveArm(currentPositionAngle, currentPositionExtension);
+//        telemetry.addData("Angle", currentPositionAngle);
+//        telemetry.addData("Extension", currentPositionExtension);
 
-//        double extensionPositionOffset = (currentPositionAngle * extensionMotorAngleFactor * 0.2);
-        double positionChangeExtension = ((gamepad2.right_trigger - gamepad2.left_trigger) * 0.2);
-        currentPositionExtension += positionChangeExtension;
-        if (currentPositionExtension > 25) currentPositionExtension = 25.0;
-        if (currentPositionExtension < 13.25) currentPositionExtension = 13.25;
+        double xChange = gamepad2.right_stick_x * 0.2;
+        double yChange = -gamepad2.right_stick_y * 0.2;
+        x += xChange;
+        y += yChange;
+        if (x > 27) x = 27;
+        if (x < 13.25) x = 13.25;
+        if (y > 23) y = 23;
+        if (y < -4) y = -4;
+        robot.moveArmXY(x,y);
+        telemetry.addData("X: ", x);
+        telemetry.addData("Y: ", y);
 
-        robot.moveArm(currentPositionAngle, currentPositionExtension);
-//        if(currentPositionAngle   > 1400) currentPositionAngle = 1400;
-//        if(currentPositionAngle < 0) currentPositionAngle = 0;
-        telemetry.addData("Angle", currentPositionAngle);
-        telemetry.addData("Extension", currentPositionExtension);
-
-//        angleMotor.setTargetPosition(currentPositionAngle);
-
-        double verticalAngleOffset = ((currentPositionAngle + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360) * verticalServoAngleFactor;
+        double verticalAngleOffset = (((Math.toDegrees(Math.atan2(y, x)) + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG)) / 360) * verticalServoAngleFactor;
         double verticalServoPosition = 0.5 + verticalAngleOffset;
         if (timer.seconds() > 0.5 && timer.seconds() < 1) {
             if (rotationDirection == "up") robot.rotationServo.setPosition(0.49);
@@ -148,17 +93,6 @@ public class TeleopInitial extends OpMode {
         double currentPositionRotation = robot.rotationServo.getPosition();
         int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
         robot.rotationServo.setPosition(currentPositionRotation + positionChangeRotation);
-
-//        int extensionPositionOffset = (int)((double)currentPositionAngle*extensionMotorAngleFactor);
-//
-//        int positionChangeExtension = (int)((gamepad2.right_trigger - gamepad2.left_trigger) * 10);
-//        currentPositionExtension += positionChangeExtension;
-//        telemetry.addData("Extension ",currentPositionExtension);
-//
-//        if(currentPositionExtension > 1630 ) currentPositionExtension = 1630;
-//        if(currentPositionExtension < 0) currentPositionExtension = 0;
-//
-//        extensionMotor.setTargetPosition(currentPositionExtension + extensionPositionOffset);
 
         if (gamepad1.x) robot.foundationServo.setPosition(0.83);
 

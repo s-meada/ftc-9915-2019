@@ -17,46 +17,46 @@ public class Robot {
     double wheelDiameter = 4;
     double wheelInchesPerRotation = Math.PI * wheelDiameter;
     int motorTicksPerRotation = 1120;
-    double gearRatioMotorToWheel = 32.0 / 24.0;
+    double gearRatioMotorToWheel = 32.0/24.0;
     // double type for higher accuracy when multiplying by distanceInch in driveForward() method
     double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
 
     // Arm - units: inches
-    public final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
-    public final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
-    public final double ARM_STARTING_LENGTH = 13.25;
-    public final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 3.0;
-    public final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
-
-    public final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
-    public final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
-    public final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION / ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
-
+    public static final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
+    public static final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
+    public static final double ARM_STARTING_LENGTH = 13.25;
+    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 3.0;
+    public static final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
+    public static final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
+    public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
+    public static final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION / ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
 
     // --- Vuforia --- //
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    public static final float mmPerInch = 25.4f;
-    public static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    public static final float mmPerInch        = 25.4f;
+    public static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
     // Constant for Stone Target
     public static final float stoneZ = 2.00f * mmPerInch;
+
 
     // --- Constants --- //
 
     // Arm
-    public static final int ANGLE_MOTOR_UP_LIMIT = 1400;
+    public static final int ANGLE_MOTOR_UP_LIMIT = 1500;
     public static final int ANGLE_MOTOR_DOWN_LIMIT = 0;
 
     public static final int EXTENSION_MOTOR_RETRACTED_LIMIT = 0;
-    public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1630;
+    public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1750;
 
     public static final double GRABBER_SERVO_OPEN_POSITION = 0.5;
-    public static final double GRABBER_SERVO_CLOSE_POSITION = 1;
-
+    public static final double GRABBER_SERVO_CLOSE_POSITION = 1.0;
     public static final double GRABBER_SERVO_TWO_OPEN_POSITION = 0.75;
-    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.20;
+    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.25;
 
-    public static final double ROTATION_SERVO_START_POSITION = 0.49;
+    public static final double ROTATION_SERVO_START_POSITION = 0.47;
+
+    public static final double ANGLE_SERVO_INIT_POSITION = 0.48;
 
     // Foundation
     public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
@@ -84,12 +84,11 @@ public class Robot {
 
     // Sensors
     public WebcamName webcam;
-    public DistanceSensor frontDistanceSensor;
-    //public DistanceSensor frontDistanceSensor;
 
-    public DistanceSensor sideDistanceSensor;
-    //  public DistanceSensor foundationDistanceSensor;
+    public DistanceSensor blueDistanceSensor;
+    public DistanceSensor redDistanceSensor;
 
+    // LED Light Strip
     public DcMotor light;
 
     // --- Robot init() methods --- //
@@ -125,8 +124,7 @@ public class Robot {
         this.rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //Arm
-
+        // Arm
 
         angleMotor = hardwareMap.dcMotor.get("angleMotor");
         angleMotor.setTargetPosition(0);
@@ -147,16 +145,16 @@ public class Robot {
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
-        grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION); // REPLACE with initial position of this servo
+        grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
-        verticalServo.setPosition(0.5); // REPLACE with initial position of this servo
+        verticalServo.setPosition(ANGLE_SERVO_INIT_POSITION); // REPLACE with initial position of this servo
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
-//        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
-//        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
-//        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
+        blueDistanceSensor = hardwareMap.get(DistanceSensor.class, "blueDistanceSensor");
+        redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
 
+        // Light
         light = hardwareMap.dcMotor.get("light");
     }
 
@@ -170,17 +168,17 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean drive(double power, double distanceInch) {
-        if (!encodersReseted) {
+        if(!encodersReseted) {
             this.resetChassisEncoders();
             encodersReseted = true;
         }
         // Getting the sign of the argument to determine which direction we're driving
-        int direction = (int) Math.signum(distanceInch);
+        int direction = (int)Math.signum(distanceInch);
 
-        this.leftFrontMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
-        this.rightFrontMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
-        this.leftBackMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
-        this.rightBackMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
+        this.leftFrontMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
+        this.rightFrontMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
+        this.leftBackMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
+        this.rightBackMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
 
         this.leftFrontMotor.setPower(direction * power);
         this.rightFrontMotor.setPower(direction * power);
@@ -203,17 +201,17 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean strafe(double power, double distanceInch) {
-        if (!encodersReseted) {
+        if(!encodersReseted) {
             this.resetChassisEncoders();
             encodersReseted = true;
         }
         // Getting the sign of the argument to determine which direction we're strafing
-        int direction = (int) Math.signum(distanceInch);
+        int direction = (int)Math.signum(distanceInch);
 
-        this.leftFrontMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
-        this.rightFrontMotor.setTargetPosition(-(int) (distanceInch * robotTicksPerInch));
-        this.leftBackMotor.setTargetPosition(-(int) (distanceInch * robotTicksPerInch));
-        this.rightBackMotor.setTargetPosition((int) (distanceInch * robotTicksPerInch));
+        this.leftFrontMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
+        this.rightFrontMotor.setTargetPosition(-(int)(distanceInch * robotTicksPerInch));
+        this.leftBackMotor.setTargetPosition(-(int)(distanceInch * robotTicksPerInch));
+        this.rightBackMotor.setTargetPosition((int)(distanceInch * robotTicksPerInch));
 
         this.leftFrontMotor.setPower(direction * power);
         this.rightFrontMotor.setPower(-direction * power);
@@ -240,7 +238,7 @@ public class Robot {
      * @return whether the robot has reached that distance
      */
     public boolean driveMecanum(double y, double x, double w, double distance) {
-        if (!encodersReseted) {
+        if(!encodersReseted) {
             this.resetChassisEncoders();
             encodersReseted = true;
         }
@@ -248,12 +246,12 @@ public class Robot {
         y = -y;
         x = -x;
 
-        this.leftFrontMotor.setPower(y + x - w);
-        this.rightFrontMotor.setPower(y - x + w);
-        this.leftBackMotor.setPower(y - x - w);
-        this.rightBackMotor.setPower(y + x + w);
+        this.leftFrontMotor.setPower(y+x-w);
+        this.rightFrontMotor.setPower(y-x+w);
+        this.leftBackMotor.setPower(y-x-w);
+        this.rightBackMotor.setPower(y+x+w);
 
-        int targetPosition = -(int) (robotTicksPerInch * distance);
+        int targetPosition = -(int)(robotTicksPerInch * distance);
 
         this.leftFrontMotor.setTargetPosition(targetPosition);
         this.rightFrontMotor.setTargetPosition(targetPosition);
@@ -292,7 +290,7 @@ public class Robot {
     }
 
     public void resetChassisEncoders() {
-        if (this.leftFrontMotor.getMode() != DcMotor.RunMode.STOP_AND_RESET_ENCODER) {
+        if(this.leftFrontMotor.getMode() != DcMotor.RunMode.STOP_AND_RESET_ENCODER) {
             setModeChassisMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
     }
@@ -301,7 +299,7 @@ public class Robot {
      * Drive method for when the distance to drive is unspecified
      * Before using this method, ensure the motors are in the run mode RUN_USING_ENCODER
      */
-    public void drivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower) {
+    public void drivePower(double leftFrontPower, double rightFrontPower, double leftBackPower, double rightBackPower){
         this.leftFrontMotor.setPower(leftFrontPower);
         this.rightFrontMotor.setPower(rightFrontPower);
         this.leftBackMotor.setPower(leftBackPower);
@@ -309,19 +307,11 @@ public class Robot {
     }
 
     /*
-<<<<<<< HEAD
-     * Method for moving a motor so that its attachment moves a given distance
-     * @param motor: the motor for the attachment
-     * @param externalGearInchesPerRotation: distance attachment moves per rotation of the gears/sprocket connected to the motor
-     * @param distanceIN: the distance for the attachment to move in inches
-     * @return whether the attachment has been move the given distance
+     * Method for moving the arm to a given angle and extension length
+     * @param angle: the angle for the arm to go to in degrees
+     * @param extensionLength: the length the arm should extend/retract to with respect to its starting length
+     * @return whether the arm has finished moving to the new angle and extension length
      */
-    public boolean moveMotorToDistance(DcMotor motor, double motorTicksPerRotation, double externalGearInchesPerRotation, double power, int distanceIN) {
-        motor.setTargetPosition((int) ((motorTicksPerRotation * distanceIN) / externalGearInchesPerRotation));
-        motor.setPower(power);
-        return !motor.isBusy();
-    }
-
     public boolean moveArm(double angle, double extensionLength){
         int angleMotorPosition = (int)(ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
         if (angleMotorPosition > ANGLE_MOTOR_UP_LIMIT) angleMotorPosition = ANGLE_MOTOR_UP_LIMIT;
@@ -339,5 +329,15 @@ public class Robot {
         this.extensionMotor.setPower(1.0);
 
         return !this.angleMotor.isBusy() && !this.extensionMotor.isBusy();
+    }
+
+    /*
+     * Method for moving the arm to a given (x, y) point
+     * @param x: the x-component of the arm's new location
+     * @param y: the y-component of the arm's new location
+     * @return whether the arm has finished moving to the new (x, y) point
+     */
+    public boolean moveArmXY(double x, double y) {
+        return moveArm(Math.toDegrees(Math.atan2(y, x)), Math.hypot(x, y));
     }
 }
