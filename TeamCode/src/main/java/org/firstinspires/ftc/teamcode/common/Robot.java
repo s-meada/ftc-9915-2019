@@ -21,7 +21,17 @@ public class Robot {
     // double type for higher accuracy when multiplying by distanceInch in driveForward() method
     double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
 
+    // Arm - units: inches
+    public static final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
+    public static final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
+    public static final double ARM_STARTING_LENGTH = 13.25;
+    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 3.0;
+    public static final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
+    public static final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
+    public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
+    public static final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION / ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
 
+    // --- Vuforia --- //
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     public static final float mmPerInch        = 25.4f;
@@ -29,24 +39,24 @@ public class Robot {
     // Constant for Stone Target
     public static final float stoneZ = 2.00f * mmPerInch;
 
-    // Arm - units: inches
-    public final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
-    public final double ARM_ORIGINAL_LENGTH_IN_FRONT_OF_ROBOT = 4.0;
-
 
     // --- Constants --- //
 
     // Arm
-    public static final int ANGLE_MOTOR_UP_LIMIT = 1300;
+    public static final int ANGLE_MOTOR_UP_LIMIT = 1400;
     public static final int ANGLE_MOTOR_DOWN_LIMIT = 0;
 
-    public static final int EXTENSION_MOTOR_RETRACTED_POSITION = 0;
-    public static final int EXTENSION_MOTOR_EXTENDED_POSITION = 1600;
+    public static final int EXTENSION_MOTOR_RETRACTED_LIMIT = 0;
+    public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1630;
 
-    public static final double GRABBER_SERVO_OPEN_POSITION = 0.3;
-    public static final double GRABBER_SERVO_CLOSE_POSITION = 0.9;
+    public static final double GRABBER_SERVO_OPEN_POSITION = 0.5;
+    public static final double GRABBER_SERVO_CLOSE_POSITION = 1.0;
+    public static final double GRABBER_SERVO_TWO_OPEN_POSITION = 0.75;
+    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.25;
 
-    public static final double ROTATION_SERVO_START_POSITION = 0.0;
+    public static final double ROTATION_SERVO_START_POSITION = 0.47;
+
+    public static final double ANGLE_SERVO_INIT_POSITION = 0.92;
 
     // Foundation
     public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
@@ -68,17 +78,18 @@ public class Robot {
     // Servos
     public Servo rotationServo;
     public Servo grabberServo;
+    public Servo grabberServoTwo;
     public Servo foundationServo;
     public Servo angleServo;
 
     // Sensors
     public WebcamName webcam;
-    public DistanceSensor frontDistanceSensor;
-    //public DistanceSensor frontDistanceSensor;
 
-    public DistanceSensor sideDistanceSensor;
-    //  public DistanceSensor foundationDistanceSensor;
+    public DistanceSensor blueDistanceSensor;
+    public DistanceSensor redDistanceSensor;
 
+    // LED Light Strip
+    public DcMotor light;
 
     // --- Robot init() methods --- //
     // The init() methods here have a hardwareMap parameter. When using them, just type "hardwareMap" as the argument.
@@ -115,55 +126,36 @@ public class Robot {
 
         // Arm
 
-//        angleMotor = hardwareMap.dcMotor.get("angleMotor");
-//        angleMotor.setTargetPosition(0);
-//        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
-//        extensionMotor.setTargetPosition(0);
-//        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        rotationServo = hardwareMap.servo.get("rotationServo");
-//        grabberServo = hardwareMap.servo.get("grabberServo");
-//        foundationServo = hardwareMap.servo.get("foundationServo");
-//        angleServo = hardwareMap.servo.get("angleServo");
-//
-//        rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
-//        grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
-//        foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
-//        angleServo.setPosition(0.0); // REPLACE with initial position of this servo
+        angleMotor = hardwareMap.dcMotor.get("angleMotor");
+        angleMotor.setTargetPosition(0);
+        angleMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        // Sensors
-        webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
-//        frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
-//        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
-//        foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
+        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
+        extensionMotor.setTargetPosition(0);
+        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //angleMotor = hardwareMap.dcMotor.get("angleMotor");
-        //angleMotor.setTargetPosition(0);
-        //angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
-        //extensionMotor.setTargetPosition(0);
-        //extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //rotationServo = hardwareMap.servo.get("rotationServo");
-        //grabberServo = hardwareMap.servo.get("grabberServo");
+        rotationServo = hardwareMap.servo.get("rotationServo");
+        grabberServo = hardwareMap.servo.get("grabberServo");
+        grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
         foundationServo = hardwareMap.servo.get("foundationServo");
+        angleServo = hardwareMap.servo.get("verticalServo");
 
-        //rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
-        //grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+        rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
+        grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+        grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
+        angleServo.setPosition(ANGLE_SERVO_INIT_POSITION); // REPLACE with initial position of this servo
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
-        //frontDistanceSensor = hardwareMap.get(DistanceSensor.class, "frontDistanceSensor");
-        sideDistanceSensor = hardwareMap.get(DistanceSensor.class,"sideDistanceSensor");
-        //foundationDistanceSensor = hardwareMap.get(DistanceSensor.class,"foundationDistanceSensor");
+        blueDistanceSensor = hardwareMap.get(DistanceSensor.class, "blueDistanceSensor");
+        redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
+
+        // Light
+        light = hardwareMap.dcMotor.get("light");
     }
 
 
@@ -315,10 +307,37 @@ public class Robot {
     }
 
     /*
-     * Method for moving a motor so that its attachment moves a given distance
+     * Method for moving the arm to a given angle and extension length
+     * @param angle: the angle for the arm to go to in degrees
+     * @param extensionLength: the length the arm should extend/retract to with respect to its starting length
+     * @return whether the arm has finished moving to the new angle and extension length
      */
-    public boolean moveMotorToDistance(DcMotor motor, double power, int distanceIN) {
-        // ADD CODE
-        return !motor.isBusy();
+    public boolean moveArm(double angle, double extensionLength){
+        int angleMotorPosition = (int)(ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
+        if (angleMotorPosition > ANGLE_MOTOR_UP_LIMIT) angleMotorPosition = ANGLE_MOTOR_UP_LIMIT;
+        if (angleMotorPosition < ANGLE_MOTOR_DOWN_LIMIT) angleMotorPosition = ANGLE_MOTOR_DOWN_LIMIT;
+        this.angleMotor.setTargetPosition(angleMotorPosition);
+        this.angleMotor.setPower(1.0);
+
+        int extensionMotorPosition = (int)((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - ARM_STARTING_LENGTH)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
+        if (extensionMotorPosition > EXTENSION_MOTOR_EXTENDED_LIMIT) extensionMotorPosition = EXTENSION_MOTOR_EXTENDED_LIMIT;
+        if (extensionMotorPosition < EXTENSION_MOTOR_RETRACTED_LIMIT) extensionMotorPosition = EXTENSION_MOTOR_RETRACTED_LIMIT;
+
+        int extensionPositionOffset = (int)((double)angleMotorPosition * EXTENSION_MOTOR_ANGLE_FACTOR);
+
+        this.extensionMotor.setTargetPosition(extensionMotorPosition + extensionPositionOffset);
+        this.extensionMotor.setPower(1.0);
+
+        return !this.angleMotor.isBusy() && !this.extensionMotor.isBusy();
+    }
+
+    /*
+     * Method for moving the arm to a given (x, y) point
+     * @param x: the x-component of the arm's new location
+     * @param y: the y-component of the arm's new location
+     * @return whether the arm has finished moving to the new (x, y) point
+     */
+    public boolean moveArmXY(double x, double y) {
+        return moveArm(Math.toDegrees(Math.atan2(y, x)), Math.hypot(x, y));
     }
 }

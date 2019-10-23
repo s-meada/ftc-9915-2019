@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.RobotParameters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
@@ -33,6 +35,10 @@ public class SkystoneVuforiaData {
     public VuforiaLocalizer.Parameters parameters = null;
     public VuforiaTrackables targetsSkyStone = null;
     public List<VuforiaTrackable> allTrackables = null;
+
+    // Class Members
+    private OpenGLMatrix lastLocation = null;
+    private boolean targetVisible = false;
 
     public float phoneXRotate    = 0;
     public float phoneYRotate    = 0;
@@ -132,6 +138,41 @@ public class SkystoneVuforiaData {
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
+    }
+
+    // Detecting skystones
+    // If a skystone is detected, this method will return a HashMap with the (x, y) coordinates of the skystone
+    // If there are no skystones detected, this method will return null
+    public HashMap<String, Float> getSkystoneCoordinates() {
+        // check all the trackable targets to see which one (if any) is visible.
+        targetVisible = false;
+        for (VuforiaTrackable trackable : this.allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                targetVisible = true;
+
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+                break;
+            }
+        }
+
+        // Provide feedback as to where the robot is located (if we know).
+        if (targetVisible) {
+            HashMap<String, Float> skystoneXYcoordinates = new HashMap<>();
+            // express position (translation) of robot in inches.
+            VectorF translation = lastLocation.getTranslation();
+            skystoneXYcoordinates.put("X", translation.get(0)/mmPerInch); // x-coordinate of skystone
+            skystoneXYcoordinates.put("Y", translation.get(1)/mmPerInch); // y-coordinate of skystone
+
+            return skystoneXYcoordinates;
+        }
+
+        // No skystone detected
+        return null;
     }
 
 }

@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode.ETC2019OpModes.NavigationWebcamVuforia;
 import org.firstinspires.ftc.teamcode.common.Robot;
 @Autonomous(name = "StrafeSkystone", group = "auto")
@@ -12,7 +14,6 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
     // Global variables go before runOpMode()
     Robot robot = new Robot();
 
-    NavigationWebcamVuforia vuforia = new NavigationWebcamVuforia();
 
     int state = 1;
 
@@ -31,89 +32,129 @@ public class StrafeTowardsDetectedSkystone extends LinearOpMode {
 
     int skyStonePosition = 0;
 
+    boolean skyStoneVisible = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // init()
         robot.initForRunToPosition(hardwareMap);
 
+        SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap, robot);
+
         waitForStart(); // MUST add this yourself
 
-        while(opModeIsActive()) {  // MUST add this yourself
+        vision.targetsSkyStone.activate();
+
+        while (opModeIsActive()) {  // MUST add this yourself
             // loop()
             telemetry.addData("Current State", state);
 
-            switch(state) {
+            switch (state) {
                 case STRAFE_TO_VIEWING_POSITION:
                     robot.strafe(strafePower, viewingPosition1);
 
-                    if(robot.strafe(strafePower, viewingPosition1)); {
+                    if (robot.strafe(strafePower, viewingPosition1)) {
                         skyStonePosition += 1;
                         goToNextState();
                     }
                     break;
 
                 case DETERMINE_SKYSTONE:
-                    if(!vuforia.skyStoneSeen(hardwareMap)){
 
-                        robot.drive(drivePower, viewingPosition2);
+                    //check for sky stone at position 1
+                    for (VuforiaTrackable trackable : vision.allTrackables) {
 
-
-                        if (robot.drive(drivePower, viewingPosition2)){
+                        //if visible move to next state
+                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                            telemetry.addData("Visible Target", trackable.getName());
+                            skyStoneVisible = true;
+                            goToNextState();
+                            break;
+                        }
+                        //else visible move to position 2
+                        else {
+                            skyStoneVisible = false;
+                            robot.drive(drivePower, viewingPosition2);
                             skyStonePosition += 1;
-
                         }
                     }
 
-                    else if(!vuforia.skyStoneSeen(hardwareMap)){
-                        robot.drive(drivePower, viewingPosition3);
 
-                        if (robot.drive(drivePower, viewingPosition3)){
-                            skyStonePosition += 1;
+                    //if robot is at position 2
+                    if (robot.drive(drivePower, viewingPosition2)) {
+
+                        //check for sky stone at position 2
+                        for (VuforiaTrackable trackable : vision.allTrackables) {
+
+                            //if visible move to next state
+                            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                                telemetry.addData("Visible Target", trackable.getName());
+                                skyStoneVisible = true;
+                                goToNextState();
+                                break;
+                            }
+                            //else move to position 3
+                            else {
+                                skyStoneVisible = false;
+                                robot.drive(drivePower, viewingPosition3);
+                                skyStonePosition += 1;
+                            }
                         }
-
                     }
 
-                    if(robot.drive(drivePower, viewingPosition2) && !vuforia.skyStoneSeen(hardwareMap)){
+                    //if robot is at position 3
+                    if(robot.drive(drivePower,viewingPosition2)){
+
                         skyStonePosition += 1;
-                        robot.drive(drivePower, viewingPosition3);
+                        //check for sky stone at position 3
+                        for (VuforiaTrackable trackable : vision.allTrackables) {
+
+                            //if visible move to next state
+                            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                                telemetry.addData("Visible Target", trackable.getName());
+                                skyStoneVisible = true;
+                                goToNextState();
+                                break;
+                            }
+                            //else move to position 3
+                            else {
+                                skyStoneVisible = false;
+                                telemetry.addData("Skystone position idetification is", skyStoneVisible);
+                            }
+                        }
 
                     }
 
-                    if (vuforia.skyStoneSeen(hardwareMap)){
-                        goToNextState();
-                        break;
-                    }
 
+                        case STRAFE_TO_SKYSTONE:
+                            telemetry.addData("Determined SkyStone Position:", skyStonePosition);
+                            robot.strafe(strafePower, grabbingPosition);
+                            break;
 
+                        default:
+                            state = STATE_END;
+                            break;
 
-                case STRAFE_TO_SKYSTONE:
-                    telemetry.addData("Determined SkyStone Position:", skyStonePosition);
-                    robot.strafe(strafePower,grabbingPosition);
-                    break;
-
-                default:
-                    state = STATE_END;
-                    break;
             }
-
         }
     }
 
 
 
-    /*
-     * For each of these methods, you can add more things you want the robot to do each time it goes to a new state
-     */
-    // Increment the state variable to go to the next state
-    public void goToNextState(){
+
+
+
+            /*
+             * For each of these methods, you can add more things you want the robot to do each time it goes to a new state
+             */
+            // Increment the state variable to go to the next state
+    public void goToNextState() {
         state++;
     }
 
-    // Go to a specific state
+            // Go to a specific state
     public void goToState(int newState) {
         state = newState;
     }
+
 }
-
-
-
