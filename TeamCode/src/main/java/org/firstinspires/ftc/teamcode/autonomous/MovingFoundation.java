@@ -20,8 +20,9 @@ public class MovingFoundation extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
 
     int state = 1;
+    int isBlue = 1;
     boolean timeReset = false;
-    
+
     static final int DRIVE_AWAY_FROM_BLOCK = 1;
     static final int DRIVE_TO_WALL_1 = 2;
     static final int DRIVE_TO_WALL_2 = 3;
@@ -53,7 +54,8 @@ public class MovingFoundation extends LinearOpMode {
 
                 case DRIVE_TO_WALL_1:
                     // drives forward until it is definitely past bridge
-                    if (robot.drive(0.5,55)) {
+
+                    if (robot.drive(0.5, 55 * isBlue)) {
                         robot.stop();
                         goToNextState();
                     }
@@ -61,9 +63,11 @@ public class MovingFoundation extends LinearOpMode {
 
                 case DRIVE_TO_WALL_2:
                     // drives until it senses an object near the robot (the foundation)
+                    robot.angleMotor.setTargetPosition((int)(robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (25 + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360));
+                    robot.angleMotor.setPower(1.0);
                     robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.drivePower(0.5,0.5,0.5,0.5);
-                    if (robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
+                    robot.drivePower(0.5 * isBlue,0.5 * isBlue,0.5 * isBlue,0.5 * isBlue);
+                    if (robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) < 20) {
                         robot.stop();
                         goToNextState();
                     }
@@ -81,7 +85,13 @@ public class MovingFoundation extends LinearOpMode {
                 case DRIVE_TO_FOUNDATION:
                     // drives a little over the measured distance to foundation to make sure
                     // we are close enough to foundation
-                    double distance = robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) + 4;
+
+                    double distance;
+                    if (isBlue > 0) {
+                        distance = robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) + 4;
+                    } else {
+                        distance = robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) + 4;
+                    }
 
                     if (robot.strafe(0.25,distance)) {
                         robot.stop();
