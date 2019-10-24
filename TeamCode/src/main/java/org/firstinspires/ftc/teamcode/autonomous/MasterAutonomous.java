@@ -55,7 +55,7 @@ public class MasterAutonomous extends LinearOpMode {
     double robotYDistanceFromSkystoneCenter;
     double distanceForArmToExtend;
     int armUpAngle = 45;
-    int armAngleOnSkystone = -40;
+    int armAngleOnSkystone = -2;
     double distanceFromSkystoneOffset = 0;
     int maxArmExtensionDistance = 25;
 
@@ -103,6 +103,8 @@ public class MasterAutonomous extends LinearOpMode {
             switch (masterState) {
                case STRAFE_TO_SKYSTONE_V2:
                    if(StrafeTowardsDetectedSkystoneV2(vision)) {
+                       // Necessary to make driving in the next state work after strafing
+                       robot.resetChassisEncoders();
                        goToNextMasterState();
                    }
                    break;
@@ -161,8 +163,6 @@ public class MasterAutonomous extends LinearOpMode {
 
         switch(subState) {
             case STRAFE_TO_VIEWING_POSITION:
-                robot.strafe(strafePower, viewingPosition);
-
                 if(robot.strafe(strafePower, viewingPosition)); {
                 robot.light.setPower(1.0);
                 goToNextSubState();
@@ -226,14 +226,13 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ADJUST_ROBOT_POSITION:
-                // TODO: This state diagonal-strafes the robot back to the wall
                 if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter - 1.0)) {
-                    goToSubState(STATE_END_2);
+                    goToNextSubState();
                 }
                 break;
 
             case MOVE_ARM_OUT:
-                distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 7.75;
+                distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
                 if(distanceForArmToExtend > maxArmExtensionDistance) {
                     distanceFromSkystoneOffset = distanceForArmToExtend - maxArmExtensionDistance;
                 }
@@ -246,7 +245,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case MOVE_SERVOS:
-                robot.angleServo.setPosition(0.5);
+                robot.angleServo.setPosition(0.55);
                 robot.grabberServo.setPosition(GRABBER_SERVO_OPEN_POSITION);
                 robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_OPEN_POSITION);
                 goToNextSubState();
@@ -259,7 +258,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case STRAFE_TO_SKYSTONE_2:
-                if(robot.strafe(0.75, 5)) {
+                if(robot.strafe(0.75, 15)) {
                     timer.reset();
                     goToNextSubState();
                 }
