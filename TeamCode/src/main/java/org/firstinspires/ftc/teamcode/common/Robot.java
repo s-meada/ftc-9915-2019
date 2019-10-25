@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -7,6 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Robot {
 
@@ -85,6 +90,10 @@ public class Robot {
     // Sensors
     public WebcamName webcam;
 
+    BNO055IMU gyroSensor;
+    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    Orientation angles;
+
     public DistanceSensor blueDistanceSensor;
     public DistanceSensor redDistanceSensor;
 
@@ -153,6 +162,8 @@ public class Robot {
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
         blueDistanceSensor = hardwareMap.get(DistanceSensor.class, "blueDistanceSensor");
         redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
+        gyroSensor = hardwareMap.get(BNO055IMU.class, "gyroSensor");
+        gyroSensor.initialize(parameters);
 
         // Light
         light = hardwareMap.dcMotor.get("light");
@@ -339,5 +350,10 @@ public class Robot {
      */
     public boolean moveArmXY(double x, double y) {
         return moveArm(Math.toDegrees(Math.atan2(y, x)), Math.hypot(x, y));
+    }
+
+    public double getTurningAngle() {
+        angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return angles.firstAngle;
     }
 }
