@@ -55,7 +55,7 @@ public class MasterAutonomous extends LinearOpMode {
     double robotYDistanceFromSkystoneCenter;
     double distanceForArmToExtend;
     int armUpAngle = 45;
-    int armAngleOnSkystone = -2;
+    double armAngleOnSkystone = -1;
     double distanceFromSkystoneOffset = 0;
     int maxArmExtensionDistance = 25;
 
@@ -74,6 +74,7 @@ public class MasterAutonomous extends LinearOpMode {
 
 
     // --- MovingFoundation States and Variables --- //
+
     static final int DRIVE_AWAY_FROM_BLOCK = 1;
     static final int DRIVE_TO_WALL_1 = 2;
     static final int DRIVE_TO_WALL_2 = 3;
@@ -84,8 +85,7 @@ public class MasterAutonomous extends LinearOpMode {
     static final int STATE_END_3 = 8;
 
 
-    // --- Sonal Autonomous States and Variables --- //
-    int state = 1;
+    // --- SonalAutonomous States and Variables --- //
     //variables
     double drivePower2 = -0.5;
     double strafePower2 = -0.75;
@@ -124,7 +124,6 @@ public class MasterAutonomous extends LinearOpMode {
                case STRAFE_TO_SKYSTONE_V2:
                    if(StrafeTowardsDetectedSkystoneV2(vision)) {
                        // Necessary to make driving in the next state work after strafing
-                       robot.resetChassisEncoders();
                        goToNextMasterState();
                    }
                    break;
@@ -172,6 +171,7 @@ public class MasterAutonomous extends LinearOpMode {
     }
 
     public void goToNextMasterState() {
+        robot.resetChassisEncoders();
         subState = 1;
         masterState++;
     }
@@ -293,7 +293,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case PUT_ARM_DOWN:
-                if(robot.moveArm(5, 16)){
+                if(robot.moveArm(5, 15)){
                     goToNextSubState();
                 }
                 break;
@@ -305,6 +305,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             default:
+                isComplete = true;
                 subState = STATE_END_2;
                 telemetry.update();
                 break;
@@ -319,10 +320,10 @@ public class MasterAutonomous extends LinearOpMode {
 
         telemetry.addData("Blue Distance: ", robot.blueDistanceSensor.getDistance(DistanceUnit.INCH));
         telemetry.addData("Red Distance: ", robot.redDistanceSensor.getDistance(DistanceUnit.INCH));
-        telemetry.addData("State: ", state);
+        telemetry.addData("State: ", subState);
         telemetry.update();
 
-        switch(state) {
+        switch(subState) {
             case DRIVE_AWAY_FROM_BLOCK:
                     /*robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.drivePower(0.5, -0.5, -0.5, 0.5);
@@ -362,19 +363,18 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case DRIVE_TO_WALL_2:
-
                 robot.angleMotor.setTargetPosition((int)(robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (25 + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360));
                 robot.angleMotor.setPower(1.0);
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                 if (isBlue) {
                     robot.drivePower(0.5,0.5,0.5,0.5);
-                    if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
+                    if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 18) {
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
                     robot.drivePower(-0.5,-0.5,-0.5,-0.5);
-                    if (robot.redDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
+                    if (robot.redDistanceSensor.getDistance(DistanceUnit.INCH) < 18) {
                         robot.stop();
                         goToNextSubState();
                     }
@@ -412,17 +412,14 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_FOUNDATION_2:
                 if (robot.strafe(0.25, 3)) {
                     robot.stop();
+                    timer.reset();
                     goToNextSubState();
                 }
 
             case DRAG_FOUNDATION:
-                double angle = robot.getTurningAngle();
-                if (!timerReset) {
-                    timer.reset();
-                    timerReset = true;
-                }
+//                double angle = robot.getTurningAngle();
                 robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
-                if (timer.seconds() >= 1.5) {
+                if (timer.seconds() >= 1) {
                     if (robot.strafe(0.75, -64)) {
                         robot.stop();
                         robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
@@ -432,7 +429,8 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             default:
-                state = STATE_END_3;
+                isComplete = true;
+                subState = STATE_END_3;
                 break;
 
         }
@@ -440,9 +438,9 @@ public class MasterAutonomous extends LinearOpMode {
     }
 
     public boolean SonalAutonomous() {
-        telemetry.addData("Current State", state);
+        telemetry.addData("Current State", subState);
         telemetry.update();
-        switch (state) {
+        switch (subState) {
 
             case ROBOT_MOVES_ARM:
                 if (robot.moveArm(0, 16)) {
@@ -511,7 +509,7 @@ public class MasterAutonomous extends LinearOpMode {
 
 
             default:
-                state = END_STATE;
+                subState = END_STATE;
                 break;
         }
         return true;
