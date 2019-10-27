@@ -438,6 +438,7 @@ public class MasterAutonomous extends LinearOpMode {
     }
 
     public boolean SonalAutonomous() {
+        boolean isComplete = false;
         telemetry.addData("Current State", subState);
         telemetry.update();
         switch (subState) {
@@ -509,9 +510,10 @@ public class MasterAutonomous extends LinearOpMode {
 
 
             default:
+                isComplete = true;
                 subState = END_STATE;
                 break;
         }
-        return true;
+        return isComplete;
     }
 }
