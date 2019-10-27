@@ -415,6 +415,7 @@ public class MasterAutonomous extends LinearOpMode {
                     timer.reset();
                     goToNextSubState();
                 }
+                break;
 
             case DRAG_FOUNDATION:
 //                double angle = robot.getTurningAngle();
