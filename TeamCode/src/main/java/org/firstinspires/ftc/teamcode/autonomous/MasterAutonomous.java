@@ -89,10 +89,10 @@ public class MasterAutonomous extends LinearOpMode {
 
     // --- SonalAutonomous States and Variables --- //
     //variables
-    double drivePower2 = -0.5;
+    double drivePower2 = 0.5;
     double strafePower2 = -0.75;
     double behindFoundationPosition = 32;
-    double towardsCenterPosition = 18;
+    double towardsCenterPosition = 28;
     double towardsRedLinePosition = 25;
     boolean blueAlliance = allianceColor == AllianceColor.BLUE;
 
@@ -295,7 +295,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case PUT_ARM_DOWN:
-                if(robot.moveArm(5, 15)){
+                if(robot.moveArm(1, 15)){
                     goToNextSubState();
                 }
                 break;
@@ -370,13 +370,13 @@ public class MasterAutonomous extends LinearOpMode {
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                 if (isBlue) {
                     robot.drivePower(0.5,0.5,0.5,0.5);
-                    if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 18) {
+                    if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 16) {
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
                     robot.drivePower(-0.5,-0.5,-0.5,-0.5);
-                    if (robot.redDistanceSensor.getDistance(DistanceUnit.INCH) < 18) {
+                    if (robot.redDistanceSensor.getDistance(DistanceUnit.INCH) < 16) {
                         robot.stop();
                         goToNextSubState();
                     }
@@ -388,12 +388,12 @@ public class MasterAutonomous extends LinearOpMode {
                 if (isBlue) {
                     if (robot.drive(0.5,20.0)) {
                         robot.stop();
-                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 10;
+                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 4;
                         goToNextSubState();
                     }
                 } else {
                     if (robot.drive(0.5, -20.0)) {
-                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 10;
+                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 4;
                         robot.stop();
                         goToNextSubState();
                     }
@@ -411,15 +411,16 @@ public class MasterAutonomous extends LinearOpMode {
                 if (robot.strafe(0.25, 3)) {
                     robot.stop();
                     timer.reset();
+                    robot.resetChassisEncoders();
                     goToNextSubState();
                 }
                 break;
 
             case DRAG_FOUNDATION:
-//                double angle = robot.getTurningAngle();
+                double angle = robot.getTurningAngle();
                 robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
                 if (timer.seconds() >= 1) {
-                    if (robot.strafe(0.75, -64)) {
+                    if (robot.driveMecanum(0,1, -Math.toRadians(angle), -100)) {
                         robot.stop();
                         robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
                         goToNextSubState();
@@ -468,7 +469,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ROBOT_MOVES_BEHIND_FOUNDATION:
-                if (robot.drive(drivePower2, behindFoundationPosition)) {
+                if (robot.drive(drivePower2, -behindFoundationPosition)) {
                     goToNextSubState();
                 }
                 break;
@@ -496,7 +497,7 @@ public class MasterAutonomous extends LinearOpMode {
 
 
             case ROBOT_MOVES_BACKWARDS:
-                if (robot.drive(drivePower2, towardsRedLinePosition)) {
+                if (robot.drive(drivePower2, -towardsRedLinePosition)) {
                     goToNextSubState();
                 }
                 break;
