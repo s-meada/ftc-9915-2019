@@ -23,9 +23,9 @@ public class TeleopInitial extends OpMode {
 
     String rotationDirection = "up";
     double x = 13.25;
-    double y = -1;
-    double currentPositionAngle = -3;
-    double currentPositionExtension = 13.25;
+    double y = -3.5;
+//    double currentPositionAngle = -3;
+//    double currentPositionExtension = 13.25;
     double verticalServoAngleFactor = 1.7 ;
 
     @Override
@@ -72,9 +72,9 @@ public class TeleopInitial extends OpMode {
         x += xChange;
         y += yChange;
         if (x > 27) x = 27;
-        if (x < 13.25) x = 13.25;
+        if (x < 14.5 && y < -1.0) x = 14.5;
         if (y > 23) y = 23;
-        if (y < -4) y = -4;
+        if (y < -3.5) y = -3.5;
         robot.moveArmXY(x,y);
         telemetry.addData("X: ", x);
         telemetry.addData("Y: ", y);
@@ -94,9 +94,9 @@ public class TeleopInitial extends OpMode {
         int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
         robot.rotationServo.setPosition(currentPositionRotation + positionChangeRotation);
 
-        if (gamepad1.x) robot.foundationServo.setPosition(0.83);
+        if (gamepad1.x) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
 
-        if (gamepad1.y) robot.foundationServo.setPosition(0.5);
+        if (gamepad1.y) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
 
         if (gamepad2.a) {
             robot.grabberServo.setPosition(1.0);
@@ -111,8 +111,8 @@ public class TeleopInitial extends OpMode {
             robot.grabberServoTwo.setPosition(0.3);
         }
 
-        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
-        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
+//        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
+//        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
 
         if(gamepad2.dpad_right) {
             robot.verticalServo.setPosition(0.5);

@@ -35,7 +35,7 @@ public class MovingFoundation extends LinearOpMode {
         while(opModeIsActive()) {
 
             telemetry.addData("Current State: ", state);
-            telemetry.addData("Distance in inches: ", robot.sideDistanceSensor.getDistance(DistanceUnit.INCH));
+            telemetry.addData("Distance in inches: ", robot.blueDistanceSensor.getDistance(DistanceUnit.INCH));
             telemetry.update();
 
             switch(state) {
@@ -59,7 +59,7 @@ public class MovingFoundation extends LinearOpMode {
 
                     robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.drivePower(0.5,0.5,0.5,0.5);
-                    if (robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
+                    if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 10) {
                         robot.stop();
                         goToNextState();
                     }
@@ -75,7 +75,7 @@ public class MovingFoundation extends LinearOpMode {
 
                 case DRIVE_TO_FOUNDATION:
 
-                    double distance = robot.sideDistanceSensor.getDistance(DistanceUnit.INCH) - 1.0;
+                    double distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) - 1.0;
 
                     if (robot.strafe(0.75,distance)) {
                         robot.stop();

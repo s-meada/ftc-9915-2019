@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -19,13 +20,13 @@ public class Robot {
     int motorTicksPerRotation = 1120;
     double gearRatioMotorToWheel = 32.0/24.0;
     // double type for higher accuracy when multiplying by distanceInch in driveForward() method
-    double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
+    public double robotTicksPerInch = motorTicksPerRotation / (gearRatioMotorToWheel * wheelInchesPerRotation);
 
     // Arm - units: inches
     public static final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
     public static final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
     public static final double ARM_STARTING_LENGTH = 13.25;
-    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 3.0;
+    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 4.0;
     public static final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
     public static final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
     public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
@@ -43,8 +44,8 @@ public class Robot {
     // --- Constants --- //
 
     // Arm
-    public static final int ANGLE_MOTOR_UP_LIMIT = 1500;
-    public static final int ANGLE_MOTOR_DOWN_LIMIT = 0;
+    public static final int ANGLE_MOTOR_UP_LIMIT = 1600;
+    public static final int ANGLE_MOTOR_DOWN_LIMIT = -100;
 
     public static final int EXTENSION_MOTOR_RETRACTED_LIMIT = 0;
     public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1750;
@@ -312,7 +313,7 @@ public class Robot {
      * @param extensionLength: the length the arm should extend/retract to with respect to its starting length
      * @return whether the arm has finished moving to the new angle and extension length
      */
-    public boolean moveArm(double angle, double extensionLength){
+    public boolean moveArm(double angle, double extensionLength)    {
         int angleMotorPosition = (int)(ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
         if (angleMotorPosition > ANGLE_MOTOR_UP_LIMIT) angleMotorPosition = ANGLE_MOTOR_UP_LIMIT;
         if (angleMotorPosition < ANGLE_MOTOR_DOWN_LIMIT) angleMotorPosition = ANGLE_MOTOR_DOWN_LIMIT;
@@ -327,7 +328,8 @@ public class Robot {
 
         this.extensionMotor.setTargetPosition(extensionMotorPosition + extensionPositionOffset);
         this.extensionMotor.setPower(1.0);
-
+//        telemetry.addData("angle: ", angle, "angle Pos", angleMotorPosition);
+//        telemetry.addData("ext: ", extensionLength, "ext POS", extensionMotorPosition);
         return !this.angleMotor.isBusy() && !this.extensionMotor.isBusy();
     }
 
@@ -338,6 +340,8 @@ public class Robot {
      * @return whether the arm has finished moving to the new (x, y) point
      */
     public boolean moveArmXY(double x, double y) {
-        return moveArm(Math.toDegrees(Math.atan2(y, x)), Math.hypot(x, y));
+        double dTheta = 2.5/Math.hypot(x,y);
+        return moveArm(Math.toDegrees(Math.atan2(y, x)+dTheta), Math.hypot(x, y));
+
     }
 }
