@@ -399,9 +399,9 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_FOUNDATION:
                 double distance;
                 if (isBlue) {
-                    distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 6.0;
+                    distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 10.0;
                 } else {
-                    distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 6.0;
+                    distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 10.0;
                 }
                 if (robot.strafe(0.75,distance)) {
                     robot.stop();
@@ -415,6 +415,7 @@ public class MasterAutonomous extends LinearOpMode {
                     timer.reset();
                     goToNextSubState();
                 }
+                break;
 
             case DRAG_FOUNDATION:
 //                double angle = robot.getTurningAngle();
