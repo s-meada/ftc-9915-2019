@@ -84,6 +84,8 @@ public class MasterAutonomous extends LinearOpMode {
     static final int DRAG_FOUNDATION = 7;
     static final int STATE_END_3 = 8;
 
+    double distance;
+
 
     // --- SonalAutonomous States and Variables --- //
     //variables
@@ -386,10 +388,12 @@ public class MasterAutonomous extends LinearOpMode {
                 if (isBlue) {
                     if (robot.drive(0.5,20.0)) {
                         robot.stop();
+                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 10;
                         goToNextSubState();
                     }
                 } else {
                     if (robot.drive(0.5, -20.0)) {
+                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 10;
                         robot.stop();
                         goToNextSubState();
                     }
@@ -397,12 +401,6 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                double distance;
-                if (isBlue) {
-                    distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 10.0;
-                } else {
-                    distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 10.0;
-                }
                 if (robot.strafe(0.75,distance)) {
                     robot.stop();
                     goToNextSubState();
