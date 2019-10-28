@@ -26,8 +26,9 @@ public class TeleopInitial extends OpMode {
     double y = -3.5;
 //    double currentPositionAngle = -3;
 //    double currentPositionExtension = 13.25;
-    double verticalServoAngleFactor = 1.7 ;
-
+    double verticalServoAngleFactor = 1.7;
+    double capstoneServoPosition = 0.36;
+    boolean capstoneServoDown = false;
     @Override
     public void init() {
         robot.initRegular(hardwareMap);
@@ -98,19 +99,28 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad1.y) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
 
+        //open grabber
         if (gamepad2.a) {
             robot.grabberServo.setPosition(1.0);
             robot.grabberServoTwo.setPosition(0.20);
         }
+        //close grabber
         if (gamepad2.b) {
             robot.grabberServo.setPosition(0.5);
             robot.grabberServoTwo.setPosition(0.75);
         }
+        //open for capstone
         if (gamepad2.dpad_down) {
             robot.grabberServo.setPosition(0.9);
             robot.grabberServoTwo.setPosition(0.3);
         }
-
+        if (gamepad2.x) capstoneServoDown = true;
+        if (gamepad2.y) capstoneServoDown = false;
+        if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
+        else if (!capstoneServoDown && capstoneServoPosition <= 0.36) capstoneServoPosition += 0.01;
+        robot.capstoneServo.setPosition(capstoneServoPosition);
+        telemetry.addData("capstoneServoDown", capstoneServoDown);
+        telemetry.addData("capstoneServoPosition", capstoneServoPosition);
 //        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
 //        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
 
