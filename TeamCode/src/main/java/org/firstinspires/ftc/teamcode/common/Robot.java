@@ -257,17 +257,22 @@ public class Robot {
         y = -y;
         x = -x;
 
-        this.leftFrontMotor.setPower(y+x-w);
-        this.rightFrontMotor.setPower(y-x+w);
-        this.leftBackMotor.setPower(y-x-w);
-        this.rightBackMotor.setPower(y+x+w);
+        double lf = y+x-w;
+        double rf = y-x+w;
+        double lb = y-x-w;
+        double rb = y+x+w;
+
+        this.leftFrontMotor.setPower(lf);
+        this.rightFrontMotor.setPower(rf);
+        this.leftBackMotor.setPower(lb);
+        this.rightBackMotor.setPower(rb);
 
         int targetPosition = -(int)(robotTicksPerInch * distance);
 
-        this.leftFrontMotor.setTargetPosition(targetPosition);
-        this.rightFrontMotor.setTargetPosition(targetPosition);
-        this.leftBackMotor.setTargetPosition(targetPosition);
-        this.rightBackMotor.setTargetPosition(targetPosition);
+        this.leftFrontMotor.setTargetPosition((int)Math.signum(lf) * targetPosition);
+        this.rightFrontMotor.setTargetPosition((int)Math.signum(rf) * targetPosition);
+        this.leftBackMotor.setTargetPosition((int)Math.signum(lb) * targetPosition);
+        this.rightBackMotor.setTargetPosition((int)Math.signum(rb) * targetPosition);
 
         setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
