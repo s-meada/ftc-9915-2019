@@ -190,11 +190,10 @@ public class MasterAutonomous extends LinearOpMode {
         switch(subState) {
             case STRAFE_TO_VIEWING_POSITION:
                 if(robot.strafe(strafePower, viewingPosition)); {
-                robot.light.setPower(1.0);
-                goToNextSubState();
+                    robot.light.setPower(1.0);
+                    goToNextSubState();
+                }
                 break;
-            }
-
 
             case DETECT_SKYSTONE:
                 HashMap <String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
@@ -284,7 +283,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case STRAFE_TO_SKYSTONE_2:
-                if(robot.strafe(0.75, 15)) {
+                if(robot.strafe(0.25, 15)) {
                     timer.reset();
                     goToNextSubState();
                 }
@@ -340,7 +339,7 @@ public class MasterAutonomous extends LinearOpMode {
                     }
                      */
 
-                if (robot.strafe(0.75,-10)) {
+                if (robot.strafe(0.50,-10)) {
                     robot.stop();
                     goToNextSubState();
                 }
@@ -383,14 +382,14 @@ public class MasterAutonomous extends LinearOpMode {
 
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
                 if (isBlue) {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + (61 + robotYDistanceFromSkystoneCenter) + " INCHES");
-                    if (robot.drive(0.5, 61 + robotYDistanceFromSkystoneCenter)) {
+                    Log.i("MasterAutonomous", "Distance to Drive: " + 90 + robotYDistanceFromSkystoneCenter) + " INCHES");
+                    if (robot.drive(0.5, 80 + robotYDistanceFromSkystoneCenter)) {
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + (-61 - robotYDistanceFromSkystoneCenter) + " INCHES");
-                    if (robot.drive(0.5, -61 - robotYDistanceFromSkystoneCenter)) {
+                    Log.i("MasterAutonomous", "Distance to Drive: " + (-90 - robotYDistanceFromSkystoneCenter) + " INCHES");
+                    if (robot.drive(0.5, -80 - robotYDistanceFromSkystoneCenter)) {
                         robot.stop();
                         goToNextSubState();
                     }
@@ -443,7 +442,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION_2:
-                if (robot.strafe(0.25, 1)) {
+                if (robot.strafe(0.25, 3)) {
                     robot.stop();
                     timer.reset();
                     robot.resetChassisEncoders();
