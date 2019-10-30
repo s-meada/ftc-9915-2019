@@ -71,9 +71,8 @@ public class MasterAutonomous extends LinearOpMode {
     static final int STRAFE_TO_SKYSTONE_2           = 7;
     static final int GRAB_SKYSTONE                  = 8;
     static final int PUT_ARM_DOWN                   = 9;
-    static final int STRAFE_AWAY_FROM_SKYSTONE      = 10;
 
-    static final int STATE_END_2                    = 11;
+    static final int STATE_END_2                    = 10;
 
 
     // --- MovingFoundation States and Variables --- //
@@ -305,12 +304,6 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 break;
 
-            case STRAFE_AWAY_FROM_SKYSTONE:
-                if(robot.strafe(0.75, -10)) {
-                    goToNextSubState();
-                }
-                break;
-
             default:
                 isComplete = true;
                 subState = STATE_END_2;
@@ -347,7 +340,7 @@ public class MasterAutonomous extends LinearOpMode {
                     }
                      */
 
-                if (robot.strafe(0.75,-1)) {
+                if (robot.strafe(0.75,-10)) {
                     robot.stop();
                     goToNextSubState();
                 }
@@ -390,14 +383,14 @@ public class MasterAutonomous extends LinearOpMode {
 
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
                 if (isBlue) {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + (56 + robotYDistanceFromSkystoneCenter + 5) + " INCHES");
-                    if (robot.drive(0.5, 56 + robotYDistanceFromSkystoneCenter + 5)) {
+                    Log.i("MasterAutonomous", "Distance to Drive: " + (61 + robotYDistanceFromSkystoneCenter) + " INCHES");
+                    if (robot.drive(0.5, 61 + robotYDistanceFromSkystoneCenter)) {
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + (-56 - robotYDistanceFromSkystoneCenter - 5) + " INCHES");
-                    if (robot.drive(0.5, -56 - robotYDistanceFromSkystoneCenter - 5)) {
+                    Log.i("MasterAutonomous", "Distance to Drive: " + (-61 - robotYDistanceFromSkystoneCenter) + " INCHES");
+                    if (robot.drive(0.5, -61 - robotYDistanceFromSkystoneCenter)) {
                         robot.stop();
                         goToNextSubState();
                     }
@@ -411,14 +404,14 @@ public class MasterAutonomous extends LinearOpMode {
                 if (isBlue) {
                     Log.i("MasterAutonomous", "Blue Distance Sensor Reading: " + robot.blueDistanceSensor.getDistance(INCH) + " INCHES");
                     robot.drivePower(0.5,0.5,0.5,0.5);
-                    if (robot.blueDistanceSensor.getDistance(INCH) < 13) {
+                    if (robot.blueDistanceSensor.getDistance(INCH) < 13 && robot.redDistanceSensor.getDistance(INCH) < 13) {
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
                     Log.i("MasterAutonomous", "Red Distance Sensor Reading: " + robot.redDistanceSensor.getDistance(INCH) + " INCHES");
                     robot.drivePower(-0.5,-0.5,-0.5,-0.5);
-                    if (robot.redDistanceSensor.getDistance(INCH) < 13) {
+                    if (robot.redDistanceSensor.getDistance(INCH) < 13 && robot.blueDistanceSensor.getDistance(INCH) < 13) {
                         robot.stop();
                         goToNextSubState();
                     }
@@ -428,14 +421,14 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_WALL_3:
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
                 if (isBlue) {
-                    if (robot.drive(0.5,20.0)) {
+                    if (robot.drive(0.5,5)) {
                         robot.stop();
-                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 4;
+                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         goToNextSubState();
                     }
                 } else {
-                    if (robot.drive(0.5, -20.0)) {
-                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 4;
+                    if (robot.drive(0.5, -5)) {
+                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         robot.stop();
                         goToNextSubState();
                     }
