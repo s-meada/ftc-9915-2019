@@ -64,15 +64,16 @@ public class MasterAutonomous extends LinearOpMode {
 
     static final int MOVE_ARM_UP                    = 1;
     static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
-    static final int ADJUST_ROBOT_POSITION          = 3;
-    static final int MOVE_ARM_OUT                   = 4;
-    static final int MOVE_SERVOS                    = 5;
-    static final int MOVE_ARM_DOWN                  = 6;
-    static final int STRAFE_TO_SKYSTONE_2           = 7;
-    static final int GRAB_SKYSTONE                  = 8;
-    static final int PUT_ARM_DOWN                   = 9;
+    static final int MOVE_ARM_OUT                   = 3;
+    static final int MOVE_SERVOS                    = 4;
+    static final int MOVE_ARM_DOWN                  = 5;
+    static final int STRAFE_TO_SKYSTONE_2_FIRST     = 6;
+    static final int ADJUST_ROBOT_POSITION          = 7;
+    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 8;
+    static final int GRAB_SKYSTONE                  = 9;
+    static final int PUT_ARM_DOWN                   = 10;
 
-    static final int STATE_END_2                    = 10;
+    static final int STATE_END_2                    = 11;
 
 
     // --- MovingFoundation States and Variables --- //
@@ -96,7 +97,7 @@ public class MasterAutonomous extends LinearOpMode {
     double drivePower2 = 0.5;
     double strafePower2 = -0.75;
     double behindFoundationPosition = 35;
-    double towardsCenterPosition = 33;
+    double towardsCenterPosition = 31;
     double towardsRedLinePosition = 25;
     boolean blueAlliance = allianceColor == AllianceColor.BLUE;
 
@@ -250,12 +251,6 @@ public class MasterAutonomous extends LinearOpMode {
                 telemetry.update();
                 break;
 
-            case ADJUST_ROBOT_POSITION:
-                if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter - 1.0)) {
-                    goToNextSubState();
-                }
-                break;
-
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
                 if(distanceForArmToExtend > maxArmExtensionDistance) {
@@ -282,8 +277,20 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 break;
 
-            case STRAFE_TO_SKYSTONE_2:
-                if(robot.strafe(0.25, 15)) {
+            case STRAFE_TO_SKYSTONE_2_FIRST:
+                if(robot.strafe(0.25, 5)) {
+                    goToNextSubState();
+                }
+                break;
+
+            case ADJUST_ROBOT_POSITION:
+                if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter)) {
+                    goToNextSubState();
+                }
+                break;
+
+            case STRAFE_TO_SKYSTONE_2_SECOND:
+                if(robot.strafe(0.25, 10)) {
                     timer.reset();
                     goToNextSubState();
                 }
@@ -304,7 +311,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             default:
-                isComplete = true;
+//                isComplete = true;
                 subState = STATE_END_2;
                 telemetry.update();
                 break;
@@ -349,7 +356,7 @@ public class MasterAutonomous extends LinearOpMode {
                 angle = robot.getTurningAngle();
                 telemetry.addData("Angle", angle);
                 Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
-                if(angle > 0.25) {
+                if(angle > 0.01) {
                     angleAdjustmentSign = -1;
                 }
                 else if(angle < -0.25) {
@@ -369,7 +376,7 @@ public class MasterAutonomous extends LinearOpMode {
                 robot.rightBackMotor.setPower(0.25 * -angleAdjustmentSign);
 
                 angle = robot.getTurningAngle();
-                if(angle > -0.25 && angle < 0.25) {
+                if(angle > -0.25 && angle < 0.01) {
                     telemetry.addData("Angle", angle);
                     Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
                     Log.i("MasterAutonomous", "Finished Angle adjustment");
@@ -381,15 +388,20 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_WALL_1:
 
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
+                double distanceToEndOfQuarry = 12 + robotYDistanceFromSkystoneCenter;
+                int distanceToFoundationEdge = 55;
+                int distanceToFoundationCenter = 17;
+
+                double distanceToFoundation = distanceToEndOfQuarry + distanceToFoundationEdge + distanceToFoundationCenter;
                 if (isBlue) {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + 90 + robotYDistanceFromSkystoneCenter) + " INCHES");
-                    if (robot.drive(0.5, 80 + robotYDistanceFromSkystoneCenter)) {
+                    Log.i("MasterAutonomous", "Distance to Drive: " + (distanceToFoundation) + " INCHES");
+                    if (robot.drive(0.5, distanceToFoundation)) {
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + (-90 - robotYDistanceFromSkystoneCenter) + " INCHES");
-                    if (robot.drive(0.5, -80 - robotYDistanceFromSkystoneCenter)) {
+                    Log.i("MasterAutonomous", "Distance to Drive: " + (-distanceToFoundation) + " INCHES");
+                    if (robot.drive(0.5, -distanceToFoundation)) {
                         robot.stop();
                         goToNextSubState();
                     }
@@ -519,6 +531,8 @@ public class MasterAutonomous extends LinearOpMode {
             case ROBOT_STRAFES_CLOSER_TO_CENTER:
                 if (blueAlliance) {
                     if (robot.strafe(strafePower2, towardsCenterPosition)) {
+                        robot.grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+                        robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
                         goToNextSubState();
                     }
                 }
