@@ -5,15 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.common.Robot;
+import org.firstinspires.ftc.teamcode.common.TeleopRobot;
 
 
 @TeleOp(name = "GrabTest", group = "test")
 public class GrabTest extends OpMode {
 
-    Robot robot = new Robot();
+    TeleopRobot robot = new TeleopRobot();
 
     int state = 1;
     int blockFirstEdge;

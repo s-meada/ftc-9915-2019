@@ -8,8 +8,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class Robot {
+public class TeleopRobot {
 
     public boolean encodersReseted = false;
 
@@ -131,12 +132,12 @@ public class Robot {
         angleMotor = hardwareMap.dcMotor.get("angleMotor");
         angleMotor.setTargetPosition(0);
         angleMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
         extensionMotor.setTargetPosition(0);
-        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         rotationServo = hardwareMap.servo.get("rotationServo");
@@ -151,7 +152,7 @@ public class Robot {
         grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
         verticalServo.setPosition(ANGLE_SERVO_INIT_POSITION);
-        capstoneServo.setPosition(0.36); // REPLACE with initial position of this servo
+        capstoneServo.setPosition(0.36);
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -346,5 +347,71 @@ public class Robot {
         double dTheta = 2.5/Math.hypot(x,y);
         return moveArm(Math.toDegrees(Math.atan2(y, x)+dTheta), Math.hypot(x, y));
 
+    }
+
+    public void grab(){
+        int state = 1;
+        int blockFirstEdge;
+        int blockSecondEdge;
+        double blockRange;
+        int grabPosition;
+
+        int DRIVE_TO_BLOCK = 1;
+        int DRIVE_ALONG_BLOCK = 2;
+        int DRIVE_TO_EDGE = 3;
+        int DRIVE_TO_GRAB = 4;
+
+        int STATE_END = 5;
+        while (true){
+            double range = this.blueDistanceSensor.getDistance(DistanceUnit.MM);
+            switch (state) {
+                case DRIVE_TO_BLOCK:
+                    if(!this.moveArmXY(14.5,2.))break;
+
+                    this.grabberServo.setPosition(this.GRABBER_SERVO_OPEN_POSITION);
+                    this.grabberServoTwo.setPosition(this.GRABBER_SERVO_TWO_OPEN_POSITION);
+                    this.drivePower(0.15, 0.15, 0.15, 0.15);
+                    if (range > 300) break;
+                        blockFirstEdge = this.leftFrontMotor.getCurrentPosition();
+                        state++;
+
+                    break;
+
+                case DRIVE_ALONG_BLOCK:
+
+                    if (this.leftFrontMotor.getCurrentPosition() < blockFirstEdge + this.robotTicksPerInch)
+                        break;
+                    blockRange = range;
+                    state++;
+
+                    break;
+
+                case DRIVE_TO_EDGE:
+
+                    if (range < blockRange + 50) break;
+                    blockSecondEdge = this.leftFrontMotor.getCurrentPosition();
+                    grabPosition = (blockFirstEdge + blockSecondEdge) / 2 + (int) (7 * this.robotTicksPerInch);
+                    state++;
+
+                    break;
+
+                case DRIVE_TO_GRAB:
+
+                    if (this.leftFrontMotor.getCurrentPosition() < grabPosition) break;
+                    this.stop();
+                    if(this.moveArmXY(blockRange / 25.4 + 12.0, -3.0)) {
+                        this.grabberServo.setPosition(this.GRABBER_SERVO_CLOSE_POSITION);
+                        this.grabberServoTwo.setPosition(this.GRABBER_SERVO_TWO_CLOSE_POSITION);
+                    }
+                    break;
+
+
+                default:
+                    state = STATE_END;
+                    break;
+
+            }
+            break;
+        }
     }
 }

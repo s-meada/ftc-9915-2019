@@ -1,21 +1,19 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.common.Robot;
-
-import static android.animation.ValueAnimator.REVERSE;
+import org.firstinspires.ftc.teamcode.common.TeleopRobot;
 
 @TeleOp(name="TeleopInitial_C",group="Skystone")
 public class TeleopInitial extends OpMode {
 
-    Robot robot = new Robot();
+    TeleopRobot robot = new TeleopRobot();
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -24,8 +22,6 @@ public class TeleopInitial extends OpMode {
     String rotationDirection = "up";
     double x = 13.25;
     double y = -3.5;
-//    double currentPositionAngle = -3;
-//    double currentPositionExtension = 13.25;
     double verticalServoAngleFactor = 1.7;
     double capstoneServoPosition = 0.36;
     boolean capstoneServoDown = false;
@@ -52,21 +48,6 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad1.right_bumper) robot.light.setPower(1.0);
         if (gamepad1.left_bumper) robot.light.setPower(0.0);
-
-//        double positionChangeAngle = -gamepad2.right_stick_y * 0.5;
-//        currentPositionAngle += positionChangeAngle;
-//        if (currentPositionAngle > 70.3125) currentPositionAngle = 70.3125;
-//        if (currentPositionAngle < -3) currentPositionAngle = -3;
-//
-////        double extensionPositionOffset = (currentPositionAngle * extensionMotorAngleFactor * 0.2);
-//        double positionChangeExtension = ((gamepad2.right_trigger - gamepad2.left_trigger) * 0.2);
-//        currentPositionExtension += positionChangeExtension;
-//        if (currentPositionExtension > 25) currentPositionExtension = 25.0;
-//        if (currentPositionExtension < 13.25) currentPositionExtension = 13.25;
-//
-//        robot.moveArm(currentPositionAngle, currentPositionExtension);
-//        telemetry.addData("Angle", currentPositionAngle);
-//        telemetry.addData("Extension", currentPositionExtension);
 
         double xChange = gamepad2.right_stick_x * 0.2;
         double yChange = -gamepad2.right_stick_y * 0.2;
