@@ -311,7 +311,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             default:
-//                isComplete = true;
+                isComplete = true;
                 subState = STATE_END_2;
                 telemetry.update();
                 break;
