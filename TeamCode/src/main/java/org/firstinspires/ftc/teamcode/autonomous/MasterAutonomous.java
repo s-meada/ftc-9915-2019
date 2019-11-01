@@ -244,6 +244,8 @@ public class MasterAutonomous extends LinearOpMode {
                     telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
                             robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
                     robot.light.setPower(0);
+                    Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
+                    Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
                     goToNextSubState();
                 }
                 else {
@@ -260,7 +262,7 @@ public class MasterAutonomous extends LinearOpMode {
 
                 telemetry.addData("Distance from skystone", distanceForArmToExtend);
                 telemetry.update();
-                if(robot.moveArm(armUpAngle, distanceForArmToExtend - 5)) {
+                if(robot.moveArm(armUpAngle, distanceForArmToExtend - 10)) {
                     goToNextSubState();
                 }
                 break;
@@ -285,7 +287,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ADJUST_ROBOT_POSITION:
-                if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter)) {
+                if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter - 3.75)) {
                     goToNextSubState();
                 }
                 break;
@@ -377,10 +379,10 @@ public class MasterAutonomous extends LinearOpMode {
                 }
 
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.leftFrontMotor.setPower(0.25 * angleAdjustmentSign);
-                robot.rightFrontMotor.setPower(0.25 * -angleAdjustmentSign);
-                robot.leftBackMotor.setPower(0.25 * angleAdjustmentSign);
-                robot.rightBackMotor.setPower(0.25 * -angleAdjustmentSign);
+                robot.leftFrontMotor.setPower(0.2 * angleAdjustmentSign);
+                robot.rightFrontMotor.setPower(0.2 * -angleAdjustmentSign);
+                robot.leftBackMotor.setPower(0.2 * angleAdjustmentSign);
+                robot.rightBackMotor.setPower(0.2 * -angleAdjustmentSign);
 
                 angle = robot.getTurningAngle();
                 if(angle > -0.25 && angle < 0.01) {
@@ -397,7 +399,7 @@ public class MasterAutonomous extends LinearOpMode {
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
                 double distanceToEndOfQuarry = 12 + robotYDistanceFromSkystoneCenter;
                 int distanceToFoundationEdge = 55;
-                int distanceToFoundationCenter = 17;
+                int distanceToFoundationCenter = 25;
 
                 double distanceToFoundation = distanceToEndOfQuarry + distanceToFoundationEdge + distanceToFoundationCenter;
                 if (isBlue) {
