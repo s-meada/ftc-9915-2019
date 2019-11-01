@@ -58,7 +58,7 @@ public class MasterAutonomous extends LinearOpMode {
     double robotYDistanceFromSkystoneCenter;
     double distanceForArmToExtend;
     int armUpAngle = 45;
-    double armAngleOnSkystone = -1;
+    double armAngleOnSkystone = 1;
     double distanceFromSkystoneOffset = 0;
     int maxArmExtensionDistance = 25;
 
@@ -70,10 +70,11 @@ public class MasterAutonomous extends LinearOpMode {
     static final int STRAFE_TO_SKYSTONE_2_FIRST     = 6;
     static final int ADJUST_ROBOT_POSITION          = 7;
     static final int STRAFE_TO_SKYSTONE_2_SECOND    = 8;
-    static final int GRAB_SKYSTONE                  = 9;
-    static final int PUT_ARM_DOWN                   = 10;
+    static final int FINISH_ARM_EXTENSION           = 9;
+    static final int GRAB_SKYSTONE                  = 10;
+    static final int PUT_ARM_DOWN                   = 11;
 
-    static final int STATE_END_2                    = 11;
+    static final int STATE_END_2                    = 12;
 
 
     // --- MovingFoundation States and Variables --- //
@@ -259,7 +260,7 @@ public class MasterAutonomous extends LinearOpMode {
 
                 telemetry.addData("Distance from skystone", distanceForArmToExtend);
                 telemetry.update();
-                if(robot.moveArm(armUpAngle, distanceForArmToExtend)) {
+                if(robot.moveArm(armUpAngle, distanceForArmToExtend - 5)) {
                     goToNextSubState();
                 }
                 break;
@@ -272,7 +273,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case MOVE_ARM_DOWN:
-                if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
+                if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend - 5)) {
                     goToNextSubState();
                 }
                 break;
@@ -291,6 +292,12 @@ public class MasterAutonomous extends LinearOpMode {
 
             case STRAFE_TO_SKYSTONE_2_SECOND:
                 if(robot.strafe(0.25, 10)) {
+                    goToNextSubState();
+                }
+                break;
+
+            case FINISH_ARM_EXTENSION:
+                if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
                     timer.reset();
                     goToNextSubState();
                 }
@@ -356,10 +363,10 @@ public class MasterAutonomous extends LinearOpMode {
                 angle = robot.getTurningAngle();
                 telemetry.addData("Angle", angle);
                 Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
-                if(angle > 0.01) {
+                if(angle > -0.3) {
                     angleAdjustmentSign = -1;
                 }
-                else if(angle < -0.25) {
+                else if(angle < -0.05) {
                     angleAdjustmentSign = 1;
                 }
                 else {
