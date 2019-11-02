@@ -39,8 +39,8 @@ public class MasterAutonomous extends LinearOpMode {
     // --- StrafeTowardsDetectedSkystone States and Variables --- //
     // Capital letters and underscores for constants
     static final int STRAFE_TO_VIEWING_POSITION = 1;
-//    static final int DETECT_SKYSTONE = 2;
-    static final int STATE_END = 2;
+    static final int DETECT_SKYSTONE = 2;
+    static final int STATE_END = 3;
 
     int skyStonePosition = 1;
     double strafePower = 0.5;
@@ -62,20 +62,19 @@ public class MasterAutonomous extends LinearOpMode {
     double distanceFromSkystoneOffset = 0;
     int maxArmExtensionDistance = 25;
 
-    static final int STRAFE_TO_VIEWING_POSITION_2   = 1;
-    static final int MOVE_ARM_UP                    = 2;
-    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 3;
-    static final int MOVE_ARM_OUT                   = 4;
-    static final int MOVE_SERVOS                    = 5;
-    static final int MOVE_ARM_DOWN                  = 6;
-    static final int STRAFE_TO_SKYSTONE_2_FIRST     = 7;
-    static final int ADJUST_ROBOT_POSITION          = 8;
-    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 9;
-    static final int FINISH_ARM_EXTENSION           = 10;
-    static final int GRAB_SKYSTONE                  = 11;
-    static final int PUT_ARM_DOWN                   = 12;
+    static final int MOVE_ARM_UP                    = 1;
+    //    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
+    static final int MOVE_ARM_OUT                   = 2;
+    static final int MOVE_SERVOS                    = 3;
+    static final int MOVE_ARM_DOWN                  = 4;
+    static final int STRAFE_TO_SKYSTONE_2_FIRST     = 5;
+    static final int ADJUST_ROBOT_POSITION          = 6;
+    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 7;
+    static final int FINISH_ARM_EXTENSION           = 8;
+    static final int GRAB_SKYSTONE                  = 9;
+    static final int PUT_ARM_DOWN                   = 10;
 
-    static final int STATE_END_2                    = 13;
+    static final int STATE_END_2                    = 11;
 
 
     // --- MovingFoundation States and Variables --- //
@@ -83,7 +82,7 @@ public class MasterAutonomous extends LinearOpMode {
     static final int DRIVE_AWAY_FROM_BLOCK = 1;
     static final int ADJUST_ANGLE = 2;
     static final int DRIVE_TO_WALL_1 = 3;
-//    static final int DRIVE_TO_WALL_2 = 4;
+    //    static final int DRIVE_TO_WALL_2 = 4;
     static final int MOVE_ARM = 4;
     static final int DRIVE_TO_WALL_3 = 5;
     static final int DRIVE_TO_FOUNDATION = 6;
@@ -134,37 +133,37 @@ public class MasterAutonomous extends LinearOpMode {
         vision.targetsSkyStone.activate();
 
         while(opModeIsActive()) {  // MUST add this yourself
-           telemetry.addData("Master State", masterState);
-           telemetry.update();
+            telemetry.addData("Master State", masterState);
+            telemetry.update();
             switch (masterState) {
-               case STRAFE_TO_SKYSTONE_V2:
-                   if(StrafeTowardsDetectedSkystoneV2(vision)) {
-                       // Necessary to make driving in the next state work after strafing
-                       goToNextMasterState();
-                   }
-                   break;
+                case STRAFE_TO_SKYSTONE_V2:
+                    if(StrafeTowardsDetectedSkystoneV2(vision)) {
+                        // Necessary to make driving in the next state work after strafing
+                        goToNextMasterState();
+                    }
+                    break;
 
-               case ALIGN_AND_PICK_UP_SKYSTONE:
-                   if(AlignAndPickUpSkystone(vision)) {
-                       goToNextMasterState();
-                   }
-                   break;
+                case ALIGN_AND_PICK_UP_SKYSTONE:
+                    if(AlignAndPickUpSkystone(vision)) {
+                        goToNextMasterState();
+                    }
+                    break;
 
-               case MOVE_FOUNDATION:
+                case MOVE_FOUNDATION:
                     if(MoveFoundation()) {
                         goToNextMasterState();
                     }
                     break;
 
-               case SONAL_AUTONOMOUS:
-                   if(SonalAutonomous()) {
-                       goToNextMasterState();
-                   }
-                   break;
+                case SONAL_AUTONOMOUS:
+                    if(SonalAutonomous()) {
+                        goToNextMasterState();
+                    }
+                    break;
 
-               default:
-                   break;
-           }
+                default:
+                    break;
+            }
 
         }
     }
@@ -177,9 +176,8 @@ public class MasterAutonomous extends LinearOpMode {
      * For each of these methods, you can add more things you want the robot to do each time it goes to a new subState
      */
     // Increment the subState variable to go to the next subState
-    public void goToNextSubState() {
+    public void goToNextSubState(){
         subState++;
-        Log.i("Master Autonomous", "Enter Substate: " + subState);
     }
 
     // Go to a specific subState
@@ -191,7 +189,6 @@ public class MasterAutonomous extends LinearOpMode {
         robot.resetChassisEncoders();
         subState = 1;
         masterState++;
-        Log.i("Master Autonomous", "Enter MasterState: " + masterState);
     }
 
     public boolean StrafeTowardsDetectedSkystoneV2(SkystoneVuforiaData vision ) {
@@ -201,63 +198,13 @@ public class MasterAutonomous extends LinearOpMode {
 
         switch(subState) {
             case STRAFE_TO_VIEWING_POSITION:
-//                if(robot.strafe(strafePower, viewingPosition)); {
-//                    robot.light.setPower(1.0);
-//                    goToNextSubState();
-//                }
-                goToNextSubState();
-                break;
-
-//            case DETECT_SKYSTONE:
-//                // The getSkystoneCoordinates() method returns null if the skystone is not detected
-//                HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
-//                if(skyStoneCoordinates != null){
-//                    robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
-//                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
-//                    telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
-//                            robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
-//                    robot.light.setPower(0);
-//                    Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
-//                    Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
-//                    goToNextSubState();
-//                }
-//                else {
-//                    telemetry.addLine("No Skystone Detected");
-//                }
-//                telemetry.update();
-//                break;
-
-            default:
-                subState = STATE_END;
-                isComplete = true;
-                break;
-
-        }
-        return isComplete;
-    }
-
-    public boolean AlignAndPickUpSkystone(SkystoneVuforiaData vision) {
-        boolean isComplete = false;
-
-        telemetry.addData("State", subState);
-
-        switch(subState) {
-            case STRAFE_TO_VIEWING_POSITION_2:
                 if(robot.strafe(strafePower, viewingPosition)); {
-                    robot.resetChassisEncoders();
-                    robot.light.setPower(1.0);
-                    goToNextSubState();
-                }
-                break;
+                robot.light.setPower(1.0);
+                goToNextSubState();
+            }
+            break;
 
-            case MOVE_ARM_UP:
-                if(robot.moveArm(armUpAngle, 0)) {
-                    robot.light.setPower(1);
-                    goToNextSubState();
-                }
-                break;
-
-            case FIND_CENTER_OF_SKYSTONE_VS_ARM:
+            case DETECT_SKYSTONE:
                 // The getSkystoneCoordinates() method returns null if the skystone is not detected
                 HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
                 if(skyStoneCoordinates != null){
@@ -275,6 +222,47 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 telemetry.update();
                 break;
+
+            default:
+                subState = STATE_END;
+                isComplete = true;
+                break;
+
+        }
+        return isComplete;
+    }
+
+    public boolean AlignAndPickUpSkystone(SkystoneVuforiaData vision) {
+        boolean isComplete = false;
+
+        telemetry.addData("State", subState);
+
+        switch(subState) {
+            case MOVE_ARM_UP:
+                if(robot.moveArm(armUpAngle, 0)) {
+                    robot.light.setPower(1);
+                    goToNextSubState();
+                }
+                break;
+
+//            case FIND_CENTER_OF_SKYSTONE_VS_ARM:
+//                // The getSkystoneCoordinates() method returns null if the skystone is not detected
+//                HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
+//                if(skyStoneCoordinates != null){
+//                    robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
+//                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
+//                    telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
+//                            robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
+//                    robot.light.setPower(0);
+//                    Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
+//                    Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
+//                    goToNextSubState();
+//                }
+//                else {
+//                    telemetry.addLine("No Skystone Detected");
+//                }
+//                telemetry.update();
+//                break;
 
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
