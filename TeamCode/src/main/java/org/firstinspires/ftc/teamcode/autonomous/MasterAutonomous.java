@@ -385,10 +385,10 @@ public class MasterAutonomous extends LinearOpMode {
                 }
 
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.leftFrontMotor.setPower(0.2 * angleAdjustmentSign);
-                robot.rightFrontMotor.setPower(0.2 * -angleAdjustmentSign);
-                robot.leftBackMotor.setPower(0.2 * angleAdjustmentSign);
-                robot.rightBackMotor.setPower(0.2 * -angleAdjustmentSign);
+                robot.leftFrontMotor.setPower(0.15 * angleAdjustmentSign);
+                robot.rightFrontMotor.setPower(0.15 * -angleAdjustmentSign);
+                robot.leftBackMotor.setPower(0.15 * angleAdjustmentSign);
+                robot.rightBackMotor.setPower(0.15 * -angleAdjustmentSign);
 
                 angle = robot.getTurningAngle();
                 if(angle > -0.3 && angle < -0.05) {
@@ -481,11 +481,22 @@ public class MasterAutonomous extends LinearOpMode {
                 angle = robot.getTurningAngle();
                 double angleOffset = 5 * Math.signum(angle);
                 robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
-                if (timer.seconds() >= 1) {
-                    if (robot.driveMecanum(0,1, -Math.toRadians(angle + angleOffset), -100)) {
-                        robot.stop();
-                        robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
-                        goToNextSubState();
+                if(isBlue) {
+                    if (timer.seconds() >= 1) {
+                        if (robot.driveMecanum(0, 1, -Math.toRadians(angle + angleOffset), -100)) {
+                            robot.stop();
+                            robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
+                            goToNextSubState();
+                        }
+                    }
+                }
+                else {
+                    if (timer.seconds() >= 1) {
+                        if (robot.driveMecanum(0, 1, Math.toRadians(angle - angleOffset), 100)) {
+                            robot.stop();
+                            robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
+                            goToNextSubState();
+                        }
                     }
                 }
                 break;
