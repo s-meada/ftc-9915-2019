@@ -100,7 +100,7 @@ public class MasterAutonomous extends LinearOpMode {
     double behindFoundationPosition = 35;
     double towardsCenterPosition = 31;
     double towardsRedLinePosition = 25;
-    boolean blueAlliance = allianceColor == AllianceColor.BLUE;
+    boolean blueAlliance;
 
     //cases
     static final int ROBOT_MOVES_ARM = 1;
@@ -120,6 +120,12 @@ public class MasterAutonomous extends LinearOpMode {
         // init()
         robot.initForRunToPosition(hardwareMap);
         SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap,robot);
+        if(robot.allianceSwitch.getState()) {
+            allianceColor = AllianceColor.BLUE;
+        }
+        else {
+            allianceColor = AllianceColor.RED;
+        }
 
         waitForStart(); // MUST add this yourself
 
@@ -287,7 +293,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ADJUST_ROBOT_POSITION:
-                if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter - 3.75)) {
+                if(robot.drive(0.75, -robotYDistanceFromSkystoneCenter - 3)) {
                     goToNextSubState();
                 }
                 break;
@@ -364,7 +370,6 @@ public class MasterAutonomous extends LinearOpMode {
             case ADJUST_ANGLE:
                 angle = robot.getTurningAngle();
                 telemetry.addData("Angle", angle);
-                Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
                 if(angle > -0.3) {
                     angleAdjustmentSign = -1;
                 }
@@ -373,6 +378,7 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 else {
                     robot.stop();
+                    Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
                     Log.i("MasterAutonomous", "Finished Angle adjustment");
                     goToNextSubState();
                     break;
@@ -385,7 +391,7 @@ public class MasterAutonomous extends LinearOpMode {
                 robot.rightBackMotor.setPower(0.2 * -angleAdjustmentSign);
 
                 angle = robot.getTurningAngle();
-                if(angle > -0.25 && angle < 0.01) {
+                if(angle > -0.3 && angle < -0.05) {
                     telemetry.addData("Angle", angle);
                     Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
                     Log.i("MasterAutonomous", "Finished Angle adjustment");
@@ -403,14 +409,14 @@ public class MasterAutonomous extends LinearOpMode {
 
                 double distanceToFoundation = distanceToEndOfQuarry + distanceToFoundationEdge + distanceToFoundationCenter;
                 if (isBlue) {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + (distanceToFoundation) + " INCHES");
                     if (robot.drive(0.5, distanceToFoundation)) {
+                        Log.i("MasterAutonomous", "Distance to Drive: " + (distanceToFoundation) + " INCHES");
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
-                    Log.i("MasterAutonomous", "Distance to Drive: " + (-distanceToFoundation) + " INCHES");
                     if (robot.drive(0.5, -distanceToFoundation)) {
+                        Log.i("MasterAutonomous", "Distance to Drive: " + (-distanceToFoundation) + " INCHES");
                         robot.stop();
                         goToNextSubState();
                     }
@@ -422,16 +428,16 @@ public class MasterAutonomous extends LinearOpMode {
                 robot.angleMotor.setPower(1.0);
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                 if (isBlue) {
-                    Log.i("MasterAutonomous", "Blue Distance Sensor Reading: " + robot.blueDistanceSensor.getDistance(INCH) + " INCHES");
                     robot.drivePower(0.5,0.5,0.5,0.5);
                     if (robot.blueDistanceSensor.getDistance(INCH) < 13 && robot.redDistanceSensor.getDistance(INCH) < 13) {
+                        Log.i("MasterAutonomous", "Blue Distance Sensor Reading: " + robot.blueDistanceSensor.getDistance(INCH) + " INCHES");
                         robot.stop();
                         goToNextSubState();
                     }
                 } else {
-                    Log.i("MasterAutonomous", "Red Distance Sensor Reading: " + robot.redDistanceSensor.getDistance(INCH) + " INCHES");
                     robot.drivePower(-0.5,-0.5,-0.5,-0.5);
                     if (robot.redDistanceSensor.getDistance(INCH) < 13 && robot.blueDistanceSensor.getDistance(INCH) < 13) {
+                        Log.i("MasterAutonomous", "Red Distance Sensor Reading: " + robot.redDistanceSensor.getDistance(INCH) + " INCHES");
                         robot.stop();
                         goToNextSubState();
                     }
@@ -497,6 +503,7 @@ public class MasterAutonomous extends LinearOpMode {
         boolean isComplete = false;
         telemetry.addData("Current State", subState);
         telemetry.update();
+        blueAlliance = allianceColor == AllianceColor.BLUE;
         switch (subState) {
 
             case ROBOT_MOVES_ARM:

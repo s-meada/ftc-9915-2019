@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -97,6 +98,8 @@ public class Robot {
     public DistanceSensor blueDistanceSensor;
     public DistanceSensor redDistanceSensor;
 
+    public DigitalChannel allianceSwitch;
+
     // LED Light Strip
     public DcMotor light;
 
@@ -164,6 +167,8 @@ public class Robot {
         redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
         gyroSensor = hardwareMap.get(BNO055IMU.class, "gyroSensor");
         gyroSensor.initialize(parameters);
+        this.allianceSwitch = hardwareMap.digitalChannel.get("allianceSwitch");
+        this.allianceSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         // Light
         light = hardwareMap.dcMotor.get("light");
