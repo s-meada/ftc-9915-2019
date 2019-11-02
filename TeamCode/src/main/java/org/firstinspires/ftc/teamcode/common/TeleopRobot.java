@@ -351,15 +351,16 @@ public class TeleopRobot {
 
     public void grab(){
         int state = 1;
-        int blockFirstEdge;
-        int blockSecondEdge;
-        double blockRange;
-        int grabPosition;
-
-        int DRIVE_TO_BLOCK = 1;
-        int DRIVE_ALONG_BLOCK = 2;
-        int DRIVE_TO_EDGE = 3;
-        int DRIVE_TO_GRAB = 4;
+//Android Studio likes variables initialized, so we do!
+        int blockFirstEdge=0;
+        int blockSecondEdge=0;
+        double blockRange=0.0;
+        int grabPosition=0;
+//For case numbers, a constant expression must be used
+        final int DRIVE_TO_BLOCK = 1;
+        final int DRIVE_ALONG_BLOCK = 2;
+        final int DRIVE_TO_EDGE = 3;
+        final int DRIVE_TO_GRAB = 4;
 
         int STATE_END = 5;
         while (true){
