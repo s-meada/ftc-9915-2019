@@ -1,26 +1,14 @@
 package org.firstinspires.ftc.teamcode.common;
 
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-import com.qualcomm.hardware.bosch.BNO055IMU;
-=======
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-=======
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
 
 public class TeleopRobot {
 
@@ -39,11 +27,7 @@ public class TeleopRobot {
     public static final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
     public static final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
     public static final double ARM_STARTING_LENGTH = 13.25;
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 3.0;
-=======
     public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 4.0;
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
     public static final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
     public static final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
     public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
@@ -72,20 +56,9 @@ public class TeleopRobot {
     public static final double GRABBER_SERVO_TWO_OPEN_POSITION = 0.75;
     public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.25;
 
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-    public static final double GRABBER_SERVO_OPEN_POSITION = 0.5;
-    public static final double GRABBER_SERVO_CLOSE_POSITION = 1.0;
-    public static final double GRABBER_SERVO_TWO_OPEN_POSITION = 0.75;
-    public static final double GRABBER_SERVO_TWO_CLOSE_POSITION = 0.25;
-
-    public static final double ROTATION_SERVO_START_POSITION = 0.47;
-
-    public static final double ANGLE_SERVO_INIT_POSITION = 0.92;
-=======
     public static final double ROTATION_SERVO_START_POSITION = 0.47;
 
     public static final double ANGLE_SERVO_INIT_POSITION = 0.48;
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
 
     // Foundation
     public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
@@ -115,21 +88,9 @@ public class TeleopRobot {
     // Sensors
     public WebcamName webcam;
 
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-    BNO055IMU gyroSensor;
-    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-    Orientation angles;
-
     public DistanceSensor blueDistanceSensor;
     public DistanceSensor redDistanceSensor;
 
-    public DigitalChannel allianceSwitch;
-
-=======
-    public DistanceSensor blueDistanceSensor;
-    public DistanceSensor redDistanceSensor;
-
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
     // LED Light Strip
     public DcMotor light;
 
@@ -183,35 +144,20 @@ public class TeleopRobot {
         grabberServo = hardwareMap.servo.get("grabberServo");
         grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
         foundationServo = hardwareMap.servo.get("foundationServo");
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-        angleServo = hardwareMap.servo.get("verticalServo");
-=======
         verticalServo = hardwareMap.servo.get("verticalServo");
         capstoneServo = hardwareMap.servo.get("capstoneServo");
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
         grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-        angleServo.setPosition(ANGLE_SERVO_INIT_POSITION); // REPLACE with initial position of this servo
-=======
         verticalServo.setPosition(ANGLE_SERVO_INIT_POSITION);
         capstoneServo.setPosition(0.36);
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
         blueDistanceSensor = hardwareMap.get(DistanceSensor.class, "blueDistanceSensor");
         redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-        gyroSensor = hardwareMap.get(BNO055IMU.class, "gyroSensor");
-        gyroSensor.initialize(parameters);
-        this.allianceSwitch = hardwareMap.digitalChannel.get("allianceSwitch");
-        this.allianceSwitch.setMode(DigitalChannel.Mode.INPUT);
-=======
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
 
         // Light
         light = hardwareMap.dcMotor.get("light");
@@ -305,22 +251,17 @@ public class TeleopRobot {
         y = -y;
         x = -x;
 
-        double lf = y+x-w;
-        double rf = y-x+w;
-        double lb = y-x-w;
-        double rb = y+x+w;
-
-        this.leftFrontMotor.setPower(lf);
-        this.rightFrontMotor.setPower(rf);
-        this.leftBackMotor.setPower(lb);
-        this.rightBackMotor.setPower(rb);
+        this.leftFrontMotor.setPower(y+x-w);
+        this.rightFrontMotor.setPower(y-x+w);
+        this.leftBackMotor.setPower(y-x-w);
+        this.rightBackMotor.setPower(y+x+w);
 
         int targetPosition = -(int)(robotTicksPerInch * distance);
 
-        this.leftFrontMotor.setTargetPosition((int)Math.signum(lf) * targetPosition);
-        this.rightFrontMotor.setTargetPosition((int)Math.signum(rf) * targetPosition);
-        this.leftBackMotor.setTargetPosition((int)Math.signum(lb) * targetPosition);
-        this.rightBackMotor.setTargetPosition((int)Math.signum(rb) * targetPosition);
+        this.leftFrontMotor.setTargetPosition(targetPosition);
+        this.rightFrontMotor.setTargetPosition(targetPosition);
+        this.leftBackMotor.setTargetPosition(targetPosition);
+        this.rightBackMotor.setTargetPosition(targetPosition);
 
         setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -403,14 +344,6 @@ public class TeleopRobot {
      * @return whether the arm has finished moving to the new (x, y) point
      */
     public boolean moveArmXY(double x, double y) {
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/Robot.java
-        return moveArm(Math.toDegrees(Math.atan2(y, x)), Math.hypot(x, y));
-    }
-
-    public double getTurningAngle() {
-        angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        return angles.firstAngle;
-=======
         double dTheta = 2.5/Math.hypot(x,y);
         return moveArm(Math.toDegrees(Math.atan2(y, x)+dTheta), Math.hypot(x, y));
 
@@ -440,8 +373,8 @@ public class TeleopRobot {
                     this.grabberServoTwo.setPosition(this.GRABBER_SERVO_TWO_OPEN_POSITION);
                     this.drivePower(0.15, 0.15, 0.15, 0.15);
                     if (range > 300) break;
-                        blockFirstEdge = this.leftFrontMotor.getCurrentPosition();
-                        state++;
+                    blockFirstEdge = this.leftFrontMotor.getCurrentPosition();
+                    state++;
 
                     break;
 
@@ -481,6 +414,5 @@ public class TeleopRobot {
             }
             break;
         }
->>>>>>> teleop:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/TeleopRobot.java
     }
 }
