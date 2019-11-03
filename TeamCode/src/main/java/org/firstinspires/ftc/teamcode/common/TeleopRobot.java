@@ -27,7 +27,7 @@ public class TeleopRobot {
     public static final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
     public static final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
     public static final double ARM_STARTING_LENGTH = 13.25;
-    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 4.0;
+    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 2.0;
     public static final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
     public static final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
     public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
