@@ -65,7 +65,7 @@ public class AlignAndPickUpSkystone extends LinearOpMode {
 
                 case FIND_CENTER_OF_SKYSTONE_VS_ARM:
                     // The getSkystoneCoordinates() method returns null if the skystone is not detected
-                    HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
+                    HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
                     if(skyStoneCoordinates != null){
                         robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
                         robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");

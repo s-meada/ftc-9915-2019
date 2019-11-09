@@ -143,7 +143,7 @@ public class SkystoneVuforiaData {
     // Detecting skystones
     // If a skystone is detected, this method will return a HashMap with the (x, y) coordinates of the skystone
     // If there are no skystones detected, this method will return null
-    public HashMap<String, Float> getSkystoneCoordinates() {
+    public HashMap<String, Double> getSkystoneCoordinates() {
         // check all the trackable targets to see which one (if any) is visible.
         targetVisible = false;
         for (VuforiaTrackable trackable : this.allTrackables) {
@@ -162,11 +162,13 @@ public class SkystoneVuforiaData {
 
         // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
-            HashMap<String, Float> skystoneXYcoordinates = new HashMap<>();
+            Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            HashMap<String, Double> skystoneXYcoordinates = new HashMap<>();
             // express position (translation) of robot in inches.
             VectorF translation = lastLocation.getTranslation();
-            skystoneXYcoordinates.put("X", translation.get(0)/mmPerInch); // x-coordinate of skystone
-            skystoneXYcoordinates.put("Y", translation.get(1)/mmPerInch); // y-coordinate of skystone
+            skystoneXYcoordinates.put("X", (double)translation.get(0)/mmPerInch); // x-coordinate of skystone
+            skystoneXYcoordinates.put("Y Modified", translation.get(0)/mmPerInch * Math.tan(Math.toRadians(rotation.thirdAngle - 90)));
+            skystoneXYcoordinates.put("Y", (double)translation.get(1)/mmPerInch); // y-coordinate of skystone
 
             return skystoneXYcoordinates;
         }
