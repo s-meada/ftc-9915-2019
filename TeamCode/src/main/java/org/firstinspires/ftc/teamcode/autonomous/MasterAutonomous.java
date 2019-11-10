@@ -30,6 +30,9 @@ public class MasterAutonomous extends LinearOpMode {
     AllianceColor allianceColor = AllianceColor.BLUE;
 
     // --- Master States --- //
+    /* Each autonomous coder programmed a part of the autonomous code separately. Here, all of the member's code is combined and the master autonomous
+    runs through each member's code linearly
+     */
     static final int STRAFE_TO_SKYSTONE_V2      = 1;
     static final int ALIGN_AND_PICK_UP_SKYSTONE = 2;
     static final int MOVE_FOUNDATION            = 3;
@@ -52,6 +55,10 @@ public class MasterAutonomous extends LinearOpMode {
 
 
     // --- AlignAndPickUpSkystone States and Variables --- //
+    /* This is Trevor's code. The robot uses vuforia to locate the coordinates of the skystone. After detecting the skystone, the robot aligns itself, extends the arm,
+    and picks it up.
+
+     */
     ElapsedTime timer = new ElapsedTime();
 
     double robotXDistanceFromSkystoneCenter;

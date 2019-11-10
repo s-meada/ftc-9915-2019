@@ -4,9 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.common.Robot;
 
 import java.util.HashMap;
+
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 @Autonomous(name = "Test SkystoneVuforiaData", group = "test")
 public class TestSkystoneVuforiaData extends LinearOpMode {
@@ -33,8 +38,10 @@ public class TestSkystoneVuforiaData extends LinearOpMode {
             // The getSkystoneCoordinates() method returns null if the skystone is not detected
             HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
             if (skyStoneCoordinates != null) {
-                telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
-                        skyStoneCoordinates.get("X"), skyStoneCoordinates.get("Y Modified"));
+                telemetry.addData("Skystone Pos (in)", "(X, Y, Y Modified) = %.1f, %.1f, %.1f",
+                        skyStoneCoordinates.get("X"), skyStoneCoordinates.get("Y"), skyStoneCoordinates.get("Y Modified"));
+                telemetry.addData("Correction (Subtracting Mod - Orig)", (skyStoneCoordinates.get("Y Modified") - skyStoneCoordinates.get("Y")));
+                telemetry.addData("Heading", skyStoneCoordinates.get("Heading"));
                 robot.light.setPower(0);
             } else {
                 telemetry.addLine("No Skystone Detected");

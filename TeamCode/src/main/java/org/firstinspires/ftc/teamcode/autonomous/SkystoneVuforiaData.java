@@ -169,6 +169,7 @@ public class SkystoneVuforiaData {
             skystoneXYcoordinates.put("X", (double)translation.get(0)/mmPerInch); // x-coordinate of skystone
             skystoneXYcoordinates.put("Y Modified", translation.get(0)/mmPerInch * Math.tan(Math.toRadians(rotation.thirdAngle - 90)));
             skystoneXYcoordinates.put("Y", (double)translation.get(1)/mmPerInch); // y-coordinate of skystone
+            skystoneXYcoordinates.put("Heading", (double)rotation.thirdAngle);
 
             return skystoneXYcoordinates;
         }
