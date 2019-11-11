@@ -15,7 +15,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Robot {
-
+    /* This is a class defining all of the constants, limits, initial positions, methods, motors, servos, switches, and sensors that are used in
+    autonomous and teleop.
+     */
     public boolean encodersReseted = false;
 
     // --- Robot Geometry --- //

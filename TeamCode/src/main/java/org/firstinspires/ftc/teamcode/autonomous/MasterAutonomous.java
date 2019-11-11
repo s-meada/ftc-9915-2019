@@ -203,8 +203,8 @@ public class MasterAutonomous extends LinearOpMode {
         masterState++;
     }
 
-    /* This is Trevor's code. The robot uses Vuforia to locate the coordinates of the skystone. After detecting the skystone, the robot aligns itself, extends its arm,
-    and picks up the skystone.
+    /* This is Trevor's code. The robot moves to a pre-determined viewing position to detect skystones
+
 
      */
     public boolean StrafeTowardsDetectedSkystoneV2(SkystoneVuforiaData vision ) {
@@ -220,6 +220,11 @@ public class MasterAutonomous extends LinearOpMode {
             }
             break;
 
+            /*
+            This is Ashley's code. The robot uses Vuforia to locate the coordinates of the skystone. After detecting the skystone, the robot aligns itself, extends its arm,
+            and picks up the skystone.
+
+             */
             case DETECT_SKYSTONE:
                 HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
                 if(skyStoneCoordinates != null){
@@ -361,6 +366,8 @@ public class MasterAutonomous extends LinearOpMode {
         return isComplete;
     }
 
+    /*This is Avery's code. Gripping the skystone, the robot moves away from the stones and towards the end wall, where it drags the foundation
+    to the building zone. The robot uses a gyro sensor to precisely turn to the correct angle from which to drag the skystone.*/
     public boolean MoveFoundation() {
         boolean isComplete = false;
         boolean isBlue = allianceColor == AllianceColor.BLUE;
@@ -553,6 +560,8 @@ public class MasterAutonomous extends LinearOpMode {
         return isComplete;
     }
 
+    /* This is Sonal's code. The robot releases the skystone onto the foundation and then moves backwards to park on the tape under the bridge.
+     */
     public boolean SonalAutonomous() {
         boolean isComplete = false;
         telemetry.addData("Current State", subState);
