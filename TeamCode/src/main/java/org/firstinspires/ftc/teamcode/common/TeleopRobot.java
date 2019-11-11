@@ -33,6 +33,13 @@ public class TeleopRobot {
     public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
     public static final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION / ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
 
+    // Capstone
+    public static final double CAPSTONE_ANGLE_UP = 0.43;
+    public static final double CAPSTONE_ANGLE_DOWN = 0.10;
+    public static final double CAPSTONE_CLAW_OPEN = 0.44;
+    public static final double CAPSTONE_CLAW_CLOSED = 0.85;
+    public static final double CAPSTONE_ANGLE_INIT = 0.4;
+
     // --- Vuforia --- //
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -84,6 +91,7 @@ public class TeleopRobot {
     public Servo foundationServo;
     public Servo verticalServo;
     public Servo capstoneServo;
+    public Servo capstoneServoClaw;
 
     // Sensors
     public WebcamName webcam;
@@ -146,13 +154,15 @@ public class TeleopRobot {
         foundationServo = hardwareMap.servo.get("foundationServo");
         verticalServo = hardwareMap.servo.get("verticalServo");
         capstoneServo = hardwareMap.servo.get("capstoneServo");
+        capstoneServoClaw = hardwareMap.servo.get("capstoneServoClaw");
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
         grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
         verticalServo.setPosition(ANGLE_SERVO_INIT_POSITION);
-        capstoneServo.setPosition(0.36);
+        capstoneServo.setPosition(CAPSTONE_ANGLE_INIT);
+        capstoneServoClaw.setPosition(CAPSTONE_CLAW_CLOSED);
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");

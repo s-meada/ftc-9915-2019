@@ -97,17 +97,29 @@ public class TeleopInitial extends OpMode {
         }
         if (gamepad2.x) {
             capstoneServoDown = true;
-            robot.foundationServo.setPosition(.666 * robot.FOUNDATION_SERVO_DOWN_POSITION + .333 * robot.FOUNDATION_SERVO_UP_POSITION);
+            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_DOWN);
+            //robot.foundationServo.setPosition(.666 * robot.FOUNDATION_SERVO_DOWN_POSITION + .333 * robot.FOUNDATION_SERVO_UP_POSITION);
         }
 
-        if (gamepad2.y) capstoneServoDown = false;
+        if (gamepad2.y) {
+            capstoneServoDown = false;
+            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_UP);
+        }
+
+        if (gamepad2.left_bumper) {
+            robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_CLOSED);
+        }
+
+        if (gamepad2.right_bumper) {
+            robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_OPEN);
+        }
 
 
-        if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
-        else if (!capstoneServoDown && capstoneServoPosition <= 0.50) capstoneServoPosition += 0.01;
-        robot.capstoneServo.setPosition(capstoneServoPosition);
-        telemetry.addData("capstoneServoDown", capstoneServoDown);
-        telemetry.addData("capstoneServoPosition", capstoneServoPosition);
+        //if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
+        //else if (!capstoneServoDown && capstoneServoPosition <= 0.50) capstoneServoPosition += 0.01;
+        //robot.capstoneServo.setPosition(capstoneServoPosition);
+        //telemetry.addData("capstoneServoDown", capstoneServoDown);
+        //telemetry.addData("capstoneServoPosition", capstoneServoPosition);
 //        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
 //        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
 
