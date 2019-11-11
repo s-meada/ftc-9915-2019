@@ -61,7 +61,7 @@ public class StrafeTowardsDetectedSkystoneV2 extends LinearOpMode {
 
 
                 case DETECT_SKYSTONE:
-                    HashMap <String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
+                    HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
                     if(skyStoneCoordinates != null){
                         skyStoneCoordinateX = skyStoneCoordinates.get("X");
                         skyStoneCoordinateY = skyStoneCoordinates.get("Y");
