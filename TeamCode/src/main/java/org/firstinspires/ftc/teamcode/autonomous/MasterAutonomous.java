@@ -30,6 +30,9 @@ public class MasterAutonomous extends LinearOpMode {
     AllianceColor allianceColor = AllianceColor.BLUE;
 
     // --- Master States --- //
+    /* Each autonomous coder programmed a part of the autonomous code separately. Here, all of the member's code is combined and the master autonomous
+    runs through each member's code linearly
+     */
     static final int STRAFE_TO_SKYSTONE_V2      = 1;
     static final int ALIGN_AND_PICK_UP_SKYSTONE = 2;
     static final int MOVE_FOUNDATION            = 3;
@@ -52,6 +55,10 @@ public class MasterAutonomous extends LinearOpMode {
 
 
     // --- AlignAndPickUpSkystone States and Variables --- //
+    /* This is Trevor's code. The robot uses vuforia to locate the coordinates of the skystone. After detecting the skystone, the robot aligns itself, extends the arm,
+    and picks it up.
+
+     */
     ElapsedTime timer = new ElapsedTime();
 
     double robotXDistanceFromSkystoneCenter;
@@ -205,8 +212,7 @@ public class MasterAutonomous extends LinearOpMode {
             break;
 
             case DETECT_SKYSTONE:
-                // The getSkystoneCoordinates() method returns null if the skystone is not detected
-                HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
+                HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
                 if(skyStoneCoordinates != null){
                     robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
                     robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
@@ -245,24 +251,24 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 break;
 
-//            case FIND_CENTER_OF_SKYSTONE_VS_ARM:
-//                // The getSkystoneCoordinates() method returns null if the skystone is not detected
-//                HashMap<String, Float> skyStoneCoordinates = vision.getSkystoneCoordinates();
-//                if(skyStoneCoordinates != null){
-//                    robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
-//                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
-//                    telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
-//                            robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
-//                    robot.light.setPower(0);
-//                    Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
-//                    Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
-//                    goToNextSubState();
-//                }
-//                else {
-//                    telemetry.addLine("No Skystone Detected");
-//                }
-//                telemetry.update();
-//                break;
+            case FIND_CENTER_OF_SKYSTONE_VS_ARM:
+                // The getSkystoneCoordinates() method returns null if the skystone is not detected
+                HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
+                if(skyStoneCoordinates != null){
+                    robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
+                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
+                    telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
+                            robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
+                    robot.light.setPower(0);
+                    Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
+                    Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
+                    goToNextSubState();
+                }
+                else {
+                    telemetry.addLine("No Skystone Detected");
+                }
+                telemetry.update();
+                break;
 
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
