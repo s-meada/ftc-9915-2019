@@ -30,6 +30,10 @@ public class MasterAutonomous extends LinearOpMode {
     AllianceColor allianceColor = AllianceColor.BLUE;
 
     // --- Master States --- //
+
+    /* Each autonomous coder programmed a part of the autonomous code separately. In the MasterAutonomous class, all of the member's programs are combined
+    and run linearly. Here, all of the states of each member's programs are defined.
+     */
     static final int STRAFE_TO_SKYSTONE_V2      = 1;
     static final int ALIGN_AND_PICK_UP_SKYSTONE = 2;
     static final int MOVE_FOUNDATION            = 3;
@@ -52,6 +56,7 @@ public class MasterAutonomous extends LinearOpMode {
 
 
     // --- AlignAndPickUpSkystone States and Variables --- //
+
     ElapsedTime timer = new ElapsedTime();
 
     double robotXDistanceFromSkystoneCenter;
@@ -78,6 +83,9 @@ public class MasterAutonomous extends LinearOpMode {
 
 
     // --- MovingFoundation States and Variables --- //
+    /* This is Avery's code. After picking up the skystone, the robot drives to the foundation and drags it.
+
+     */
 
     static final int DRIVE_AWAY_FROM_BLOCK = 1;
     static final int ADJUST_ANGLE = 2;
@@ -121,6 +129,8 @@ public class MasterAutonomous extends LinearOpMode {
         // init()
         robot.initForRunToPosition(hardwareMap);
         SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap,robot);
+
+        //Here the robot discerns the alliance color based on the switch
         if(robot.allianceSwitch.getState()) {
             allianceColor = AllianceColor.BLUE;
         }
@@ -129,6 +139,8 @@ public class MasterAutonomous extends LinearOpMode {
         }
 
         waitForStart(); // MUST add this yourself
+
+
 
         vision.targetsSkyStone.activate();
 
@@ -191,6 +203,10 @@ public class MasterAutonomous extends LinearOpMode {
         masterState++;
     }
 
+    /* This is Trevor's code. The robot uses Vuforia to locate the coordinates of the skystone. After detecting the skystone, the robot aligns itself, extends its arm,
+    and picks up the skystone.
+
+     */
     public boolean StrafeTowardsDetectedSkystoneV2(SkystoneVuforiaData vision ) {
         boolean isComplete = false;
         // loop()
