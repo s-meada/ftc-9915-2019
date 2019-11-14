@@ -80,13 +80,13 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad1.y) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
 
-        //open grabber
-        if (gamepad2.b) {
+        //close grabber
+        if (gamepad2.a) {
             robot.grabberServo.setPosition(1.0);
             robot.grabberServoTwo.setPosition(0.20);
         }
-        //close grabber
-        if (gamepad2.a) {
+        //open grabber
+        if (gamepad2.b) {
             robot.grabberServo.setPosition(0.5);
             robot.grabberServoTwo.setPosition(0.75);
         }
