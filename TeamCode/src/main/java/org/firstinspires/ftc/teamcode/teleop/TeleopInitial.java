@@ -80,46 +80,34 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad1.y) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
 
-        //close grabber
+        //open grabber
         if (gamepad2.a) {
             robot.grabberServo.setPosition(1.0);
             robot.grabberServoTwo.setPosition(0.20);
         }
-        //open grabber
+        //close grabber
         if (gamepad2.b) {
             robot.grabberServo.setPosition(0.5);
             robot.grabberServoTwo.setPosition(0.75);
         }
         //open for capstone
         if (gamepad2.dpad_down) {
-            robot.grabberServo.setPosition(0.6);
-            robot.grabberServoTwo.setPosition(0.65);
+            robot.grabberServo.setPosition(0.9);
+            robot.grabberServoTwo.setPosition(0.3);
         }
         if (gamepad2.x) {
             capstoneServoDown = true;
-            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_DOWN);
-            //robot.foundationServo.setPosition(.666 * robot.FOUNDATION_SERVO_DOWN_POSITION + .333 * robot.FOUNDATION_SERVO_UP_POSITION);
+            robot.foundationServo.setPosition(.666 * robot.FOUNDATION_SERVO_DOWN_POSITION + .333 * robot.FOUNDATION_SERVO_UP_POSITION);
         }
 
-        if (gamepad2.y) {
-            capstoneServoDown = false;
-            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_UP);
-        }
-
-        if (gamepad2.left_bumper) {
-            robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_CLOSED);
-        }
-
-        if (gamepad2.right_bumper) {
-            robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_OPEN);
-        }
+        if (gamepad2.y) capstoneServoDown = false;
 
 
-        //if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
-        //else if (!capstoneServoDown && capstoneServoPosition <= 0.50) capstoneServoPosition += 0.01;
-        //robot.capstoneServo.setPosition(capstoneServoPosition);
-        //telemetry.addData("capstoneServoDown", capstoneServoDown);
-        //telemetry.addData("capstoneServoPosition", capstoneServoPosition);
+        if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
+        else if (!capstoneServoDown && capstoneServoPosition <= 0.50) capstoneServoPosition += 0.01;
+        robot.capstoneServo.setPosition(capstoneServoPosition);
+        telemetry.addData("capstoneServoDown", capstoneServoDown);
+        telemetry.addData("capstoneServoPosition", capstoneServoPosition);
 //        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
 //        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
 
