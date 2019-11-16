@@ -229,7 +229,7 @@ public class MasterAutonomous extends LinearOpMode {
                 HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
                 if(skyStoneCoordinates != null){
                     robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
-                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
+                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y Corrected");
                     telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
                             robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
                     robot.light.setPower(0);
@@ -270,7 +270,7 @@ public class MasterAutonomous extends LinearOpMode {
                 HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
                 if(skyStoneCoordinates != null){
                     robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
-                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y");
+                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y Corrected");
                     telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
                             robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
                     robot.light.setPower(0);
