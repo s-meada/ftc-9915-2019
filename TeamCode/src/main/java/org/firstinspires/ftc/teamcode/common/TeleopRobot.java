@@ -27,11 +27,18 @@ public class TeleopRobot {
     public static final double Y_DISTANCE_FROM_CAMERA_TO_ARM = 3.0;
     public static final double ARM_STARTING_LENGTH_FROM_EDGE_OF_ROBOT = 4.0;
     public static final double ARM_STARTING_LENGTH = 13.25;
-    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 4.0;
+    public static final double ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG = 2.0;
     public static final double ARM_ANGLE_MOTOR_TICKS_PER_ROTATION = 7168.0;
     public static final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
     public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
     public static final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION / ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
+
+    // Capstone
+    public static final double CAPSTONE_ANGLE_UP = 0.43;
+    public static final double CAPSTONE_ANGLE_DOWN = 0.10;
+    public static final double CAPSTONE_CLAW_OPEN = 0.44;
+    public static final double CAPSTONE_CLAW_CLOSED = 0.85;
+    public static final double CAPSTONE_ANGLE_INIT = 0.4;
 
     // --- Vuforia --- //
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
@@ -84,6 +91,7 @@ public class TeleopRobot {
     public Servo foundationServo;
     public Servo verticalServo;
     public Servo capstoneServo;
+    public Servo capstoneServoClaw;
 
     // Sensors
     public WebcamName webcam;
@@ -146,13 +154,15 @@ public class TeleopRobot {
         foundationServo = hardwareMap.servo.get("foundationServo");
         verticalServo = hardwareMap.servo.get("verticalServo");
         capstoneServo = hardwareMap.servo.get("capstoneServo");
+        capstoneServoClaw = hardwareMap.servo.get("capstoneServoClaw");
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
         grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
         verticalServo.setPosition(ANGLE_SERVO_INIT_POSITION);
-        capstoneServo.setPosition(0.36);
+        capstoneServo.setPosition(CAPSTONE_ANGLE_INIT);
+        capstoneServoClaw.setPosition(CAPSTONE_CLAW_CLOSED);
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -373,8 +383,8 @@ public class TeleopRobot {
                     this.grabberServoTwo.setPosition(this.GRABBER_SERVO_TWO_OPEN_POSITION);
                     this.drivePower(0.15, 0.15, 0.15, 0.15);
                     if (range > 300) break;
-                        blockFirstEdge = this.leftFrontMotor.getCurrentPosition();
-                        state++;
+                    blockFirstEdge = this.leftFrontMotor.getCurrentPosition();
+                    state++;
 
                     break;
 

@@ -111,6 +111,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
     private static final String VUFORIA_KEY =
             " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
 
+
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
@@ -149,7 +150,11 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
+
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
+
+        parameters.vuforiaLicenseKey = " -- ENTER KEY HERE <sample code> ---";
+
         parameters.cameraDirection   = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
