@@ -128,6 +128,9 @@ public class MasterAutonomous extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // init()
         robot.initForRunToPosition(hardwareMap);
+
+        waitForStart();
+
         SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap,robot);
 
         //Here the robot discerns the alliance color based on the switch
@@ -138,13 +141,11 @@ public class MasterAutonomous extends LinearOpMode {
             allianceColor = AllianceColor.RED;
         }
 
-        waitForStart(); // MUST add this yourself
-
 
 
         vision.targetsSkyStone.activate();
 
-        while(opModeIsActive()) {  // MUST add this yourself
+        while(!isStopRequested()) {
             telemetry.addData("Master State", masterState);
             telemetry.update();
             switch (masterState) {
@@ -265,24 +266,24 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 break;
 
-            case FIND_CENTER_OF_SKYSTONE_VS_ARM:
-                // The getSkystoneCoordinates() method returns null if the skystone is not detected
-                HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
-                if(skyStoneCoordinates != null){
-                    robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
-                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y Corrected");
-                    telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
-                            robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
-                    robot.light.setPower(0);
-                    Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
-                    Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
-                    goToNextSubState();
-                }
-                else {
-                    telemetry.addLine("No Skystone Detected");
-                }
-                telemetry.update();
-                break;
+//            case FIND_CENTER_OF_SKYSTONE_VS_ARM:
+//                // The getSkystoneCoordinates() method returns null if the skystone is not detected
+//                HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
+//                if(skyStoneCoordinates != null){
+//                    robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
+//                    robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y Corrected");
+//                    telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
+//                            robotXDistanceFromSkystoneCenter, robotYDistanceFromSkystoneCenter);
+//                    robot.light.setPower(0);
+//                    Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
+//                    Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
+//                    goToNextSubState();
+//                }
+//                else {
+//                    telemetry.addLine("No Skystone Detected");
+//                }
+//                telemetry.update();
+//                break;
 
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
