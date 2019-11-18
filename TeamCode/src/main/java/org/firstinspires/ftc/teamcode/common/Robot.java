@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -16,8 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Robot {
     /* This is a class defining all of the constants, limits, initial positions, methods, motors, servos, switches, and sensors that are used in
-    autonomous and teleop.
-     */
+                autonomous and teleop.
+                 */
     public boolean encodersReseted = false;
 
     // --- Robot Geometry --- //
@@ -50,6 +51,8 @@ public class Robot {
 
     // --- Constants --- //
 
+    public static final int MOTOR_ENCODER_TOLERANCE = 50;
+
     // Arm
     public static final int ANGLE_MOTOR_UP_LIMIT = 1400;
     public static final int ANGLE_MOTOR_DOWN_LIMIT = 0;
@@ -74,14 +77,14 @@ public class Robot {
     // --- Robot Hardware Variables --- //
 
     // Chassis motors
-    public DcMotor leftFrontMotor;
-    public DcMotor rightFrontMotor;
-    public DcMotor leftBackMotor;
-    public DcMotor rightBackMotor;
+    public DcMotorEx leftFrontMotor;
+    public DcMotorEx rightFrontMotor;
+    public DcMotorEx leftBackMotor;
+    public DcMotorEx rightBackMotor;
 
     // Arm motors
-    public DcMotor angleMotor;
-    public DcMotor extensionMotor;
+    public DcMotorEx angleMotor;
+    public DcMotorEx extensionMotor;
 
     // Servos
     public Servo rotationServo;
@@ -130,26 +133,36 @@ public class Robot {
      */
     private void init(HardwareMap hardwareMap) {
         // Chassis
-        this.leftFrontMotor = hardwareMap.dcMotor.get("LeftFront");
-        this.rightFrontMotor = hardwareMap.dcMotor.get("RightFront");
-        this.leftBackMotor = hardwareMap.dcMotor.get("LeftBack");
-        this.rightBackMotor = hardwareMap.dcMotor.get("RightBack");
+        this.leftFrontMotor = hardwareMap.get(DcMotorEx.class, "LeftFront");
+        this.rightFrontMotor = hardwareMap.get(DcMotorEx.class, "RightFront");
+        this.leftBackMotor = hardwareMap.get(DcMotorEx.class, "LeftBack");
+        this.rightBackMotor = hardwareMap.get(DcMotorEx.class, "RightBack");
 
         this.rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        this.leftFrontMotor.setTargetPositionTolerance(MOTOR_ENCODER_TOLERANCE);
+        this.rightFrontMotor.setTargetPositionTolerance(MOTOR_ENCODER_TOLERANCE);
+        this.leftBackMotor.setTargetPositionTolerance(MOTOR_ENCODER_TOLERANCE);
+        this.leftBackMotor.setTargetPositionTolerance(MOTOR_ENCODER_TOLERANCE);
+
+
         // Arm
 
-        angleMotor = hardwareMap.dcMotor.get("angleMotor");
+        angleMotor = hardwareMap.get(DcMotorEx.class, "angleMotor");
         angleMotor.setTargetPosition(0);
         angleMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
+        angleMotor.setTargetPositionTolerance(MOTOR_ENCODER_TOLERANCE);
+
+        extensionMotor = hardwareMap.get(DcMotorEx.class, "extensionMotor");
         extensionMotor.setTargetPosition(0);
         extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        extensionMotor.setTargetPositionTolerance(MOTOR_ENCODER_TOLERANCE);
 
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
