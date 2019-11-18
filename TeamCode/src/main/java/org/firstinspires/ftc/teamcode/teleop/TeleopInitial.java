@@ -17,7 +17,7 @@ public class TeleopInitial extends OpMode {
 
     ElapsedTime timer = new ElapsedTime();
 
-    double speedMulitplier = 1.0;
+    double speedMultiplier = 1.0;
 
     String rotationDirection = "up";
     double x = 13.25;
@@ -34,11 +34,11 @@ public class TeleopInitial extends OpMode {
     public void loop() {
 
         //mecanum drive
-        if (gamepad1.a) speedMulitplier = 0.5;
-        if (gamepad1.b) speedMulitplier = 1.0;
-        double speed = (-gamepad1.left_stick_y * speedMulitplier) + (-gamepad2.left_stick_y * 0.3);
-        double strafe = gamepad1.left_stick_x * speedMulitplier;
-        double turn = -gamepad1.right_stick_x * speedMulitplier;
+        if (gamepad1.a) speedMultiplier = 0.5;
+        if (gamepad1.b) speedMultiplier = 1.0;
+        double speed = (-gamepad1.left_stick_y * speedMultiplier) + (-gamepad2.left_stick_y * 0.3);
+        double strafe = gamepad1.left_stick_x * speedMultiplier;
+        double turn = -gamepad1.right_stick_x * speedMultiplier;
 
 
         robot.leftFrontMotor.setPower(speed + strafe + turn);
@@ -80,34 +80,47 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad1.y) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
 
-        //open grabber
+
+        //close grabber
         if (gamepad2.a) {
             robot.grabberServo.setPosition(1.0);
             robot.grabberServoTwo.setPosition(0.20);
         }
-        //close grabber
+        //open grabber
         if (gamepad2.b) {
             robot.grabberServo.setPosition(0.5);
             robot.grabberServoTwo.setPosition(0.75);
         }
         //open for capstone
         if (gamepad2.dpad_down) {
-            robot.grabberServo.setPosition(0.9);
-            robot.grabberServoTwo.setPosition(0.3);
+            robot.grabberServo.setPosition(0.55);
+            robot.grabberServoTwo.setPosition(0.75);
         }
         if (gamepad2.x) {
             capstoneServoDown = true;
-            robot.foundationServo.setPosition(.666 * robot.FOUNDATION_SERVO_DOWN_POSITION + .333 * robot.FOUNDATION_SERVO_UP_POSITION);
+            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_DOWN);
+            robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
         }
 
-        if (gamepad2.y) capstoneServoDown = false;
+        if (gamepad2.y) {
+            capstoneServoDown = false;
+            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_UP);
+        }
+
+        if (gamepad2.left_bumper) {
+            robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_CLOSED);
+        }
+
+        if (gamepad2.right_bumper) {
+            robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_OPEN);
+        }
 
 
-        if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
-        else if (!capstoneServoDown && capstoneServoPosition <= 0.50) capstoneServoPosition += 0.01;
-        robot.capstoneServo.setPosition(capstoneServoPosition);
-        telemetry.addData("capstoneServoDown", capstoneServoDown);
-        telemetry.addData("capstoneServoPosition", capstoneServoPosition);
+//        if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
+//        else if (!capstoneServoDown && capstoneServoPosition <= 0.50) capstoneServoPosition += 0.01;
+//        robot.capstoneServo.setPosition(capstoneServoPosition);
+//        telemetry.addData("capstoneServoDown", capstoneServoDown);
+//        telemetry.addData("capstoneServoPosition", capstoneServoPosition);
 //        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
 //        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
 
