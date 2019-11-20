@@ -68,18 +68,18 @@ public class MasterAutonomous extends LinearOpMode {
     int maxArmExtensionDistance = 25;
 
     static final int MOVE_ARM_UP                    = 1;
-    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
-    static final int MOVE_ARM_OUT                   = 3;
-    static final int MOVE_SERVOS                    = 4;
-    static final int MOVE_ARM_DOWN                  = 5;
-    static final int STRAFE_TO_SKYSTONE_2_FIRST     = 6;
-    static final int ADJUST_ROBOT_POSITION          = 7;
-    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 8;
-    static final int FINISH_ARM_EXTENSION           = 9;
-    static final int GRAB_SKYSTONE                  = 10;
-    static final int PUT_ARM_DOWN                   = 11;
+//    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
+    static final int MOVE_ARM_OUT                   = 2;
+    static final int MOVE_SERVOS                    = 3;
+    static final int MOVE_ARM_DOWN                  = 4;
+    static final int STRAFE_TO_SKYSTONE_2_FIRST     = 5;
+    static final int ADJUST_ROBOT_POSITION          = 6;
+    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 7;
+    static final int FINISH_ARM_EXTENSION           = 8;
+    static final int GRAB_SKYSTONE                  = 9;
+    static final int PUT_ARM_DOWN                   = 10;
 
-    static final int STATE_END_2                    = 12;
+    static final int STATE_END_2                    = 11;
 
 
     // --- MovingFoundation States and Variables --- //
@@ -129,10 +129,6 @@ public class MasterAutonomous extends LinearOpMode {
         // init()
         robot.initForRunToPosition(hardwareMap);
 
-        waitForStart();
-
-        SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap,robot);
-
         //Here the robot discerns the alliance color based on the switch
         if(robot.allianceSwitch.getState()) {
             allianceColor = AllianceColor.BLUE;
@@ -141,6 +137,10 @@ public class MasterAutonomous extends LinearOpMode {
             allianceColor = AllianceColor.RED;
         }
 
+
+        waitForStart();
+
+        SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap,robot);
 
 
         vision.targetsSkyStone.activate();
@@ -441,7 +441,7 @@ public class MasterAutonomous extends LinearOpMode {
                 double distanceToEndOfQuarry = isBlue ? 12 + robotYDistanceFromSkystoneCenter : -robotYDistanceFromSkystoneCenter - 7;
 
                 int distanceToFoundationEdge = 55;
-                int distanceToFoundationCenter = 25;
+                int distanceToFoundationCenter = 20;
 
                 double distanceToFoundation = distanceToEndOfQuarry + distanceToFoundationEdge + distanceToFoundationCenter;
                 if (isBlue) {
@@ -534,7 +534,7 @@ public class MasterAutonomous extends LinearOpMode {
                 robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
                 if(isBlue) {
                     if (timer.milliseconds() >= 900) {
-                        if (robot.driveMecanum(0, 1, -Math.toRadians(angle + angleOffset), -75)) {
+                        if (robot.driveMecanum(0, 1, -Math.toRadians(angle + angleOffset), -60)) {
                             robot.stop();
                             robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
                             goToNextSubState();
@@ -543,7 +543,7 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 else {
                     if (timer.milliseconds() >= 1000) {
-                        if (robot.driveMecanum(0, 0.8, Math.toRadians(angle), -75)) {
+                        if (robot.driveMecanum(0, 0.8, Math.toRadians(angle), -60)) {
                             robot.stop();
                             robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
                             goToNextSubState();
