@@ -173,10 +173,10 @@ public class SkystoneVuforiaData {
             double Ycorrected = Ytranslation + Yoffset;
 
             skystoneXYcoordinates.put("X", Xtranslation); // x-coordinate of skystone
-            skystoneXYcoordinates.put("Y Offset", Yoffset);
-            skystoneXYcoordinates.put("Y", Ytranslation); // y-coordinate of skystone
+//            skystoneXYcoordinates.put("Y Offset", Yoffset);
+//            skystoneXYcoordinates.put("Y", Ytranslation); // y-coordinate of skystone
             skystoneXYcoordinates.put("Y Corrected", Ycorrected);
-            skystoneXYcoordinates.put("Heading", (double)rotation.thirdAngle);
+//            skystoneXYcoordinates.put("Heading", (double)rotation.thirdAngle);
 
             return skystoneXYcoordinates;
         }
