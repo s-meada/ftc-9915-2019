@@ -28,14 +28,21 @@ public class TeleopInitial extends OpMode {
     @Override
     public void init() {
         robot.initRegular(hardwareMap);
+        robot.setModeChassisMotors(DcMotor.RunMode.RUN_WITHOUT_ENCODER); 
     }
 
     @Override
     public void loop() {
 
         //mecanum drive
-        if (gamepad1.a) speedMultiplier = 0.5;
-        if (gamepad1.b) speedMultiplier = 1.0;
+        if (gamepad1.a){
+            speedMultiplier = 0.5;
+            robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        if (gamepad1.b){
+            speedMultiplier = 1.0;
+            robot.setModeChassisMotors(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
         double speed = (-gamepad1.left_stick_y * speedMultiplier) + (-gamepad2.left_stick_y * 0.3);
         double strafe = gamepad1.left_stick_x * speedMultiplier;
         double turn = -gamepad1.right_stick_x * speedMultiplier;
