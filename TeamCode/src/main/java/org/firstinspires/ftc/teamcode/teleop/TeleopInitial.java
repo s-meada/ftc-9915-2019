@@ -28,7 +28,7 @@ public class TeleopInitial extends OpMode {
     @Override
     public void init() {
         robot.initRegular(hardwareMap);
-        robot.setModeChassisMotors(DcMotor.RunMode.RUN_WITHOUT_ENCODER); 
+        robot.setModeChassisMotors(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
