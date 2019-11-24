@@ -443,7 +443,9 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_WALL_1:
 
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
-                double distanceToEndOfQuarry = isBlue ? 12 + robotYDistanceFromSkystoneCenter : 10 - robotYDistanceFromSkystoneCenter;
+                double blueQuarryOffset = 0;
+                double redQuarryOffset = 0;
+                double distanceToEndOfQuarry = isBlue ? blueQuarryOffset + robotYDistanceFromSkystoneCenter : redQuarryOffset - robotYDistanceFromSkystoneCenter;
 
                 int distanceToFoundationEdge = 55;
                 int distanceToFoundationCenter = 20;
