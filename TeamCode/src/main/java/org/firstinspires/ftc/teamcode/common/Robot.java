@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.common;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -108,6 +110,10 @@ public class Robot {
     public DistanceSensor backDistanceSensor;
 
     public DigitalChannel allianceSwitch;
+    public DigitalChannel programSwitchOne;
+    public DigitalChannel programSwitchTwo;
+
+    public AnalogInput potentiometerOne;
 
     // LED Light Strip
     public DcMotor light;
@@ -191,6 +197,11 @@ public class Robot {
         gyroSensor.initialize(parameters);
         this.allianceSwitch = hardwareMap.digitalChannel.get("allianceSwitch");
         this.allianceSwitch.setMode(DigitalChannel.Mode.INPUT);
+        this.programSwitchOne = hardwareMap.digitalChannel.get("programSwitchOne");
+        this.programSwitchOne.setMode(DigitalChannel.Mode.INPUT);
+        this.programSwitchTwo = hardwareMap.digitalChannel.get("programSwitchTwo");
+        this.programSwitchTwo.setMode(DigitalChannel.Mode.INPUT);
+        this.potentiometerOne = hardwareMap.analogInput.get("potentiometerOne");
 
         // Light
         light = hardwareMap.dcMotor.get("light");
