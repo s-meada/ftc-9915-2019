@@ -19,8 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Robot {
     /* This is a class defining all of the constants, limits, initial positions, methods, motors, servos, switches, and sensors that are used in
-                autonomous and teleop.
-                 */
+    autonomous and teleop.
+    */
     public boolean encodersReseted = false;
 
     // --- Robot Geometry --- //
@@ -71,6 +71,8 @@ public class Robot {
 
     public static final double ANGLE_SERVO_INIT_POSITION = 0.92;
 
+    public static final double CAPSTONE_CLAW_INIT_POSITION = 0.85;
+
     // Foundation
     public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
     public static final double FOUNDATION_SERVO_DOWN_POSITION = 0.82;
@@ -94,6 +96,7 @@ public class Robot {
     public Servo grabberServoTwo;
     public Servo foundationServo;
     public Servo angleServo;
+    public Servo capstoneServoClaw;
 
     // Sensors
     public WebcamName webcam;
@@ -175,12 +178,14 @@ public class Robot {
         grabberServoTwo = hardwareMap.servo.get("grabberServoTwo");
         foundationServo = hardwareMap.servo.get("foundationServo");
         angleServo = hardwareMap.servo.get("verticalServo");
+        capstoneServoClaw = hardwareMap.servo.get("capstoneServoClaw");
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
         grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
         angleServo.setPosition(ANGLE_SERVO_INIT_POSITION); // REPLACE with initial position of this servo
+        capstoneServoClaw.setPosition(CAPSTONE_CLAW_INIT_POSITION);
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");

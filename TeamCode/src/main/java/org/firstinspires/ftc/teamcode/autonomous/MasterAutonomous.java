@@ -443,7 +443,7 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_WALL_1:
 
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
-                double distanceToEndOfQuarry = isBlue ? 12 + robotYDistanceFromSkystoneCenter :  12 - robotYDistanceFromSkystoneCenter;
+                double distanceToEndOfQuarry = isBlue ? 12 + robotYDistanceFromSkystoneCenter : 10 - robotYDistanceFromSkystoneCenter;
 
                 int distanceToFoundationEdge = 55;
                 int distanceToFoundationCenter = 20;
@@ -629,7 +629,7 @@ public class MasterAutonomous extends LinearOpMode {
                     }
                 }
                 else if (!(blueAlliance)) {
-                    if (robot.strafe(-strafePower2, towardsCenterPosition - 5)) {
+                    if (robot.strafe(-strafePower2, towardsCenterPosition)) {
                         robot.grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
                         robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
                         goToNextSubState();
