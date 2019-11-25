@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 import java.util.HashMap;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_CLOSE_POSITION;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POSITION;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_CLOSE_POSITION;
@@ -105,6 +106,7 @@ public class MasterAutonomous extends LinearOpMode {
     double distance;
     double angleAdjustmentSign = 0;
     double angle;
+    boolean hasSetMode = false;
 
     // --- SonalAutonomous States and Variables --- //
     //variables
@@ -204,6 +206,7 @@ public class MasterAutonomous extends LinearOpMode {
 
     public void goToNextMasterState() {
         robot.resetChassisEncoders();
+        timer.reset();
         subState = 1;
         masterState++;
     }
@@ -408,13 +411,17 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ADJUST_ANGLE:
-                angle = robot.getTurningAngle();
-                telemetry.addData("Angle", angle);
-                if(angle > -0.4) {
-                    angleAdjustmentSign = -1;
+                if(!hasSetMode) {
+                    robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+                    hasSetMode = true;
                 }
-                else if(angle < -0.1) {
-                    angleAdjustmentSign = 1;
+                angle = robot.getTurningAngle();
+                telemetry.addData( "Angle", angle);
+                if(angle > -1.0) { //too far clockwise
+                    angleAdjustmentSign = -1; //counterclockwise
+                }
+                else if(angle < -0.1) { //too far counterclockwise
+                    angleAdjustmentSign = 1; //clockwise
                 }
                 else {
                     robot.stop();
@@ -424,14 +431,13 @@ public class MasterAutonomous extends LinearOpMode {
                     break;
                 }
 
-                robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.leftFrontMotor.setPower(0.1 * angleAdjustmentSign);
                 robot.rightFrontMotor.setPower(0.1 * -angleAdjustmentSign);
                 robot.leftBackMotor.setPower(0.1 * angleAdjustmentSign);
                 robot.rightBackMotor.setPower(0.1 * -angleAdjustmentSign);
 
                 angle = robot.getTurningAngle();
-                if(angle > -0.4 && angle < -0.1) {
+                if(angle > -1.0 && angle < -0.1) {
                     telemetry.addData("Angle", angle);
                     Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
                     Log.i("MasterAutonomous", "Finished Angle adjustment");
@@ -524,7 +530,7 @@ public class MasterAutonomous extends LinearOpMode {
 //                if(isBlue) {
                     if (robot.strafe(0.25, 3)) {
                         robot.stop();
-//                        timer.reset();
+//                       timer.reset();
                         robot.resetChassisEncoders();
                         robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
                         goToNextSubState();
@@ -565,22 +571,25 @@ public class MasterAutonomous extends LinearOpMode {
                 angle = robot.getTurningAngle();
                 double angleOffset = 5 * Math.signum(angle);
                 Log.i("MasterAutonomous", "Robot Angle: " + angle + " degrees");
+                double distance = robot.backDistanceSensor.getDistance(MM);
+                telemetry.addData("Distance from wall", distance);
                 if(isBlue) {
-//                    if (timer.milliseconds() >= 900) {
-                        if (robot.driveMecanum(0, 0.8, Math.toRadians(angle + angleOffset), -60)) {
-                            robot.stop();
-                            robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
-                            goToNextSubState();
-                        }
+                    robot.driveMecanumContinuous(-0.2, 0.8, Math.toRadians(angle + angleOffset));
+                    if (distance < 60) {
+                        robot.stop();
+                        robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
+                        goToNextSubState();
+                    }
 //                    }
                 }
                 else {
 //                    if (timer.milliseconds() >= 1000) {
-                        if (robot.driveMecanum(0.2, 0.8, Math.toRadians(angle + angleOffset), -64)) {
-                            robot.stop();
-                            robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
-                            goToNextSubState();
-                        }
+                    robot.driveMecanumContinuous(0.2, 0.8, Math.toRadians(angle + angleOffset));
+                    if (distance < 60) {
+                        robot.stop();
+                        robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
+                        goToNextSubState();
+                    }
 //                    }
                 }
                 break;
@@ -604,14 +613,15 @@ public class MasterAutonomous extends LinearOpMode {
         switch (subState) {
 
             case ROBOT_MOVES_BEHIND_FOUNDATION:
-                if(blueAlliance) {
-                    if (robot.drive(drivePower2, -behindFoundationPosition)) {
-                        goToNextSubState();
-                    }
-                }
-                else {
-                    if (robot.drive(drivePower2, behindFoundationPosition + 8)) {
-                        goToNextSubState();
+                if(timer.milliseconds() > 500) {
+                    if (blueAlliance) {
+                        if (robot.drive(drivePower2, -behindFoundationPosition)) {
+                            goToNextSubState();
+                        }
+                    } else {
+                        if (robot.drive(drivePower2, behindFoundationPosition)) {
+                            goToNextSubState();
+                        }
                     }
                 }
                 break;

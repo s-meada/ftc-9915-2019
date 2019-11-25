@@ -105,6 +105,7 @@ public class Robot {
 
     public DistanceSensor blueDistanceSensor;
     public DistanceSensor redDistanceSensor;
+    public DistanceSensor backDistanceSensor;
 
     public DigitalChannel allianceSwitch;
 
@@ -185,6 +186,7 @@ public class Robot {
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
         blueDistanceSensor = hardwareMap.get(DistanceSensor.class, "blueDistanceSensor");
         redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
+        backDistanceSensor = hardwareMap.get(DistanceSensor.class, "backDistanceSensor");
         gyroSensor = hardwareMap.get(BNO055IMU.class, "gyroSensor");
         gyroSensor.initialize(parameters);
         this.allianceSwitch = hardwareMap.digitalChannel.get("allianceSwitch");
@@ -307,6 +309,31 @@ public class Robot {
         } else {
             return false;
         }
+    }
+
+    /*
+     * Mecanum drive method that takes x, y, w (rotation) and drives continuously
+     * @param y: amount of movement forward/backward
+     * @param x: amount of movement right/left
+     * @param w: (turning) direction in radians
+     */
+    public void driveMecanumContinuous(double y, double x, double w) {
+        // y and x are negated to make the robot move in the right direction according to signs of the argument values
+        y = -y;
+        x = -x;
+
+        double lf = y+x-w;
+        double rf = y-x+w;
+        double lb = y-x-w;
+        double rb = y+x+w;
+
+
+        setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        this.leftFrontMotor.setPower(lf);
+        this.rightFrontMotor.setPower(rf);
+        this.leftBackMotor.setPower(lb);
+        this.rightBackMotor.setPower(rb);
     }
 
     /*
