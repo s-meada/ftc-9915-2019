@@ -70,14 +70,15 @@ public class TeleopInitial extends OpMode {
 
         double verticalAngleOffset = (((Math.toDegrees(Math.atan2(y, x)) + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG)) / 360) * verticalServoAngleFactor;
         double verticalServoPosition = 0.5 + verticalAngleOffset;
+        robot.verticalServo.setPosition(verticalServoPosition);
         if (timer.seconds() > 0.5 && timer.seconds() < 1) {
             if (rotationDirection == "up") robot.rotationServo.setPosition(0.49);
             if (rotationDirection == "left") robot.rotationServo.setPosition(0.84);
             if (rotationDirection == "right") robot.rotationServo.setPosition(0.13);
         }
-        if (timer.seconds() > 1) {
-            robot.verticalServo.setPosition(verticalServoPosition);
-        }
+//        if (timer.seconds() > 1) {
+//            robot.verticalServo.setPosition(verticalServoPosition);
+//        }
 
         double currentPositionRotation = robot.rotationServo.getPosition();
         int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
