@@ -417,10 +417,10 @@ public class MasterAutonomous extends LinearOpMode {
                 }
                 angle = robot.getTurningAngle();
                 telemetry.addData( "Angle", angle);
-                if(angle > -1.0) { //too far clockwise
+                if(angle > 0.3) { //too far clockwise
                     angleAdjustmentSign = -1; //counterclockwise
                 }
-                else if(angle < -0.1) { //too far counterclockwise
+                else if(angle < -0.3) { //too far counterclockwise
                     angleAdjustmentSign = 1; //clockwise
                 }
                 else {
@@ -508,7 +508,7 @@ public class MasterAutonomous extends LinearOpMode {
                         goToNextSubState();
                     }
                 } else {
-                    if (robot.drive(0.5, -5)) {
+                    if (robot.drive(0.5, -10)) {
 //                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         robot.stop();
                         goToNextSubState();
