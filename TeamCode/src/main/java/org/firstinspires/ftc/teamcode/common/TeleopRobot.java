@@ -14,6 +14,9 @@ public class TeleopRobot {
 
     public boolean encodersReseted = false;
 
+    public double backlash = 0.0;
+    double oldAngleMotorPosition = 0;
+
     // --- Robot Geometry --- //
     // Wheels
     double wheelDiameter = 4;
@@ -32,7 +35,7 @@ public class TeleopRobot {
     public static final double EXTENSION_MOTOR_TICKS_PER_ROTATION = 537.6;
     public static final double EXTENSION_SPROCKETS_INCHES_PER_ROTATION = 4;
     public static final double EXTENSION_MOTOR_ANGLE_FACTOR = EXTENSION_MOTOR_TICKS_PER_ROTATION / ARM_ANGLE_MOTOR_TICKS_PER_ROTATION;
-
+    public static final double BACKLASH_LIMIT = 100;
     // Capstone
     public static final double CAPSTONE_ANGLE_UP = 0.35;
     public static final double CAPSTONE_ANGLE_DOWN = 0.10;
@@ -330,6 +333,8 @@ public class TeleopRobot {
         int angleMotorPosition = (int)(ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (angle + ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360); //Change angle offset
         if (angleMotorPosition > ANGLE_MOTOR_UP_LIMIT) angleMotorPosition = ANGLE_MOTOR_UP_LIMIT;
         if (angleMotorPosition < ANGLE_MOTOR_DOWN_LIMIT) angleMotorPosition = ANGLE_MOTOR_DOWN_LIMIT;
+
+        backlash = Math.min(Math.max(0.0, backlash-angleMotorPosition+oldAngleMotorPosition), BACKLASH_LIMIT);
         this.angleMotor.setTargetPosition(angleMotorPosition);
         this.angleMotor.setPower(1.0);
 

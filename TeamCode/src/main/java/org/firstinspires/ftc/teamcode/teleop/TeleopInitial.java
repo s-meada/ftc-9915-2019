@@ -61,7 +61,7 @@ public class TeleopInitial extends OpMode {
         x += xChange;
         y += yChange;
         if (x > 27) x = 27;
-        if (x < 14.5 && y < -1.0) x = 14.5;
+        if (x < 15 && y < -1.0) x = 15;
         if (y > 23) y = 23;
         if (y < -3.5) y = -3.5;
         robot.moveArmXY(x,y);
@@ -69,7 +69,8 @@ public class TeleopInitial extends OpMode {
         telemetry.addData("Y: ", y);
 
         double verticalAngleOffset = (((Math.toDegrees(Math.atan2(y, x)) + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG)) / 360) * verticalServoAngleFactor;
-        double verticalServoPosition = 0.5 + verticalAngleOffset;
+        double backlashAdjust = robot.backlash / robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * verticalServoAngleFactor;
+        double verticalServoPosition = 0.52 + verticalAngleOffset + backlashAdjust;
         robot.verticalServo.setPosition(verticalServoPosition);
         if (timer.seconds() > 0.5 && timer.seconds() < 1) {
             if (rotationDirection == "up") robot.rotationServo.setPosition(0.49);
