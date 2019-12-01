@@ -166,10 +166,17 @@ public class SkystoneVuforiaData {
             HashMap<String, Double> skystoneXYcoordinates = new HashMap<>();
             // express position (translation) of robot in inches.
             VectorF translation = lastLocation.getTranslation();
-            skystoneXYcoordinates.put("X", (double)translation.get(0)/mmPerInch); // x-coordinate of skystone
-            skystoneXYcoordinates.put("Y Modified", translation.get(0)/mmPerInch * Math.tan(Math.toRadians(rotation.thirdAngle - 90)));
-            skystoneXYcoordinates.put("Y", (double)translation.get(1)/mmPerInch); // y-coordinate of skystone
-            skystoneXYcoordinates.put("Heading", (double)rotation.thirdAngle);
+
+            double Xtranslation = (double)translation.get(0)/mmPerInch;
+            double Ytranslation = (double)translation.get(1)/mmPerInch;
+            double Yoffset = Xtranslation * Math.tan(Math.toRadians(90 - (rotation.thirdAngle)));
+            double Ycorrected = Ytranslation + Yoffset;
+
+            skystoneXYcoordinates.put("X", Xtranslation); // x-coordinate of skystone
+//            skystoneXYcoordinates.put("Y Offset", Yoffset);
+//            skystoneXYcoordinates.put("Y", Ytranslation); // y-coordinate of skystone
+            skystoneXYcoordinates.put("Y Corrected", Ycorrected);
+//            skystoneXYcoordinates.put("Heading", (double)rotation.thirdAngle);
 
             return skystoneXYcoordinates;
         }
