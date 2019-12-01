@@ -1,9 +1,3 @@
-/*
-Robot detects the outerskystone. It strafes towards skystone. Stores range position. Moves arm. Grips skystone.
-Retracts arm. Drives forward 12 inches beyond the bridge. Moves arm. Releases Skystone. Drives backwards 16 inches
-behind the stored position. Drives forward 12 inches beyond the bridge. Moves arm. Releases skystone. Drives backwards
-16 inches to park.
- */
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import android.util.Log;
@@ -13,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.Robot;
 
 import java.util.HashMap;
@@ -24,9 +17,8 @@ import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POS
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_CLOSE_POSITION;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_OPEN_POSITION;
 
-@Autonomous(name = "Master Auto", group = "auto")
-public class PathThreeTwoSkystonesandPark extends LinearOpMode {
-
+@Autonomous(name = "Two Skystone and Park", group = "auto")
+public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     // Global variables go before runOpMode()
     Robot robot = new Robot();
 
@@ -770,6 +762,7 @@ to the building zone. The robot uses a gyro sensor to precisely turn to the corr
 //
 //        return isComplete;
 //        */
+
 
 
 
