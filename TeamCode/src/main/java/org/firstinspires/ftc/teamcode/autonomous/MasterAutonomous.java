@@ -114,7 +114,7 @@ public class MasterAutonomous extends LinearOpMode {
     double strafePower2 = -0.75;
     double behindFoundationPosition = 35;
     double towardsCenterPosition = 31;
-    double towardsRedLinePosition = 25;
+    double towardsRedLinePosition = 22;
     boolean blueAlliance;
 
     //cases
@@ -543,13 +543,13 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ROBOT_MOVES_ARM:
-                if (robot.moveArm(3, 16)) {
+                if (robot.moveArm(5, 16)) {
                     goToNextSubState();
                 }
                 break;
 
             case ROBOT_RETRACTS_ARM:
-                if (robot.moveArm(4, 14)) {
+                if (robot.moveArm(5, 14)) {
                     goToNextSubState();
                 }
                 break;
