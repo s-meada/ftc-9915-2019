@@ -17,7 +17,8 @@ import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POS
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_CLOSE_POSITION;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_OPEN_POSITION;
 
-@Autonomous(name = "Two Skystone and Park", group = "auto")
+// --- CHANGE NAME for 2 skystones --- //
+@Autonomous(name = "(One) Skystone and Park", group = "auto")
 public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     // Global variables go before runOpMode()
     Robot robot = new Robot();
@@ -100,16 +101,17 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     static final int RELEASE_SKYSTONE = 5;
     static final int RAISE_ARM = 6;
     static final int STRAFE = 7;
-    static final int START_DRIVING_BACK = 8;
-    static final int DRIVE_BACK_TO_QUARRY = 9;
-    static final int REPEAT_CODE = 10;
-    static final int DRIVE_BACK_TO_PARK = 11;
-    static final int STOP = 12;
-    static final int END_STATE = 13;
+//    static final int START_DRIVING_BACK = 8;
+//    static final int DRIVE_BACK_TO_QUARRY = 9;
+//    static final int REPEAT_CODE = 10;
+    static final int DRIVE_BACK_TO_PARK = 8;
+    static final int STOP = 9;
+    static final int END_STATE = 10;
 
     double distance;
     double angleAdjustmentSign = 0;
     double angle;
+    double distanceFromWall = 0;
     boolean gotSecondSkystone = false;
 
 
@@ -379,7 +381,7 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                     }
                      */
 
-                if (robot.strafe(0.50, -10)) {
+                if (robot.strafe(0.50, -7)) {
                     robot.stop();
                     goToNextSubState();
                 }
@@ -411,20 +413,38 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                     telemetry.addData("Angle", angle);
                     Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
                     Log.i("MasterAutonomous", "Finished Angle adjustment");
+                    robot.stop();
+//                    if (isBlue) {
+//                        distanceFromWall = robot.rightDistanceSensorBlue.getDistance(INCH);
+//                    }
+//                    else {
+//
+//                    }
                     goToNextSubState();
                 }
                 break;
 
-
             case DRIVE_TO_WALL_1:
 
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
-                double distanceToEndOfQuarry = isBlue ? 12 + robotYDistanceFromSkystoneCenter : -robotYDistanceFromSkystoneCenter - 7;
+                double distanceToEndOfQuarry = isBlue ? 15 + robotYDistanceFromSkystoneCenter : 15 - robotYDistanceFromSkystoneCenter;
 
-                int distanceToGate = 40;
+                int distanceToGate = (int)(distanceToEndOfQuarry + 32);
+//                telemetry.addData("Distance From Wall", distanceFromWall);
+//                telemetry.addData("Distance to Move", distanceToGate);
+//
+//                Log.i("TwoSkystone", "Distance from Wall: " + distanceFromWall);
+//                Log.i("TwoSkystone", "Distance to Move: " + distanceToGate);
 
                 if (isBlue) {
                     if (robot.drive(0.9, distanceToGate)) {
+                        Log.i("MasterAutonomous", "Distance to Drive: " + (distanceToGate) + " INCHES");
+                        robot.stop();
+                        goToNextSubState();
+                    }
+                }
+                else {
+                    if (robot.drive(0.9, -distanceToGate)) {
                         Log.i("MasterAutonomous", "Distance to Drive: " + (distanceToGate) + " INCHES");
                         robot.stop();
                         goToNextSubState();
@@ -446,58 +466,67 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
 
             case RAISE_ARM:
                 if (robot.moveArm(4, 14)) {
-                    robot.grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
-                    robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
+//                    robot.grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
+//                    robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
                     goToNextSubState();
                 }
                 break;
 
             case STRAFE:
-                if(robot.strafe(0.5, 7)) {
-                    robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.drivePower(-0.5, -0.5,-0.5,-0.5);
-                    timer.reset();
-                    if (!gotSecondSkystone) {
-                        goToNextSubState();
-                        gotSecondSkystone = true;
-                    } else {
-                        goToSubState(DRIVE_BACK_TO_PARK);
-                    }
-                }
-                break;
-
-            case START_DRIVING_BACK:
-                // Robot is already driving back
-                if(timer.seconds() > 1.5) {
-                    if(robot.moveArm(7, 17)) {
-                        robot.drivePower(-0.15, -0.15,-0.15,-0.15);
-                        robot.light.setPower(1.0);
-                        goToNextSubState();
-                    }
-                }
-                break;
-
-            case DRIVE_BACK_TO_QUARRY:
-                HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
-                if (skyStoneCoordinates != null) {
-                    robot.stop();
+                if(robot.strafe(0.5, 4)) {
+//                    robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+//                    robot.drivePower(-0.5, -0.5,-0.5,-0.5);
+//                    timer.reset();
+//                    if (!gotSecondSkystone) {
+//                        goToNextSubState();
+//                        gotSecondSkystone = true;
+//                    } else {
+//                        goToSubState(DRIVE_BACK_TO_PARK);
+//                    }
                     goToNextSubState();
                 }
                 break;
-
-            //now, if SuperMasterState=FIRST_SKYSTONE, MasterState=STRAFE_TOWARDS_DETECTED_SKYSTONE_V2 and SuperMasterState=SECOND_SKYSTONE
-            case REPEAT_CODE:
-                subState = REPEAT_CODE;
-                if (superMasterState == FIRST_SKYSTONE) {
-                    superMasterState++;
-                    goToMasterState(STRAFE_TO_SKYSTONE_V2);
-                }
-                break;
-
+//               // --- This Code is commented out for 1-skystone autonomous --- //
+//            case START_DRIVING_BACK:
+//                // Robot is already driving back
+//                if(timer.seconds() > 1.5) {
+//                    if(robot.moveArm(7, 17)) {
+//                        robot.drivePower(-0.15, -0.15,-0.15,-0.15);
+//                        robot.light.setPower(1.0);
+//                        goToNextSubState();
+//                    }
+//                }
+//                break;
+//
+//            case DRIVE_BACK_TO_QUARRY:
+//                HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
+//                if (skyStoneCoordinates != null) {
+//                    robot.stop();
+//                    goToNextSubState();
+//                }
+//                break;
+//
+//            //now, if SuperMasterState=FIRST_SKYSTONE, MasterState=STRAFE_TOWARDS_DETECTED_SKYSTONE_V2 and SuperMasterState=SECOND_SKYSTONE
+//            case REPEAT_CODE:
+//                subState = REPEAT_CODE;
+//                if (superMasterState == FIRST_SKYSTONE) {
+//                    superMasterState++;
+//                    goToMasterState(STRAFE_TO_SKYSTONE_V2);
+//                }
+//                break;
+                //------//
             case DRIVE_BACK_TO_PARK:
-                if(robot.drive(0.5, -7)) {
-                    robot.stop();
-                    goToNextSubState();
+                if(isBlue) {
+                    if (robot.drive(0.5, -19)) {
+                        robot.stop();
+                        goToNextSubState();
+                    }
+                }
+                else {
+                    if (robot.drive(0.5, 19)) {
+                        robot.stop();
+                        goToNextSubState();
+                    }
                 }
                 break;
 
