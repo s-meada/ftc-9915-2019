@@ -340,7 +340,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case STRAFE_TO_SKYSTONE_2_SECOND:
-                if(robot.strafe(0.25, 10)) {
+                if(robot.strafe(0.5, 5)) {
                     goToNextSubState();
                 }
                 break;
@@ -404,10 +404,10 @@ public class MasterAutonomous extends LinearOpMode {
                     }
                      */
 
-                if (robot.strafe(0.50,-6)) {
-                    robot.stop();
+//                if (robot.strafe(0.75,-1)) {
+//                    robot.stop();
                     goToNextSubState();
-                }
+//                }
                 break;
 
             case ADJUST_ANGLE:
@@ -436,13 +436,13 @@ public class MasterAutonomous extends LinearOpMode {
                 robot.leftBackMotor.setPower(0.1 * angleAdjustmentSign);
                 robot.rightBackMotor.setPower(0.1 * -angleAdjustmentSign);
 
-                angle = robot.getTurningAngle();
-                if(angle > -1.0 && angle < -0.1) {
-                    telemetry.addData("Angle", angle);
-                    Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
-                    Log.i("MasterAutonomous", "Finished Angle adjustment");
-                    goToNextSubState();
-                }
+//                angle = robot.getTurningAngle();
+//                if(angle > -1.0 && angle < -0.1) {
+//                    telemetry.addData("Angle", angle);
+//                    Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
+//                    Log.i("MasterAutonomous", "Finished Angle adjustment");
+//                    goToNextSubState();
+//                }
                 break;
 
 
@@ -502,7 +502,7 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_WALL_3:
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
                 if (isBlue) {
-                    if (robot.drive(0.5,5)) {
+                    if (robot.drive(0.5,10)) {
                         robot.stop();
 //                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         goToNextSubState();
@@ -519,7 +519,7 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_FOUNDATION:
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.drivePower(0.5,-0.5,-0.5,0.5);
-                if (robot.blueDistanceSensor.getDistance(INCH) < 5 && robot.redDistanceSensor.getDistance(INCH) < 5) {
+                if (robot.blueDistanceSensor.getDistance(INCH) < 4 && robot.redDistanceSensor.getDistance(INCH) < 4) {
                     Log.i("MasterAutonomous", "Blue Distance Sensor Reading: " + robot.blueDistanceSensor.getDistance(INCH) + " INCHES");
                     robot.stop();
                     goToNextSubState();
@@ -528,13 +528,13 @@ public class MasterAutonomous extends LinearOpMode {
 
             case DRIVE_TO_FOUNDATION_2:
 //                if(isBlue) {
-                    if (robot.strafe(0.25, 3)) {
+//                    if (robot.strafe(0.5, 3)) {
                         robot.stop();
 //                       timer.reset();
                         robot.resetChassisEncoders();
                         robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
                         goToNextSubState();
-                    }
+//                    }
 //                }
 //                else {
 //                    timer.reset();
@@ -543,13 +543,13 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ROBOT_MOVES_ARM:
-                if (robot.moveArm(5, 16)) {
+//                if (robot.moveArm(6, 16)) {
                     goToNextSubState();
-                }
+//                }
                 break;
 
             case ROBOT_RETRACTS_ARM:
-                if (robot.moveArm(5, 14)) {
+                if (robot.moveArm(6, 14)) {
                     goToNextSubState();
                 }
                 break;
@@ -561,7 +561,7 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ROBOT_RAISES_ARM:
-                if (robot.moveArm(3, 15)) {
+                if (robot.moveArm(6, 15)) {
                     goToNextSubState();
                 }
                 break;
