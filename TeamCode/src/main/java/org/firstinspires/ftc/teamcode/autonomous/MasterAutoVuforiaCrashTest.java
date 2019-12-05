@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -36,6 +37,7 @@ import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_CLOS
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_OPEN_POSITION;
 
 @Autonomous(name = "Master Auto Vuforia Crash Test", group = "auto")
+@Disabled
 public class MasterAutoVuforiaCrashTest extends LinearOpMode {
 
     // Global variables go before runOpMode()

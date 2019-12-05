@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.common.Robot;
 
 @Autonomous(name = "Program Switch Test", group = "test")
+@Disabled
 public class ProgramSwitchTest extends OpMode {
     Robot robot = new Robot();
 
