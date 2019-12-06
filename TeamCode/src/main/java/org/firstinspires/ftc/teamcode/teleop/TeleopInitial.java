@@ -61,7 +61,7 @@ public class TeleopInitial extends OpMode {
         x += xChange;
         y += yChange;
         if (x > 27) x = 27;
-        if (x < 15 && y < -1.0) x = 15;
+        if (x < 14 && y < -1.0) x = 14;
         if (y > 23) y = 23;
         if (y < -3.5) y = -3.5;
         robot.moveArmXY(x,y);
@@ -77,9 +77,6 @@ public class TeleopInitial extends OpMode {
             if (rotationDirection == "left") robot.rotationServo.setPosition(0.84);
             if (rotationDirection == "right") robot.rotationServo.setPosition(0.13);
         }
-//        if (timer.seconds() > 1) {
-//            robot.verticalServo.setPosition(verticalServoPosition);
-//        }
 
         double currentPositionRotation = robot.rotationServo.getPosition();
         int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
@@ -123,15 +120,6 @@ public class TeleopInitial extends OpMode {
         if (gamepad2.right_bumper) {
             robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_OPEN);
         }
-
-
-//        if (capstoneServoDown && capstoneServoPosition >= 0.0) capstoneServoPosition -= 0.01;
-//        else if (!capstoneServoDown && capstoneServoPosition <= 0.50) capstoneServoPosition += 0.01;
-//        robot.capstoneServo.setPosition(capstoneServoPosition);
-//        telemetry.addData("capstoneServoDown", capstoneServoDown);
-//        telemetry.addData("capstoneServoPosition", capstoneServoPosition);
-//        telemetry.addData("grabberServo", robot.grabberServo.getPosition());
-//        telemetry.addData("grabberServoTwo", robot.grabberServoTwo.getPosition());
 
         if(gamepad2.dpad_right) {
             robot.verticalServo.setPosition(0.5);
