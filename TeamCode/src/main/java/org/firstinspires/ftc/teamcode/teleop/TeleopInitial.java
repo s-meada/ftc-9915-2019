@@ -72,15 +72,15 @@ public class TeleopInitial extends OpMode {
         double backlashAdjust = robot.backlash / robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * verticalServoAngleFactor;
         double verticalServoPosition = 0.52 + verticalAngleOffset + backlashAdjust;
         robot.verticalServo.setPosition(verticalServoPosition);
-        if (timer.seconds() > 0.5 && timer.seconds() < 1) {
-            if (rotationDirection == "up") robot.rotationServo.setPosition(0.49);
-            if (rotationDirection == "left") robot.rotationServo.setPosition(0.84);
-            if (rotationDirection == "right") robot.rotationServo.setPosition(0.13);
-        }
+//        if (timer.seconds() > 0.5 && timer.seconds() < 1) {
+//            if (rotationDirection == "up") robot.rotationServo.setPosition(0.49);
+//            if (rotationDirection == "left") robot.rotationServo.setPosition(0.84);
+//            if (rotationDirection == "right") robot.rotationServo.setPosition(0.13);
+//        }
 
-        double currentPositionRotation = robot.rotationServo.getPosition();
-        int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
-        robot.rotationServo.setPosition(currentPositionRotation + positionChangeRotation);
+//        double currentPositionRotation = robot.rotationServo.getPosition();
+//        int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
+//        robot.rotationServo.setPosition(currentPositionRotation + positionChangeRotation);
 
         if (gamepad1.x) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
 
@@ -122,21 +122,24 @@ public class TeleopInitial extends OpMode {
         }
 
         if(gamepad2.dpad_right) {
-            robot.verticalServo.setPosition(0.5);
-            timer.reset();
-            rotationDirection = "right";
+            robot.rotationServo.setPosition(0.13);
+//            robot.verticalServo.setPosition(0.5);
+//            timer.reset();
+//            rotationDirection = "right";
         }
 
         if(gamepad2.dpad_left) {
-            robot.verticalServo.setPosition(0.5);
-            timer.reset();
-            rotationDirection = "left";
+            robot.rotationServo.setPosition(0.84);
+//            robot.verticalServo.setPosition(0.5);
+//            timer.reset();
+//            rotationDirection = "left";
         }
 
         if(gamepad2.dpad_up){
-            robot.verticalServo.setPosition(0.5);
-            timer.reset();
-            rotationDirection = "up";
+            robot.rotationServo.setPosition(0.49);
+//            robot.verticalServo.setPosition(0.5);
+//            timer.reset();
+//            rotationDirection = "up";
         }
 
 
