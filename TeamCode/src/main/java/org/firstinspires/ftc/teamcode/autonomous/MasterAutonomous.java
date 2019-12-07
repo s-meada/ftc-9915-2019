@@ -151,7 +151,7 @@ public class MasterAutonomous extends LinearOpMode {
 
         waitForStart();
 
-        while(!isStopRequested()) {
+        while(opModeIsActive()) {
             telemetry.addData("Master State", masterState);
             telemetry.update();
             switch (masterState) {

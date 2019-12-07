@@ -420,6 +420,9 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
 //                    else {
 //
 //                    }
+                    // REMOVE FOR TWO SKYSTONE
+                    vision.targetsSkyStone.deactivate();
+
                     goToNextSubState();
                 }
                 break;
