@@ -55,7 +55,7 @@ public class TeleopRobot {
 
     // Arm
     public static final int ANGLE_MOTOR_UP_LIMIT = 1600;
-    public static final int ANGLE_MOTOR_DOWN_LIMIT = -100;
+    public static final int ANGLE_MOTOR_DOWN_LIMIT = -150;
 
     public static final int EXTENSION_MOTOR_RETRACTED_LIMIT = 0;
     public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1750;
