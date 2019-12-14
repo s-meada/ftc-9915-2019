@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
@@ -335,18 +336,29 @@ public class Robot {
         y = -y;
         x = -x;
 
+
         double lf = y+x-w;
         double rf = y-x+w;
         double lb = y-x-w;
         double rb = y+x+w;
 
+        double [] power = {lf,rf,lb,rb};
+        ArrayList<Double> aboveThreshold = new ArrayList<>();
+
+        for(double motorPower: power){
+            if(Math.abs(motorPower) > 1){
+                aboveThreshold.add(motorPower);
+            }
+        }
+        aboveThreshold.add(1.0);
+        double maxValue = Collections.max(aboveThreshold);
 
         setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        this.leftFrontMotor.setPower(lf);
-        this.rightFrontMotor.setPower(rf);
-        this.leftBackMotor.setPower(lb);
-        this.rightBackMotor.setPower(rb);
+        this.leftFrontMotor.setPower(lf/maxValue);
+        this.rightFrontMotor.setPower(rf/maxValue);
+        this.leftBackMotor.setPower(lb/maxValue);
+        this.rightBackMotor.setPower(rb/maxValue);
     }
 
     /*
