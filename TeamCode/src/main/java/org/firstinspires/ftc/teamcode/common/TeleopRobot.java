@@ -100,6 +100,7 @@ public class TeleopRobot {
 
     public DistanceSensor blueDistanceSensor;
     public DistanceSensor redDistanceSensor;
+    public DistanceSensor capstoneSensor;
 
     // LED Light Strip
     public DcMotor light;
@@ -170,6 +171,7 @@ public class TeleopRobot {
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
         blueDistanceSensor = hardwareMap.get(DistanceSensor.class, "blueDistanceSensor");
         redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
+        capstoneSensor = hardwareMap.get(DistanceSensor.class, "capstoneSensor");
 
         // Light
         light = hardwareMap.dcMotor.get("light");

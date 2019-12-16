@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.TeleopRobot;
 
 @TeleOp(name="TeleopInitial_C",group="Skystone")
@@ -65,22 +66,13 @@ public class TeleopInitial extends OpMode {
         if (y > 23) y = 23;
         if (y < -3.5) y = -3.5;
         robot.moveArmXY(x,y);
-        telemetry.addData("X: ", x);
-        telemetry.addData("Y: ", y);
+
+        if (gamepad2.right_stick_button) y = -2.4; x = 14.0;
 
         double verticalAngleOffset = (((Math.toDegrees(Math.atan2(y, x)) + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG)) / 360) * verticalServoAngleFactor;
         double backlashAdjust = robot.backlash / robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * verticalServoAngleFactor;
         double verticalServoPosition = 0.52 + verticalAngleOffset + backlashAdjust;
         robot.verticalServo.setPosition(verticalServoPosition);
-//        if (timer.seconds() > 0.5 && timer.seconds() < 1) {
-//            if (rotationDirection == "up") robot.rotationServo.setPosition(0.49);
-//            if (rotationDirection == "left") robot.rotationServo.setPosition(0.84);
-//            if (rotationDirection == "right") robot.rotationServo.setPosition(0.13);
-//        }
-
-//        double currentPositionRotation = robot.rotationServo.getPosition();
-//        int positionChangeRotation = (int) (gamepad2.left_stick_x * 0.01);
-//        robot.rotationServo.setPosition(currentPositionRotation + positionChangeRotation);
 
         if (gamepad1.x) robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
 
@@ -110,7 +102,7 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad2.y) {
             capstoneServoDown = false;
-            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_UP);   
+            robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_UP);
         }
 
         if (gamepad2.left_bumper) {
@@ -121,28 +113,26 @@ public class TeleopInitial extends OpMode {
             robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_OPEN);
         }
 
+        double capstoneDistance = robot.capstoneSensor.getDistance(DistanceUnit.INCH);
+
         if(gamepad2.dpad_right) {
             robot.rotationServo.setPosition(0.13);
-//            robot.verticalServo.setPosition(0.5);
-//            timer.reset();
-//            rotationDirection = "right";
         }
 
         if(gamepad2.dpad_left) {
             robot.rotationServo.setPosition(0.84);
-//            robot.verticalServo.setPosition(0.5);
-//            timer.reset();
-//            rotationDirection = "left";
         }
 
         if(gamepad2.dpad_up){
             robot.rotationServo.setPosition(0.49);
-//            robot.verticalServo.setPosition(0.5);
-//            timer.reset();
-//            rotationDirection = "up";
         }
 
 
+        //telemetry
+        telemetry.addData("Arm X: ", x);
+        telemetry.addData("Arm Y: ", y);
+        telemetry.addData("Rotation Servo: ", robot.rotationServo.getPosition());
+        telemetry.addData("Capstone Distance", capstoneDistance);
         telemetry.update();
 
     }
