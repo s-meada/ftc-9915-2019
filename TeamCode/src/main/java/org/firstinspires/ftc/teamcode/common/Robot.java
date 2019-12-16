@@ -110,6 +110,7 @@ public class Robot {
     public DistanceSensor redDistanceSensor;
     public DistanceSensor backDistanceSensor;
     public DistanceSensor rightDistanceSensorBlue;
+    public DistanceSensor rightDistanceSensorRed;
 
     public DigitalChannel allianceSwitch;
     public DigitalChannel programSwitchOne;
@@ -196,6 +197,7 @@ public class Robot {
         redDistanceSensor = hardwareMap.get(DistanceSensor.class, "redDistanceSensor");
         backDistanceSensor = hardwareMap.get(DistanceSensor.class, "backDistanceSensor");
         rightDistanceSensorBlue = hardwareMap.get(DistanceSensor.class, "rightDistanceSensorBlue");
+        rightDistanceSensorRed = hardwareMap.get(DistanceSensor.class, "rightDistanceSensorRed");
         gyroSensor = hardwareMap.get(BNO055IMU.class, "gyroSensor");
         gyroSensor.initialize(parameters);
         this.allianceSwitch = hardwareMap.digitalChannel.get("allianceSwitch");

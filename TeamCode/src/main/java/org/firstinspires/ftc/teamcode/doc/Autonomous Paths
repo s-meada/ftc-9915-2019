@@ -2,3 +2,4 @@ Autonomous paths:
 1. Full autonomous (if we and our partner decide that our autonomous is better overall)
 2. Only parking (if our partner can do full autonomous better than us)
 3. Collecting a skystone and moving it across the tape onto the other side (only if our partner can only move the foundation better than us and cannot detect a skystone)
+4. Full autonomous but with two skystones and no park

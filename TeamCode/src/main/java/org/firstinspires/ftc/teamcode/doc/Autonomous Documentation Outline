@@ -1,0 +1,18 @@
+Outline
+I.	Autonomous Plan
+a.	State goals for autonomous
+b.	images of the plan with descriptions
+c.	description of other paths
+d.	images of the plans for the other paths
+II.	Method
+a.	Explain how we used github
+i.	Explain how we divided the work among ourselves and assigned tasks in github
+ii.	Triage meetings
+iii.	Version control and major releases
+b.	Explain the method for coding the other paths
+III.	Code
+a.	Explain the general structure of the code at a high level
+b.	Sensors
+c.	Autonomous path 1 code for each programmer with descriptions of the code, challenges encountered, and how we overcame them
+d.	Code for the other paths with descriptions of the code, challenges encountered, and how we overcame them
+e.	TeleOp code

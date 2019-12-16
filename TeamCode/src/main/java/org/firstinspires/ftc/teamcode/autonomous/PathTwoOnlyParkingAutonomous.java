@@ -11,6 +11,8 @@ public class PathTwoOnlyParkingAutonomous extends LinearOpMode {
 
     int state = 1;
 
+    AllianceColor allianceColor;
+
     //cases
     static final int DRIVES_FORWARD = 1;
     static final int PARKS = 2;
@@ -20,6 +22,14 @@ public class PathTwoOnlyParkingAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.initForRunToPosition(hardwareMap);
+
+        if (robot.allianceSwitch.getState()) {
+            allianceColor = AllianceColor.BLUE;
+        } else {
+            allianceColor = AllianceColor.RED;
+        }
+
+
         waitForStart();
 
 
@@ -29,9 +39,16 @@ public class PathTwoOnlyParkingAutonomous extends LinearOpMode {
             switch (state) {
 
                 case DRIVES_FORWARD:
-                    if (robot.drive(1, -17)) {
-                        goToNextState();
+                    if(allianceColor == AllianceColor.BLUE) {
+                        if (robot.drive(1, 17)) {
+                            goToNextState();
                         }
+                    }
+                    else {
+                        if (robot.drive(1, -17)) {
+                            goToNextState();
+                        }
+                    }
                     break;
 
                 case PARKS:
