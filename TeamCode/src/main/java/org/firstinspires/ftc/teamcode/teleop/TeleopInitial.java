@@ -62,12 +62,12 @@ public class TeleopInitial extends OpMode {
         x += xChange;
         y += yChange;
         if (x > 27) x = 27;
-        if (x < 14 && y < -1.0) x = 14;
+        if (x < 13.25 && y < -1.0) x = 13.25;
         if (y > 23) y = 23;
         if (y < -3.5) y = -3.5;
         robot.moveArmXY(x,y);
 
-        if (gamepad2.right_stick_button) y = -2.4; x = 14.0;
+        if (gamepad2.right_stick_button) {y = -2.4; x = 14.0;}
 
         double verticalAngleOffset = (((Math.toDegrees(Math.atan2(y, x)) + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG)) / 360) * verticalServoAngleFactor;
         double backlashAdjust = robot.backlash / robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * verticalServoAngleFactor;
@@ -94,10 +94,20 @@ public class TeleopInitial extends OpMode {
             robot.grabberServo.setPosition(0.55);
             robot.grabberServoTwo.setPosition(0.75);
         }
+
+
+
         if (gamepad2.x) {
             robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
             capstoneServoDown = true;
+            double capstoneDistance = robot.capstoneSensor.getDistance(DistanceUnit.INCH);
+            x -= capstoneDistance - 3.5;
+            robot.moveArmXY(x,y);
+            while (!robot.moveArmXY(x,y)){
+                continue;
+            }
             robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_DOWN);
+            telemetry.addData("Capstone Distance", capstoneDistance);
         }
 
         if (gamepad2.y) {
@@ -113,10 +123,8 @@ public class TeleopInitial extends OpMode {
             robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_OPEN);
         }
 
-        double capstoneDistance = robot.capstoneSensor.getDistance(DistanceUnit.INCH);
-
         if(gamepad2.dpad_right) {
-            robot.rotationServo.setPosition(0.13);
+            robot.rotationServo.setPosition(0.12);
         }
 
         if(gamepad2.dpad_left) {
@@ -132,7 +140,6 @@ public class TeleopInitial extends OpMode {
         telemetry.addData("Arm X: ", x);
         telemetry.addData("Arm Y: ", y);
         telemetry.addData("Rotation Servo: ", robot.rotationServo.getPosition());
-        telemetry.addData("Capstone Distance", capstoneDistance);
         telemetry.update();
 
     }

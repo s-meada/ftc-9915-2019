@@ -70,8 +70,8 @@ public class TeleopRobot {
     public static final double ANGLE_SERVO_INIT_POSITION = 0.48;
 
     // Foundation
-    public static final double FOUNDATION_SERVO_UP_POSITION = 0.15;
-    public static final double FOUNDATION_SERVO_DOWN_POSITION = 0.82;
+    public static final double FOUNDATION_SERVO_UP_POSITION = 0.82;
+    public static final double FOUNDATION_SERVO_DOWN_POSITION = 0.15;
 
 
     // --- Robot Hardware Variables --- //
