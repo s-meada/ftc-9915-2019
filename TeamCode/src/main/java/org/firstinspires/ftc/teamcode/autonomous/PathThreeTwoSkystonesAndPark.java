@@ -100,10 +100,11 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     static final int STRAFE = 6;
     static final int START_DRIVING_BACK = 7;
     static final int DRIVE_BACK_TO_QUARRY = 8;
-    static final int REPEAT_CODE = 9;
-    static final int DRIVE_BACK_TO_PARK = 10;
-    static final int STOP = 11;
-    static final int END_STATE = 12;
+    static final int WAIT = 9;
+    static final int REPEAT_CODE = 10;
+    static final int DRIVE_BACK_TO_PARK = 11;
+    static final int STOP = 12;
+    static final int END_STATE = 13;
 
     double distance;
     double angleAdjustmentSign = 0;
@@ -500,19 +501,27 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
             case DRIVE_BACK_TO_QUARRY:
                 if(isBlue) {
                     robot.drivePower(-0.9, -0.9, -0.9, -0.9);
-                    if (robot.rightDistanceSensorBlue.getDistance(INCH) < (distanceFromWall + 5)) {
+                    if (robot.rightDistanceSensorBlue.getDistance(INCH) < (distanceFromWall - 5)) {
                         Log.i("TwoSkystone", "Reached second skystone");
                         robot.stop();
+                        timer.reset();
                         goToNextSubState();
                     }
                 }
                 else {
                     robot.drivePower(0.9, 0.9, 0.9, 0.9);
-                    if (robot.rightDistanceSensorRed.getDistance(INCH) < (distanceFromWall + 5)) {
+                    if (robot.rightDistanceSensorRed.getDistance(INCH) < (distanceFromWall - 5)) {
                         Log.i("TwoSkystone", "Reached second skystone");
                         robot.stop();
+                        timer.reset();
                         goToNextSubState();
                     }
+                }
+                break;
+
+            case WAIT:
+                if(timer.seconds() > 1.25) {
+                    goToNextSubState();
                 }
                 break;
 
