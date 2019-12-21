@@ -103,9 +103,8 @@ public class TeleopInitial extends OpMode {
             double capstoneDistance = robot.capstoneSensor.getDistance(DistanceUnit.INCH);
             x -= capstoneDistance - 3.5;
             robot.moveArmXY(x,y);
-            while (!robot.moveArmXY(x,y)){
-                continue;
-            }
+            timer.reset();
+            while (timer.milliseconds() <= 500) continue;
             robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_DOWN);
             telemetry.addData("Capstone Distance", capstoneDistance);
         }

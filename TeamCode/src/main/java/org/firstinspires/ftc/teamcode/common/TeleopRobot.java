@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -77,14 +78,14 @@ public class TeleopRobot {
     // --- Robot Hardware Variables --- //
 
     // Chassis motors
-    public DcMotor leftFrontMotor;
-    public DcMotor rightFrontMotor;
-    public DcMotor leftBackMotor;
-    public DcMotor rightBackMotor;
+    public DcMotorEx leftFrontMotor;
+    public DcMotorEx rightFrontMotor;
+    public DcMotorEx leftBackMotor;
+    public DcMotorEx rightBackMotor;
 
     // Arm motors
-    public DcMotor angleMotor;
-    public DcMotor extensionMotor;
+    public DcMotorEx angleMotor;
+    public DcMotorEx extensionMotor;
 
     // Servos
     public Servo rotationServo;
@@ -130,26 +131,34 @@ public class TeleopRobot {
      */
     private void init(HardwareMap hardwareMap) {
         // Chassis
-        this.leftFrontMotor = hardwareMap.dcMotor.get("LeftFront");
-        this.rightFrontMotor = hardwareMap.dcMotor.get("RightFront");
-        this.leftBackMotor = hardwareMap.dcMotor.get("LeftBack");
-        this.rightBackMotor = hardwareMap.dcMotor.get("RightBack");
+        this.leftFrontMotor = hardwareMap.get(DcMotorEx.class, "LeftFront");
+        this.rightFrontMotor = hardwareMap.get(DcMotorEx.class, "RightFront");
+        this.leftBackMotor = hardwareMap.get(DcMotorEx.class, "LeftBack");
+        this.rightBackMotor = hardwareMap.get(DcMotorEx.class, "RightBack");
 
         this.rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Arm
 
-        angleMotor = hardwareMap.dcMotor.get("angleMotor");
+        angleMotor = hardwareMap.get(DcMotorEx.class, "angleMotor");
         angleMotor.setTargetPosition(0);
         angleMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         //angleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         angleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        extensionMotor = hardwareMap.dcMotor.get("extensionMotor");
+        extensionMotor = hardwareMap.get(DcMotorEx.class, "extensionMotor");
         extensionMotor.setTargetPosition(0);
         //extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        rightFrontMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        leftBackMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        rightBackMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        angleMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        extensionMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+
 
         rotationServo = hardwareMap.servo.get("rotationServo");
         grabberServo = hardwareMap.servo.get("grabberServo");
@@ -166,6 +175,8 @@ public class TeleopRobot {
         verticalServo.setPosition(ANGLE_SERVO_INIT_POSITION);
         capstoneServo.setPosition(CAPSTONE_ANGLE_INIT);
         capstoneServoClaw.setPosition(CAPSTONE_CLAW_CLOSED);
+
+
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
