@@ -37,8 +37,12 @@
 //     */
 //    static final int STRAFE_TO_SKYSTONE_V2      = 1;
 //    static final int ALIGN_AND_PICK_UP_SKYSTONE = 2;
-//    static final int MOVE_FOUNDATION            = 3;
-//    static final int STOP_ROBOT = 4;
+//    static final int PLACE_STONE = 3;
+//    static final int DRIVE_BACK = 4;
+//    static final int ALIGN_AND_PICK_UP_SKYSTONE_2 = 5;
+//    static final int PLACE_STONE_2 = 6;
+//    static final int MOVE_FOUNDATION = 7;
+//    static final int STOP_ROBOT = 8;
 //
 //
 //    // --- StrafeTowardsDetectedSkystone States and Variables --- //
@@ -177,12 +181,14 @@
 //                    if(DriveBack()){
 //                        goToNextMasterState();
 //                    }
-//                case ALIGN_AND_PICK_UP_SKYSTONE:
+//                    break;
+//                case ALIGN_AND_PICK_UP_SKYSTONE_2:
 //                    if(AlignAndPickUpSkystone(vision)) {
 //                        goToNextMasterState();
 //                    }
 //                    break;
-//                case PLACE_STONE:
+//
+//                case PLACE_STONE_2:
 //                    if(PlaceStone()){
 //                        goToNextMasterState();
 //                    }
@@ -195,7 +201,7 @@
 //                    break;
 //
 //                case STOP_ROBOT:
-//                    if(STOP_ROBOT()) {
+//                    if(Stop_Robot()) {
 //                        goToNextMasterState();
 //                    }
 //                    break;
@@ -206,9 +212,6 @@
 //
 //        }
 //    }
-//
-//
-//
 //
 //
 //    /*
@@ -232,8 +235,6 @@
 //    }
 //
 //    /* This is Trevor's code. The robot moves to a pre-determined viewing position to detect skystones
-//
-//
 //     */
 //    public boolean StrafeTowardsDetectedSkystoneV2(SkystoneVuforiaData vision ) {
 //        boolean isComplete = false;
