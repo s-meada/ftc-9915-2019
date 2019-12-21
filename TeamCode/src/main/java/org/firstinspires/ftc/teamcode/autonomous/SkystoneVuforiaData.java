@@ -67,6 +67,8 @@ public class SkystoneVuforiaData {
         int cameraMonitorViewId = _hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", _hardwareMap.appContext.getPackageName());
         this.parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
+        this.parameters.useExtendedTracking = false;
+
         this.parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
         this.parameters.cameraName = _robot.webcam;
