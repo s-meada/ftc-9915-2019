@@ -68,7 +68,7 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     double robotYDistanceFromSkystoneCenter;
     double distanceForArmToExtend;
     int armUpAngle = 45;
-    double armAngleOnSkystone = 1;
+    double armAngleOnSkystone = 0.5;
     double distanceFromSkystoneOffset = 0;
     int maxArmExtensionDistance = 25;
 
@@ -79,31 +79,31 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     static final int MOVE_ARM_DOWN                  = 5;
     static final int STRAFE_TO_SKYSTONE_2_FIRST     = 6;
     static final int ADJUST_ROBOT_POSITION          = 7;
-    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 8;
-    static final int FINISH_ARM_EXTENSION           = 9;
-    static final int GRAB_SKYSTONE                  = 10;
-    static final int PUT_ARM_DOWN                   = 11;
+//    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 8;
+    static final int FINISH_ARM_EXTENSION           = 8;
+    static final int GRAB_SKYSTONE                  = 9;
+    static final int PUT_ARM_DOWN                   = 10;
 
-    static final int STATE_END_2                    = 12;
+    static final int STATE_END_2                    = 11;
 
 
     // --- MovingFoundation States and Variables --- //
     // modified moving foundation, will change name to DROP_SKYSTONE_AND_RETURN//
     /* In the first repeat, I end at REPEAT_CODE. In the second repeat, I skip REPEAT_CODE and go to DRIVE_BACK_TO_PARK. */
 
-    static final int DRIVE_AWAY_FROM_BLOCK = 1;
-    static final int ADJUST_ANGLE = 2;
-    static final int DRIVE_TO_WALL_1 = 3;
-    static final int MOVE_ARM = 4;
-    static final int RELEASE_SKYSTONE = 5;
-    static final int RAISE_ARM = 6;
-    static final int STRAFE = 7;
-    static final int START_DRIVING_BACK = 8;
-    static final int DRIVE_BACK_TO_QUARRY = 9;
-    static final int REPEAT_CODE = 10;
-    static final int DRIVE_BACK_TO_PARK = 11;
-    static final int STOP = 12;
-    static final int END_STATE = 13;
+//    static final int DRIVE_AWAY_FROM_BLOCK = 1;
+    static final int ADJUST_ANGLE = 1;
+    static final int DRIVE_TO_WALL_1 = 2;
+    static final int MOVE_ARM = 3;
+    static final int RELEASE_SKYSTONE = 4;
+    static final int RAISE_ARM = 5;
+    static final int STRAFE = 6;
+    static final int START_DRIVING_BACK = 7;
+    static final int DRIVE_BACK_TO_QUARRY = 8;
+    static final int REPEAT_CODE = 9;
+    static final int DRIVE_BACK_TO_PARK = 10;
+    static final int STOP = 11;
+    static final int END_STATE = 12;
 
     double distance;
     double angleAdjustmentSign = 0;
@@ -293,32 +293,25 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                 break;
 
             case STRAFE_TO_SKYSTONE_2_FIRST:
-                if(robot.strafe(0.25, 5)) {
+                if(robot.strafe(0.25, 7)) {
                     goToNextSubState();
                 }
                 break;
 
             case ADJUST_ROBOT_POSITION:
-//                if(-robotYDistanceFromSkystoneCenter > 3) {
-//                    if (robot.drive(0.75, -robotYDistanceFromSkystoneCenter - 3)) {
-//                        goToNextSubState();
-//                    }
-//                }
-//                else {
                 if (robot.drive(0.75, -robotYDistanceFromSkystoneCenter)) {
                     goToNextSubState();
                 }
-//                }
                 break;
 
-            case STRAFE_TO_SKYSTONE_2_SECOND:
-                if (robot.strafe(0.25, 10)) {
-                    goToNextSubState();
-                }
-                else {
-                    goToNextSubState();
-                }
-                break;
+//            case STRAFE_TO_SKYSTONE_2_SECOND:
+//                if (robot.strafe(0.25, 10)) {
+//                    goToNextSubState();
+//                }
+//                else {
+//                    goToNextSubState();
+//                }
+//                break;
 
             case FINISH_ARM_EXTENSION:
                 if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
@@ -365,35 +358,35 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
         telemetry.update();
 
         switch (subState) {
-            case DRIVE_AWAY_FROM_BLOCK:
-                    /*robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.drivePower(0.5, -0.5, -0.5, 0.5);
-                    if (isBlue) {
-                        if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 4) {
-                            robot.stop();
-                            goToNextSubState();
-                        }
-                    } else {
-                        if (robot.redDistanceSensor.getDistance(DistanceUnit.INCH) < 4) {
-                            robot.stop();
-                            goToNextSubState();
-                        }
-                    }
-                     */
-
-//                if(superMasterState == SECOND_SKYSTONE) {
-//                    if (robot.strafe(0.50, -9)) {
+//            case DRIVE_AWAY_FROM_BLOCK:
+//                    /*robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+//                    robot.drivePower(0.5, -0.5, -0.5, 0.5);
+//                    if (isBlue) {
+//                        if (robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) < 4) {
+//                            robot.stop();
+//                            goToNextSubState();
+//                        }
+//                    } else {
+//                        if (robot.redDistanceSensor.getDistance(DistanceUnit.INCH) < 4) {
+//                            robot.stop();
+//                            goToNextSubState();
+//                        }
+//                    }
+//                     */
+//
+////                if(superMasterState == SECOND_SKYSTONE) {
+////                    if (robot.strafe(0.50, -9)) {
+////                        robot.stop();
+////                        goToNextSubState();
+////                    }
+////                }
+////                else {
+//                    if (robot.strafe(0.50, -7)) {
 //                        robot.stop();
 //                        goToNextSubState();
 //                    }
-//                }
-//                else {
-                    if (robot.strafe(0.50, -7)) {
-                        robot.stop();
-                        goToNextSubState();
-                    }
-//                }
-                break;
+////                }
+//                break;
 
             case ADJUST_ANGLE:
                 angle = robot.getTurningAngle();
@@ -507,15 +500,15 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
             case DRIVE_BACK_TO_QUARRY:
                 if(isBlue) {
                     robot.drivePower(-0.9, -0.9, -0.9, -0.9);
-                    if (robot.rightDistanceSensorBlue.getDistance(INCH) < (distanceFromWall - 15)) {
+                    if (robot.rightDistanceSensorBlue.getDistance(INCH) < (distanceFromWall + 5)) {
                         Log.i("TwoSkystone", "Reached second skystone");
                         robot.stop();
                         goToNextSubState();
                     }
                 }
                 else {
-                    robot.drivePower(0.9, 9, 0.9, 0.9);
-                    if (robot.rightDistanceSensorRed.getDistance(INCH) < (distanceFromWall - 15)) {
+                    robot.drivePower(0.9, 0.9, 0.9, 0.9);
+                    if (robot.rightDistanceSensorRed.getDistance(INCH) < (distanceFromWall + 5)) {
                         Log.i("TwoSkystone", "Reached second skystone");
                         robot.stop();
                         goToNextSubState();
