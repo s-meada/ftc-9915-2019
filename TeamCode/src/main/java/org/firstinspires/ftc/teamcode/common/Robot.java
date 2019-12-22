@@ -210,6 +210,14 @@ public class Robot {
 
         // Light
         light = hardwareMap.dcMotor.get("light");
+
+        // Motor PIDF Coefficients
+        leftFrontMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        rightFrontMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        leftBackMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        rightBackMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        angleMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
+        extensionMotor.setVelocityPIDFCoefficients(6., .5, 0., 10.9);
     }
 
 
