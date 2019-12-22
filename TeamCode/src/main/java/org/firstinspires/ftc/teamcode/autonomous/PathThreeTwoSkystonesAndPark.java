@@ -27,6 +27,10 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     int subState = 1;
     int count = 0;
 
+    boolean isBlue;
+
+    boolean isClosestStonePosition = false;
+    double skystonePositionThreshold = 24.0;
 
     AllianceColor allianceColor = AllianceColor.BLUE;
 
@@ -72,19 +76,20 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     double distanceFromSkystoneOffset = 0;
     int maxArmExtensionDistance = 25;
 
-    static final int MOVE_ARM_UP                    = 1;
-    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
-    static final int MOVE_ARM_OUT                   = 3;
-    static final int MOVE_SERVOS                    = 4;
-    static final int MOVE_ARM_DOWN                  = 5;
-    static final int STRAFE_TO_SKYSTONE_2_FIRST     = 6;
-    static final int ADJUST_ROBOT_POSITION          = 7;
-//    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 8;
-    static final int FINISH_ARM_EXTENSION           = 8;
-    static final int GRAB_SKYSTONE                  = 9;
-    static final int PUT_ARM_DOWN                   = 10;
+    static final int MOVE_ARM_UP                       = 1;
+    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM    = 2;
+    static final int ADJUST_FOR_CLOSEST_STONE_POSITION = 3;
+    static final int MOVE_ARM_OUT                      = 4;
+    static final int MOVE_SERVOS                       = 5;
+    static final int MOVE_ARM_DOWN                     = 6;
+    static final int STRAFE_TO_SKYSTONE_2_FIRST        = 7;
+    static final int ADJUST_ROBOT_POSITION             = 8;
+//    static final int STRAFE_TO_SKYSTONE_2_SECOND       = 9;
+    static final int FINISH_ARM_EXTENSION              = 9;
+    static final int GRAB_SKYSTONE                     = 10;
+    static final int PUT_ARM_DOWN                      = 11;
 
-    static final int STATE_END_2                    = 11;
+    static final int STATE_END_2                       = 12;
 
 
     // --- MovingFoundation States and Variables --- //
@@ -126,6 +131,8 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
         } else {
             allianceColor = AllianceColor.RED;
         }
+
+        isBlue = allianceColor == AllianceColor.BLUE;
 
         vision.targetsSkyStone.activate();
 
@@ -266,6 +273,44 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                 telemetry.update();
                 break;
 
+            case ADJUST_FOR_CLOSEST_STONE_POSITION:
+                if(superMasterState == SECOND_SKYSTONE && isClosestStonePosition) {
+                    angle = robot.getTurningAngle();
+                    telemetry.addData("Angle", angle);
+                    if(isBlue) {
+                        if (angle > -19.7) {
+                            angleAdjustmentSign = -1;
+                        } else if (angle < -20.3) {
+                            angleAdjustmentSign = 1;
+                        } else {
+                            robot.stop();
+                            goToNextSubState();
+                            break;
+                        }
+                    }
+                    else {
+                        if (angle > 20.3) {
+                            angleAdjustmentSign = -1;
+                        } else if (angle < 19.7) {
+                            angleAdjustmentSign = 1;
+                        } else {
+                            robot.stop();
+                            goToNextSubState();
+                            break;
+                        }
+                    }
+
+                    robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+                    robot.leftFrontMotor.setPower(0.1 * angleAdjustmentSign);
+                    robot.rightFrontMotor.setPower(0.1 * -angleAdjustmentSign);
+                    robot.leftBackMotor.setPower(0.1 * angleAdjustmentSign);
+                    robot.rightBackMotor.setPower(0.1 * -angleAdjustmentSign);
+                }
+                else {
+                    goToNextSubState();
+                }
+                break;
+
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
                 if(distanceForArmToExtend > maxArmExtensionDistance) {
@@ -350,11 +395,11 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
     /*the first time, superMasterState = FIRST_SKYSTONE. The second time, superMasterState = SECOND_SKYSTONE */
     public boolean MoveFoundation(SkystoneVuforiaData vision) {
         boolean isComplete = false;
-        boolean isBlue = allianceColor == AllianceColor.BLUE;
         boolean timerReset = false;
 
         telemetry.addData("Blue Distance: ", robot.blueDistanceSensor.getDistance(INCH));
         telemetry.addData("Red Distance: ", robot.redDistanceSensor.getDistance(INCH));
+        telemetry.addData("Distance from Wall", distanceFromWall);
         telemetry.addData("State: ", subState);
         telemetry.update();
 
@@ -406,6 +451,9 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                     }
                     else {
                         distanceFromWall = robot.rightDistanceSensorRed.getDistance(INCH);
+                    }
+                    if(distanceFromWall < skystonePositionThreshold) {
+                        isClosestStonePosition = true;
                     }
                     goToNextSubState();
                     break;
