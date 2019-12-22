@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 import java.util.HashMap;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import static org.firstinspires.ftc.teamcode.common.Robot.EXTENSION_MOTOR_EXTENDED_LIMIT;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_CLOSE_POSITION;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_OPEN_POSITION;
 import static org.firstinspires.ftc.teamcode.common.Robot.GRABBER_SERVO_TWO_CLOSE_POSITION;
@@ -248,7 +249,7 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
 
         switch(subState) {
             case MOVE_ARM_UP:
-                if(robot.moveArm(armUpAngle, 0)) {
+                if (robot.moveArm(armUpAngle, 0)) {
                     robot.light.setPower(1);
                     goToNextSubState();
                 }
@@ -257,7 +258,7 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
             case FIND_CENTER_OF_SKYSTONE_VS_ARM:
                 // The getSkystoneCoordinates() method returns null if the skystone is not detected
                 HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
-                if(skyStoneCoordinates != null){
+                if (skyStoneCoordinates != null) {
                     robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
                     robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y Corrected");
                     telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
@@ -266,32 +267,36 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                     Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
                     Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
                     goToNextSubState();
-                }
-                else {
+                } else {
                     telemetry.addLine("No Skystone Detected");
                 }
                 telemetry.update();
                 break;
 
             case ADJUST_FOR_CLOSEST_STONE_POSITION:
-                if(superMasterState == SECOND_SKYSTONE && isClosestStonePosition) {
+                if (superMasterState == SECOND_SKYSTONE && isClosestStonePosition) {
+                    double targetAngle = 18;
+                    double angleError;
                     angle = robot.getTurningAngle();
                     telemetry.addData("Angle", angle);
-                    if(isBlue) {
-                        if (angle > -19.7) {
+                    if (isBlue) {
+                        angleError = Math.abs(angle + targetAngle);
+
+                        if (angle > -(targetAngle - 0.3)) {
                             angleAdjustmentSign = -1;
-                        } else if (angle < -20.3) {
+                        } else if (angle < -(targetAngle + 0.3)) {
                             angleAdjustmentSign = 1;
                         } else {
                             robot.stop();
                             goToNextSubState();
                             break;
                         }
-                    }
-                    else {
-                        if (angle > 20.3) {
+                    } else {
+                        angleError = Math.abs(angle - targetAngle);
+
+                        if (angle > targetAngle + 0.3) {
                             angleAdjustmentSign = -1;
-                        } else if (angle < 19.7) {
+                        } else if (angle < targetAngle - 0.3) {
                             angleAdjustmentSign = 1;
                         } else {
                             robot.stop();
@@ -300,26 +305,27 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                         }
                     }
 
+                    double power = 0.1 + angleError / 50;
+
                     robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.leftFrontMotor.setPower(0.1 * angleAdjustmentSign);
-                    robot.rightFrontMotor.setPower(0.1 * -angleAdjustmentSign);
-                    robot.leftBackMotor.setPower(0.1 * angleAdjustmentSign);
-                    robot.rightBackMotor.setPower(0.1 * -angleAdjustmentSign);
-                }
-                else {
+                    robot.leftFrontMotor.setPower(power * angleAdjustmentSign);
+                    robot.rightFrontMotor.setPower(power * -angleAdjustmentSign);
+                    robot.leftBackMotor.setPower(power * angleAdjustmentSign);
+                    robot.rightBackMotor.setPower(power * -angleAdjustmentSign);
+                } else {
                     goToNextSubState();
                 }
                 break;
 
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
-                if(distanceForArmToExtend > maxArmExtensionDistance) {
+                if (distanceForArmToExtend > maxArmExtensionDistance) {
                     distanceFromSkystoneOffset = distanceForArmToExtend - maxArmExtensionDistance;
                 }
 
                 telemetry.addData("Distance from skystone", distanceForArmToExtend);
                 telemetry.update();
-                if(robot.moveArm(armUpAngle, distanceForArmToExtend - 10)) {
+                if (robot.moveArm(armUpAngle, distanceForArmToExtend - 10)) {
                     robot.light.setPower(0);
                     goToNextSubState();
                 }
@@ -333,19 +339,40 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
                 break;
 
             case MOVE_ARM_DOWN:
-                if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend - 5)) {
+                if (robot.moveArm(armAngleOnSkystone, distanceForArmToExtend - 5)) {
                     goToNextSubState();
                 }
                 break;
 
             case STRAFE_TO_SKYSTONE_2_FIRST:
-                if(robot.strafe(0.25, 7)) {
+                if(!isClosestStonePosition) {
+                    if (superMasterState == FIRST_SKYSTONE) {
+                        if (robot.strafe(0.25, 7)) {
+                            goToNextSubState();
+                        }
+                    } else {
+                        robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.drivePower(0.25, -0.25, -0.25, 0.25);
+                        double distance = robot.backDistanceSensor.getDistance(INCH);
+                        telemetry.addData("Distance", distance);
+                        if (distance > 27) {
+                            robot.stop();
+                            goToNextSubState();
+                        }
+                    }
+                }
+                else {
                     goToNextSubState();
                 }
                 break;
 
             case ADJUST_ROBOT_POSITION:
-                if (robot.drive(0.75, -robotYDistanceFromSkystoneCenter)) {
+                if (!isClosestStonePosition) {
+                    if (robot.drive(0.75, -robotYDistanceFromSkystoneCenter)) {
+                        goToNextSubState();
+                    }
+                }
+                else {
                     goToNextSubState();
                 }
                 break;
@@ -360,9 +387,17 @@ public class PathThreeTwoSkystonesAndPark extends LinearOpMode {
 //                break;
 
             case FINISH_ARM_EXTENSION:
-                if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
-                    timer.reset();
-                    goToNextSubState();
+                if(isClosestStonePosition) {
+                    if (robot.moveArm(armAngleOnSkystone, EXTENSION_MOTOR_EXTENDED_LIMIT)) {
+                        timer.reset();
+                        goToNextSubState();
+                    }
+                }
+                else {
+                    if (robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
+                        timer.reset();
+                        goToNextSubState();
+                    }
                 }
                 break;
 
