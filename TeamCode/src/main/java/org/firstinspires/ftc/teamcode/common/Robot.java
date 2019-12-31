@@ -357,7 +357,7 @@ public class Robot {
 
         for(double motorPower: power){
             if(Math.abs(motorPower) > 1){
-                aboveThreshold.add(motorPower);
+                aboveThreshold.add(Math.abs(motorPower));
             }
         }
         aboveThreshold.add(1.0);
