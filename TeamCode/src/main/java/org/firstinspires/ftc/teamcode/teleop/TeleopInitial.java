@@ -123,7 +123,7 @@ public class TeleopInitial extends OpMode {
         }
 
         if(gamepad2.dpad_right) {
-            robot.rotationServo.setPosition(0.12);
+            robot.rotationServo.setPosition(0.11);
         }
 
         if(gamepad2.dpad_left) {
