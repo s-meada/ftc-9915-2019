@@ -21,7 +21,7 @@ public class TeleopInitial extends OpMode {
     double speedMultiplier = 1.0;
 
     String rotationDirection = "up";
-    double x = 13.25;
+    double x = 13.75;
     double y = -3.5;
     double verticalServoAngleFactor = 1.7;
     double capstoneServoPosition = 0.36;
@@ -62,7 +62,7 @@ public class TeleopInitial extends OpMode {
         x += xChange;
         y += yChange;
         if (x > 27) x = 27;
-        if (x < 13.25 && y < -1.0) x = 13.25;
+        if (x < 14 && y < 0) x = 14;
         if (y > 23) y = 23;
         if (y < -3.5) y = -3.5;
         robot.moveArmXY(x,y);
@@ -94,7 +94,7 @@ public class TeleopInitial extends OpMode {
             robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
             capstoneServoDown = true;
             double capstoneDistance = robot.capstoneSensor.getDistance(DistanceUnit.INCH);
-            x -= capstoneDistance - 3.5;
+            x -= capstoneDistance - 2.7;
             robot.moveArmXY(x,y);
             timer.reset();
             while (timer.milliseconds() <= 500) continue;
@@ -124,7 +124,7 @@ public class TeleopInitial extends OpMode {
         }
 
         if(gamepad2.dpad_up){
-            robot.rotationServo.setPosition(0.49);
+            robot.rotationServo.setPosition(0.47);
         }
 
 
