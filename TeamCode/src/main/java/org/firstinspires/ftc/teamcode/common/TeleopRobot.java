@@ -350,6 +350,7 @@ public class TeleopRobot {
         backlash = Math.min(Math.max(0.0, backlash-angleMotorPosition+oldAngleMotorPosition), BACKLASH_LIMIT);
         this.angleMotor.setTargetPosition(angleMotorPosition);
         this.angleMotor.setPower(1.0);
+        oldAngleMotorPosition = angleMotorPosition;
 
         int extensionMotorPosition = (int)((EXTENSION_MOTOR_TICKS_PER_ROTATION * (extensionLength - ARM_STARTING_LENGTH)) / EXTENSION_SPROCKETS_INCHES_PER_ROTATION);
         if (extensionMotorPosition > EXTENSION_MOTOR_EXTENDED_LIMIT) extensionMotorPosition = EXTENSION_MOTOR_EXTENDED_LIMIT;
