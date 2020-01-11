@@ -89,6 +89,11 @@ public class TeleopInitial extends OpMode {
             robot.grabberServo.setPosition(0.5);
             robot.grabberServoTwo.setPosition(0.75);
         }
+        //open for capstone
+        if (gamepad2.dpad_down) {
+            robot.grabberServo.setPosition(0.55);
+            robot.grabberServoTwo.setPosition(0.75);
+        }
 
         if (gamepad2.x) {
             robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
