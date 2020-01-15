@@ -73,6 +73,7 @@ public class Robot {
     public static final double ANGLE_SERVO_INIT_POSITION = 0.92;
 
     public static final double CAPSTONE_CLAW_INIT_POSITION = 0.85;
+    public static final double CAPSTONE_ANGLE_INIT = 0.35;
 
     // Foundation
     public static final double FOUNDATION_SERVO_UP_POSITION = 0.82;
@@ -98,6 +99,7 @@ public class Robot {
     public Servo foundationServo;
     public Servo angleServo;
     public Servo capstoneServoClaw;
+    public Servo capstoneServo;
 
     // Sensors
     public WebcamName webcam;
@@ -183,6 +185,7 @@ public class Robot {
         foundationServo = hardwareMap.servo.get("foundationServo");
         angleServo = hardwareMap.servo.get("verticalServo");
         capstoneServoClaw = hardwareMap.servo.get("capstoneServoClaw");
+        capstoneServo = hardwareMap.servo.get("capstoneServo");
 
         rotationServo.setPosition(ROTATION_SERVO_START_POSITION);
         grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
@@ -190,6 +193,7 @@ public class Robot {
         foundationServo.setPosition(FOUNDATION_SERVO_UP_POSITION);
         angleServo.setPosition(ANGLE_SERVO_INIT_POSITION); // REPLACE with initial position of this servo
         capstoneServoClaw.setPosition(CAPSTONE_CLAW_INIT_POSITION);
+        capstoneServo.setPosition(CAPSTONE_ANGLE_INIT);
 
         // Sensors
         webcam = hardwareMap.get(WebcamName.class, "Webcam 1");

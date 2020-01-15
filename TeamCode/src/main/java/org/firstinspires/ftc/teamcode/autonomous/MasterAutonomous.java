@@ -112,7 +112,7 @@ public class MasterAutonomous extends LinearOpMode {
     //variables
     double drivePower2 = 0.5;
     double strafePower2 = -0.75;
-    double behindFoundationPosition = 35;
+    double behindFoundationPosition = 38;
     double towardsCenterPosition = 31;
     double towardsRedLinePosition = 22;
     boolean blueAlliance;
