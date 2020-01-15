@@ -59,6 +59,8 @@ public class TeleopInitial extends OpMode {
 
         double xChange = gamepad2.right_stick_x * 0.2;
         double yChange = -gamepad2.right_stick_y * 0.2;
+        yChange += gamepad2.right_trigger * 0.6;
+
         x += xChange;
         y += yChange;
         if (x > 27) x = 27;
