@@ -18,6 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+
 public class Robot {
     /* This is a class defining all of the constants, limits, initial positions, methods, motors, servos, switches, and sensors that are used in
     autonomous and teleop.
@@ -451,5 +453,25 @@ public class Robot {
     public double getTurningAngle() {
         angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return angles.firstAngle;
+    }
+
+    public boolean adjustRangeSensorDistance(DistanceSensor rangeSensor, double targetDistance, boolean isBlue) {
+        int sign;
+        if(isBlue) {
+            sign = -1;
+        }
+        else {
+            sign = 1;
+        }
+
+        double error = rangeSensor.getDistance(INCH) - targetDistance;
+
+        if(error >= 1) {
+            this.drive(0.2, error * sign);
+        }
+        else {
+            return true;
+        }
+        return false;
     }
 }
