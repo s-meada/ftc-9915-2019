@@ -424,8 +424,9 @@ public class MasterAutonomous extends LinearOpMode {
         boolean isBlue = allianceColor == AllianceColor.BLUE;
         boolean timerReset = false;
 
-        telemetry.addData("Blue Distance: ", robot.blueDistanceSensor.getDistance(INCH));
-        telemetry.addData("Red Distance: ", robot.redDistanceSensor.getDistance(INCH));
+        //Telemetry sensor reads commented out due to lagging loop times
+       // telemetry.addData("Blue Distance: ", robot.blueDistanceSensor.getDistance(INCH));
+        //telemetry.addData("Red Distance: ", robot.redDistanceSensor.getDistance(INCH));
         telemetry.addData("State: ", subState);
         telemetry.update();
 
@@ -553,6 +554,7 @@ public class MasterAutonomous extends LinearOpMode {
                 if (isBlue) {
                     if (robot.drive(0.5, 10)) {
                         robot.stop();
+                        timer.reset();
 //                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         goToNextSubState();
                     }
@@ -560,6 +562,7 @@ public class MasterAutonomous extends LinearOpMode {
                     if (robot.drive(0.5, -10)) {
 //                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         robot.stop();
+                        timer.reset();
                         goToNextSubState();
                     }
                 }
@@ -567,28 +570,41 @@ public class MasterAutonomous extends LinearOpMode {
 
             case DRIVE_TO_FOUNDATION:
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drivePower(0.5, -0.5, -0.5, 0.5);
-                if (robot.blueDistanceSensor.getDistance(INCH) < 4 && robot.redDistanceSensor.getDistance(INCH) < 4) {
-                    Log.i("MasterAutonomous", "Blue Distance Sensor Reading: " + robot.blueDistanceSensor.getDistance(INCH) + " INCHES");
-                    robot.stop();
+
+                double blueDistance = robot.blueDistanceSensor.getDistance(INCH);
+                //deceleration loop
+                double bluePower = Math.max(0.2,Math.min(0.7,(blueDistance-2)*0.1));
+                if(blueDistance < 2.7) {
+                    bluePower = 0;
+                }
+
+                robot.leftBackMotor.setPower(-bluePower);
+                robot.rightBackMotor.setPower(bluePower);
+                Log.i("MasterAutonomous", "Blue Distance Sensor Reading: " + blueDistance + " INCHES");
+
+                double redDistance = robot.redDistanceSensor.getDistance(INCH);
+                //deceleration loop
+                double redPower = Math.max(0.2,Math.min(0.7,(redDistance-2)*0.1));
+                if (redDistance < 2.7) {
+                    redPower = 0;
+                }
+
+                robot.leftFrontMotor.setPower(redPower);
+                robot.rightFrontMotor.setPower(-redPower);
+                Log.i("MasterAutonomous", "Red Distance Sensor Reading: " +  redDistance + " INCHES");
+
+                if (redPower == 0.0 && bluePower == 0.0 || timer.seconds() >=3) {
                     goToNextSubState();
                 }
+
                 break;
 
             case DRIVE_TO_FOUNDATION_2:
-//                if(isBlue) {
-//                    if (robot.strafe(0.5, 3)) {
                 robot.stop();
-//                       timer.reset();
                 robot.resetChassisEncoders();
                 robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
+                timer.reset();
                 goToNextSubState();
-//                    }
-//                }
-//                else {
-//                    timer.reset();
-//                    goToNextSubState();
-//                }
                 break;
 
             case ROBOT_MOVES_ARM:
@@ -627,13 +643,18 @@ public class MasterAutonomous extends LinearOpMode {
 
 
             case DRAG_FOUNDATION:
+
+                //wait for foundation movers to go down
+                if(timer.milliseconds() < 500){
+                    break;
+                }
                 angle = robot.getTurningAngle();
                 double angleOffset = 5 * Math.signum(angle);
                 Log.i("MasterAutonomous", "Robot Angle: " + angle + " degrees");
                 double distance = robot.backDistanceSensor.getDistance(MM);
                 telemetry.addData("Distance from wall", distance);
                 if (isBlue) {
-                    robot.driveMecanumContinuous(-0.2, 0.8, Math.toRadians(angle + angleOffset));
+                    robot.driveMecanumContinuous(-0.2, 0.8, (0.1*angle));
                     if (distance < 60) {
                         robot.stop();
                         robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
@@ -641,8 +662,7 @@ public class MasterAutonomous extends LinearOpMode {
                     }
 //                    }
                 } else {
-//                    if (timer.milliseconds() >= 1000) {
-                    robot.driveMecanumContinuous(0.2, 0.8, Math.toRadians(angle + angleOffset));
+                    robot.driveMecanumContinuous(0.2, 0.8, (0.1*angle));
                     if (distance < 60) {
                         robot.stop();
                         robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_UP_POSITION);
