@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.Robot;
 
 import java.util.HashMap;
@@ -30,15 +29,17 @@ public class MasterAutonomous extends LinearOpMode {
 
     AllianceColor allianceColor = AllianceColor.BLUE;
 
+    boolean skystoneDetected;
+
     // --- Master States --- //
 
     /* Each autonomous coder programmed a part of the autonomous code separately. In the MasterAutonomous class, all of the member's programs are combined
     and run linearly. Here, all of the states of each member's programs are defined.
      */
-    static final int STRAFE_TO_SKYSTONE_V2      = 1;
+    static final int STRAFE_TO_SKYSTONE_V2 = 1;
     static final int ALIGN_AND_PICK_UP_SKYSTONE = 2;
-    static final int MOVE_FOUNDATION            = 3;
-    static final int SONAL_AUTONOMOUS           = 4;
+    static final int MOVE_FOUNDATION = 3;
+    static final int SONAL_AUTONOMOUS = 4;
 
 
     // --- StrafeTowardsDetectedSkystone States and Variables --- //
@@ -69,20 +70,20 @@ public class MasterAutonomous extends LinearOpMode {
     int maxArmExtensionDistance = 25;
     double distanceToSkystone = 0;
 
-    static final int MOVE_ARM_UP                    = 1;
-//    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
-    static final int MOVE_ARM_OUT                   = 2;
-    static final int MOVE_SERVOS                    = 3;
-    static final int MOVE_ARM_DOWN                  = 4;
-    static final int STRAFE_TO_SKYSTONE_2_FIRST     = 5;
-    static final int ADJUST_ROBOT_POSITION          = 6;
-    static final int ADJUST_WITH_RANGE              = 7;
-    static final int STRAFE_TO_SKYSTONE_2_SECOND    = 8;
-    static final int FINISH_ARM_EXTENSION           = 9;
-    static final int GRAB_SKYSTONE                  = 10;
-    static final int PUT_ARM_DOWN                   = 11;
+    static final int MOVE_ARM_UP = 1;
+    //    static final int FIND_CENTER_OF_SKYSTONE_VS_ARM = 2;
+    static final int MOVE_ARM_OUT = 2;
+    static final int MOVE_SERVOS = 3;
+    static final int MOVE_ARM_DOWN = 4;
+    static final int STRAFE_TO_SKYSTONE_2_FIRST = 5;
+    static final int ADJUST_ROBOT_POSITION = 6;
+    static final int ADJUST_WITH_RANGE = 7;
+    static final int STRAFE_TO_SKYSTONE_2_SECOND = 8;
+    static final int FINISH_ARM_EXTENSION = 9;
+    static final int GRAB_SKYSTONE = 10;
+    static final int PUT_ARM_DOWN = 11;
 
-    static final int STATE_END_2                    = 12;
+    static final int STATE_END_2 = 12;
 
 
     // --- MovingFoundation States and Variables --- //
@@ -138,46 +139,45 @@ public class MasterAutonomous extends LinearOpMode {
         robot.initForRunToPosition(hardwareMap);
 
         //Here the robot discerns the alliance color based on the switch
-        if(robot.allianceSwitch.getState()) {
+        if (robot.allianceSwitch.getState()) {
             allianceColor = AllianceColor.BLUE;
-        }
-        else {
+        } else {
             allianceColor = AllianceColor.RED;
         }
 
 
-        SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap,robot);
+        SkystoneVuforiaData vision = new SkystoneVuforiaData(hardwareMap, robot);
 
         vision.targetsSkyStone.activate();
 
 
         waitForStart();
 
-        while(opModeIsActive()) {
+        while (opModeIsActive()) {
             telemetry.addData("Master State", masterState);
             telemetry.update();
             switch (masterState) {
                 case STRAFE_TO_SKYSTONE_V2:
-                    if(StrafeTowardsDetectedSkystoneV2(vision)) {
+                    if (StrafeTowardsDetectedSkystoneV2(vision)) {
                         // Necessary to make driving in the next state work after strafing
                         goToNextMasterState();
                     }
                     break;
 
                 case ALIGN_AND_PICK_UP_SKYSTONE:
-                    if(AlignAndPickUpSkystone(vision)) {
+                    if (AlignAndPickUpSkystone(vision)) {
                         goToNextMasterState();
                     }
                     break;
 
                 case MOVE_FOUNDATION:
-                    if(MoveFoundation()) {
+                    if (MoveFoundation()) {
                         goToNextMasterState();
                     }
                     break;
 
                 case SONAL_AUTONOMOUS:
-                    if(SonalAutonomous()) {
+                    if (SonalAutonomous()) {
                         goToNextMasterState();
                     }
                     break;
@@ -190,14 +190,11 @@ public class MasterAutonomous extends LinearOpMode {
     }
 
 
-
-
-
     /*
      * For each of these methods, you can add more things you want the robot to do each time it goes to a new subState
      */
     // Increment the subState variable to go to the next subState
-    public void goToNextSubState(){
+    public void goToNextSubState() {
         subState++;
     }
 
@@ -213,19 +210,28 @@ public class MasterAutonomous extends LinearOpMode {
         masterState++;
     }
 
+    public void goToMasterState(int newMasterState) {
+        robot.resetChassisEncoders();
+        masterState = newMasterState;
+        subState = 1;
+    }
+
+
     /* This is Trevor's code. The robot moves to a pre-determined viewing position to detect skystones
 
 
      */
-    public boolean StrafeTowardsDetectedSkystoneV2(SkystoneVuforiaData vision ) {
+    public boolean StrafeTowardsDetectedSkystoneV2(SkystoneVuforiaData vision) {
         boolean isComplete = false;
         // loop()
         telemetry.addData("Current State", subState);
 
-        switch(subState) {
+        switch (subState) {
             case STRAFE_TO_VIEWING_POSITION:
-                if(robot.strafe(strafePower, viewingPosition)); {
+                if (robot.strafe(strafePower, viewingPosition)) ;
+            {
                 robot.light.setPower(1.0);
+                timer.reset();
                 goToNextSubState();
             }
             break;
@@ -237,7 +243,7 @@ public class MasterAutonomous extends LinearOpMode {
              */
             case DETECT_SKYSTONE:
                 HashMap<String, Double> skyStoneCoordinates = vision.getSkystoneCoordinates();
-                if(skyStoneCoordinates != null){
+                if (skyStoneCoordinates != null) {
                     robotXDistanceFromSkystoneCenter = skyStoneCoordinates.get("X");
                     robotYDistanceFromSkystoneCenter = skyStoneCoordinates.get("Y Corrected");
                     telemetry.addData("Skystone Pos (in)", "(X, Y) = %.1f, %.1f",
@@ -245,10 +251,14 @@ public class MasterAutonomous extends LinearOpMode {
                     robot.light.setPower(0);
                     Log.i("MasterAutonomous", "Robot Y Distance from Skystone: " + (-robotYDistanceFromSkystoneCenter));
                     Log.i("MasterAutonomous", "Robot X Distance from Skystone: " + (-robotXDistanceFromSkystoneCenter));
+                    skystoneDetected = true;
                     goToNextSubState();
-                }
-                else {
+                } else {
                     telemetry.addLine("No Skystone Detected");
+                    if(timer.seconds() > 5) {
+                        skystoneDetected = false;
+                        goToMasterState(MOVE_FOUNDATION);
+                    }
                 }
                 telemetry.update();
                 break;
@@ -267,9 +277,9 @@ public class MasterAutonomous extends LinearOpMode {
         boolean isBlue = allianceColor == AllianceColor.BLUE;
         telemetry.addData("State", subState);
 
-        switch(subState) {
+        switch (subState) {
             case MOVE_ARM_UP:
-                if(robot.moveArm(armUpAngle, 0)) {
+                if (robot.moveArm(armUpAngle, 0)) {
                     robot.light.setPower(1);
                     goToNextSubState();
                 }
@@ -296,13 +306,13 @@ public class MasterAutonomous extends LinearOpMode {
 
             case MOVE_ARM_OUT:
                 distanceForArmToExtend = -robotXDistanceFromSkystoneCenter + 8;
-                if(distanceForArmToExtend > maxArmExtensionDistance) {
+                if (distanceForArmToExtend > maxArmExtensionDistance) {
                     distanceFromSkystoneOffset = distanceForArmToExtend - maxArmExtensionDistance;
                 }
 
                 telemetry.addData("Distance from skystone", distanceForArmToExtend);
                 telemetry.update();
-                if(robot.moveArm(armUpAngle, distanceForArmToExtend - 10)) {
+                if (robot.moveArm(armUpAngle, distanceForArmToExtend - 10)) {
                     vision.targetsSkyStone.deactivate();
                     robot.light.setPower(0);
                     goToNextSubState();
@@ -317,13 +327,13 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case MOVE_ARM_DOWN:
-                if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend - 5)) {
+                if (robot.moveArm(armAngleOnSkystone, distanceForArmToExtend - 5)) {
                     goToNextSubState();
                 }
                 break;
 
             case STRAFE_TO_SKYSTONE_2_FIRST:
-                if(robot.strafe(0.25, 5)) {
+                if (robot.strafe(0.25, 5)) {
                     goToNextSubState();
                 }
                 break;
@@ -335,9 +345,9 @@ public class MasterAutonomous extends LinearOpMode {
 //                    }
 //                }
 //                else {
-                    if (robot.drive(0.75, -robotYDistanceFromSkystoneCenter)) {
-                        goToNextSubState();
-                    }
+                if (robot.drive(0.75, -robotYDistanceFromSkystoneCenter)) {
+                    goToNextSubState();
+                }
 //                }
                 break;
 
@@ -345,41 +355,39 @@ public class MasterAutonomous extends LinearOpMode {
                 double position1 = 21.4;
                 double position2 = 28.9;
                 double position3 = 36.0;
-                if(isBlue) {
-                    if(robot.rightDistanceSensorBlue.getDistance(INCH) < 25) {
+                if (isBlue) {
+                    if (robot.rightDistanceSensorBlue.getDistance(INCH) < 25) {
                         distanceToSkystone = position1;
-                    } else if(robot.rightDistanceSensorBlue.getDistance(INCH) < 32) {
+                    } else if (robot.rightDistanceSensorBlue.getDistance(INCH) < 32) {
                         distanceToSkystone = position2;
                     } else {
                         distanceToSkystone = position3;
                     }
 
-                    if(robot.adjustRangeSensorDistance(robot.rightDistanceSensorBlue, distanceToSkystone, true)) {
-                        goToNextSubState();
-                    }
                 } else {
-                    if(robot.rightDistanceSensorRed.getDistance(INCH) < 25) {
+                    if (robot.rightDistanceSensorRed.getDistance(INCH) < 25) {
                         distanceToSkystone = position1;
-                    } else if(robot.rightDistanceSensorRed.getDistance(INCH) < 32) {
+                    } else if (robot.rightDistanceSensorRed.getDistance(INCH) < 32) {
                         distanceToSkystone = position2;
                     } else {
                         distanceToSkystone = position3;
-                    }
-
-                    if(robot.adjustRangeSensorDistance(robot.rightDistanceSensorRed, distanceToSkystone, false)) {
-                        goToNextSubState();
                     }
                 }
-                break;
+
+               if(robot.adjustRangeDistance(isBlue ? robot.rightDistanceSensorBlue :
+                       robot.rightDistanceSensorRed, distanceToSkystone, isBlue)) {
+                   goToNextSubState();
+               }
+               break;
 
             case STRAFE_TO_SKYSTONE_2_SECOND:
-                if(robot.strafe(0.5, 5)) {
+                if (robot.strafe(0.5, 5)) {
                     goToNextSubState();
                 }
                 break;
 
             case FINISH_ARM_EXTENSION:
-                if(robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
+                if (robot.moveArm(armAngleOnSkystone, distanceForArmToExtend)) {
                     timer.reset();
                     goToNextSubState();
                 }
@@ -388,13 +396,13 @@ public class MasterAutonomous extends LinearOpMode {
             case GRAB_SKYSTONE:
                 robot.grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
                 robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
-                if(timer.milliseconds() > 500) {
+                if (timer.milliseconds() > 500) {
                     goToNextSubState();
                 }
                 break;
 
             case PUT_ARM_DOWN:
-                if(robot.moveArm(2, 15)){
+                if (robot.moveArm(2, 15)) {
                     goToNextSubState();
                 }
                 break;
@@ -421,7 +429,7 @@ public class MasterAutonomous extends LinearOpMode {
         telemetry.addData("State: ", subState);
         telemetry.update();
 
-        switch(subState) {
+        switch (subState) {
             case DRIVE_AWAY_FROM_BLOCK:
                     /*robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.drivePower(0.5, -0.5, -0.5, 0.5);
@@ -440,24 +448,29 @@ public class MasterAutonomous extends LinearOpMode {
 
 //                if (robot.strafe(0.75,-1)) {
 //                    robot.stop();
+                if(!skystoneDetected) {
+                    if(robot.strafe(0.5, 10)) {
+                        goToNextSubState();
+                    }
+                }
+                else {
                     goToNextSubState();
+                }
 //                }
                 break;
 
             case ADJUST_ANGLE:
-                if(!hasSetMode) {
+                if (!hasSetMode) {
                     robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
                     hasSetMode = true;
                 }
                 angle = robot.getTurningAngle();
-                telemetry.addData( "Angle", angle);
-                if(angle > 0.3) { //too far clockwise
+                telemetry.addData("Angle", angle);
+                if (angle > 0.3) { //too far clockwise
                     angleAdjustmentSign = -1; //counterclockwise
-                }
-                else if(angle < -0.3) { //too far counterclockwise
+                } else if (angle < -0.3) { //too far counterclockwise
                     angleAdjustmentSign = 1; //clockwise
-                }
-                else {
+                } else {
                     robot.stop();
                     Log.i("MasterAutonomous", "Gyro Angle: " + angle + " degrees");
                     Log.i("MasterAutonomous", "Finished Angle adjustment");
@@ -528,15 +541,17 @@ public class MasterAutonomous extends LinearOpMode {
 //                break;
 
             case MOVE_ARM:
-                robot.angleMotor.setTargetPosition((int)(robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (25 + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360));
-                robot.angleMotor.setPower(1.0);
+                if(skystoneDetected) {
+                    robot.angleMotor.setTargetPosition((int) (robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * (25 + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG) / 360));
+                    robot.angleMotor.setPower(1.0);
+                }
                 goToNextSubState();
                 break;
 
             case DRIVE_TO_WALL_3:
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
                 if (isBlue) {
-                    if (robot.drive(0.5,10)) {
+                    if (robot.drive(0.5, 10)) {
                         robot.stop();
 //                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         goToNextSubState();
@@ -552,7 +567,7 @@ public class MasterAutonomous extends LinearOpMode {
 
             case DRIVE_TO_FOUNDATION:
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drivePower(0.5,-0.5,-0.5,0.5);
+                robot.drivePower(0.5, -0.5, -0.5, 0.5);
                 if (robot.blueDistanceSensor.getDistance(INCH) < 4 && robot.redDistanceSensor.getDistance(INCH) < 4) {
                     Log.i("MasterAutonomous", "Blue Distance Sensor Reading: " + robot.blueDistanceSensor.getDistance(INCH) + " INCHES");
                     robot.stop();
@@ -563,11 +578,11 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_FOUNDATION_2:
 //                if(isBlue) {
 //                    if (robot.strafe(0.5, 3)) {
-                        robot.stop();
+                robot.stop();
 //                       timer.reset();
-                        robot.resetChassisEncoders();
-                        robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
-                        goToNextSubState();
+                robot.resetChassisEncoders();
+                robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
+                goToNextSubState();
 //                    }
 //                }
 //                else {
@@ -578,12 +593,17 @@ public class MasterAutonomous extends LinearOpMode {
 
             case ROBOT_MOVES_ARM:
 //                if (robot.moveArm(6, 16)) {
-                    goToNextSubState();
+                goToNextSubState();
 //                }
                 break;
 
             case ROBOT_RETRACTS_ARM:
-                if (robot.moveArm(6, 14)) {
+                if(skystoneDetected){
+                    if (robot.moveArm(6, 14)) {
+                        goToNextSubState();
+                    }
+                }
+                else {
                     goToNextSubState();
                 }
                 break;
@@ -595,7 +615,12 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ROBOT_RAISES_ARM:
-                if (robot.moveArm(6, 15)) {
+                if(skystoneDetected) {
+                    if (robot.moveArm(6, 15)) {
+                        goToNextSubState();
+                    }
+                }
+                else {
                     goToNextSubState();
                 }
                 break;
@@ -607,7 +632,7 @@ public class MasterAutonomous extends LinearOpMode {
                 Log.i("MasterAutonomous", "Robot Angle: " + angle + " degrees");
                 double distance = robot.backDistanceSensor.getDistance(MM);
                 telemetry.addData("Distance from wall", distance);
-                if(isBlue) {
+                if (isBlue) {
                     robot.driveMecanumContinuous(-0.2, 0.8, Math.toRadians(angle + angleOffset));
                     if (distance < 60) {
                         robot.stop();
@@ -615,8 +640,7 @@ public class MasterAutonomous extends LinearOpMode {
                         goToNextSubState();
                     }
 //                    }
-                }
-                else {
+                } else {
 //                    if (timer.milliseconds() >= 1000) {
                     robot.driveMecanumContinuous(0.2, 0.8, Math.toRadians(angle + angleOffset));
                     if (distance < 60) {
@@ -647,7 +671,7 @@ public class MasterAutonomous extends LinearOpMode {
         switch (subState) {
 
             case ROBOT_MOVES_BEHIND_FOUNDATION:
-                if(timer.milliseconds() > 500) {
+                if (timer.milliseconds() > 500) {
                     if (blueAlliance) {
                         if (robot.drive(drivePower2, -behindFoundationPosition)) {
                             goToNextSubState();
@@ -661,7 +685,12 @@ public class MasterAutonomous extends LinearOpMode {
                 break;
 
             case ROBOT_LOWERS_ARM:
-                if (robot.moveArm(-10,12)) {
+                if(skystoneDetected) {
+                    if (robot.moveArm(-10, 12)) {
+                        goToNextSubState();
+                    }
+                }
+                else {
                     goToNextSubState();
                 }
                 break;
@@ -673,8 +702,7 @@ public class MasterAutonomous extends LinearOpMode {
                         robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
                         goToNextSubState();
                     }
-                }
-                else if (!(blueAlliance)) {
+                } else if (!(blueAlliance)) {
                     if (robot.strafe(-strafePower2, towardsCenterPosition)) {
                         robot.grabberServo.setPosition(GRABBER_SERVO_CLOSE_POSITION);
                         robot.grabberServoTwo.setPosition(GRABBER_SERVO_TWO_CLOSE_POSITION);
@@ -685,12 +713,11 @@ public class MasterAutonomous extends LinearOpMode {
 
 
             case ROBOT_MOVES_BACKWARDS:
-                if(blueAlliance) {
+                if (blueAlliance) {
                     if (robot.drive(drivePower2, -towardsRedLinePosition)) {
                         goToNextSubState();
                     }
-                }
-                else {
+                } else {
                     if (robot.drive(drivePower2, towardsRedLinePosition)) {
                         goToNextSubState();
                     }

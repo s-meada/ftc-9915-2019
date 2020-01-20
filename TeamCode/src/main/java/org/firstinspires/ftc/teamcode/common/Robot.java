@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -455,7 +457,7 @@ public class Robot {
         return angles.firstAngle;
     }
 
-    public boolean adjustRangeSensorDistance(DistanceSensor rangeSensor, double targetDistance, boolean isBlue) {
+    public boolean adjustRangeDistance(DistanceSensor rangeSensor, double targetDistance, boolean isBlue) {
         int sign;
         if(isBlue) {
             sign = -1;
@@ -465,7 +467,11 @@ public class Robot {
         }
 
         double error = rangeSensor.getDistance(INCH) - targetDistance;
+        if(error > 3.5) {
+            error = 3.5;
+        }
 
+        Log.i("adjustRangeDistance", String.valueOf(error));
         if(error >= 1) {
             this.drive(0.2, error * sign);
         }
