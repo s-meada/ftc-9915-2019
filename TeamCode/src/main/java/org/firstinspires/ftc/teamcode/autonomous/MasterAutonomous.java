@@ -501,7 +501,7 @@ public class MasterAutonomous extends LinearOpMode {
                 double redQuarryOffset = 0;
                 double distanceToEndOfQuarry = isBlue ? blueQuarryOffset + robotYDistanceFromSkystoneCenter : redQuarryOffset - robotYDistanceFromSkystoneCenter;
 
-                int distanceToFoundationEdge = 55;
+                int distanceToFoundationEdge = 52;
                 int distanceToFoundationCenter = 20;
 
                 double distanceToFoundation = distanceToEndOfQuarry + distanceToFoundationEdge + distanceToFoundationCenter;
@@ -552,14 +552,14 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_WALL_3:
                 robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
                 if (isBlue) {
-                    if (robot.drive(0.5, 10)) {
+                    if (robot.drive(0.5, 13)) {
                         robot.stop();
                         timer.reset();
 //                        distance = robot.blueDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         goToNextSubState();
                     }
                 } else {
-                    if (robot.drive(0.5, -10)) {
+                    if (robot.drive(0.5, -13)) {
 //                        distance = robot.redDistanceSensor.getDistance(DistanceUnit.INCH) + 2;
                         robot.stop();
                         timer.reset();
