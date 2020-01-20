@@ -18,6 +18,7 @@ public class TeleopInitial extends OpMode {
 
     ElapsedTime timer = new ElapsedTime();
 
+    boolean yOverride = false;
     double speedMultiplier = 1.0;
 
     String rotationDirection = "up";
@@ -61,12 +62,19 @@ public class TeleopInitial extends OpMode {
         double yChange = -gamepad2.right_stick_y * 0.2;
         yChange += gamepad2.right_trigger * 0.6;
 
+        if (gamepad1.a) yOverride = true;
+        if (gamepad1.b) yOverride = false;
         x += xChange;
         y += yChange;
-        if (x > 27) x = 27;
+        if (x > 27.75) x = 27.75;
         if (x < 14 && y < 0) x = 14;
         if (y > 23) y = 23;
-        if (y < -3.5) y = -3.5;
+        if (yOverride) {
+            if (y < -4.5) y = -4.5;
+        }
+        else {
+            if (y < -3.5) y = -3.5;
+        }
         robot.moveArmXY(x,y);
 
         if (gamepad2.right_stick_button) {y = -2.4; x = 14.0;}
@@ -89,11 +97,6 @@ public class TeleopInitial extends OpMode {
         //open grabber
         if (gamepad2.b) {
             robot.grabberServo.setPosition(0.5);
-            robot.grabberServoTwo.setPosition(0.75);
-        }
-        //open for capstone
-        if (gamepad2.dpad_down) {
-            robot.grabberServo.setPosition(0.55);
             robot.grabberServoTwo.setPosition(0.75);
         }
 
