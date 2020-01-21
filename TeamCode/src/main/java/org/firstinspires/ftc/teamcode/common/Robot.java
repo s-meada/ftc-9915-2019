@@ -472,7 +472,7 @@ public class Robot {
         }
 
         Log.i("adjustRangeDistance", String.valueOf(error));
-        if(error >= 1) {
+        if(Math.abs(error) >= 1) {
             this.drive(0.2, error * sign);
         }
         else {
