@@ -115,7 +115,8 @@ public class MasterAutonomous extends LinearOpMode {
     //variables
     double drivePower2 = 0.5;
     double strafePower2 = -0.75;
-    double behindFoundationPosition = 34;
+//TODO:  Behind foundation position was reduced by 2 to prevent overrunning the parking tape, especially on red side.
+    double behindFoundationPosition = 32;
     double towardsCenterPosition = 31;
     double towardsRedLinePosition = 22;
     boolean blueAlliance;
@@ -502,8 +503,9 @@ public class MasterAutonomous extends LinearOpMode {
             case DRIVE_TO_WALL_1:
 
                 //robot.setModeChassisMotors(DcMotor.RunMode.RUN_TO_POSITION);
-                double blueQuarryOffset = 0;
-                double redQuarryOffset = 0;
+       //TODO:  These offsets were changed from zero because we occasionally missed going far enough on blue, and we sometimes went too far on red.
+                double blueQuarryOffset = 2;
+                double redQuarryOffset = -4;
                 double distanceToEndOfQuarry = isBlue ? blueQuarryOffset + robotYDistanceFromSkystoneCenter : redQuarryOffset - robotYDistanceFromSkystoneCenter;
 
                 int distanceToFoundationEdge = 52;
@@ -579,7 +581,8 @@ public class MasterAutonomous extends LinearOpMode {
                 double blueDistance = robot.blueDistanceSensor.getDistance(INCH);
                 //deceleration loop
                 double bluePower = Math.max(0.2,Math.min(0.7,(blueDistance-2)*0.1));
-                if(blueDistance < 2.7) {
+ //TODO:  Distance for reaching foundation dropped from 2.7 to 2.5 to ensure success.
+                if(blueDistance < 2.5) {
                     bluePower = 0;
                 }
 
@@ -590,7 +593,7 @@ public class MasterAutonomous extends LinearOpMode {
                 double redDistance = robot.redDistanceSensor.getDistance(INCH);
                 //deceleration loop
                 double redPower = Math.max(0.2,Math.min(0.7,(redDistance-2)*0.1));
-                if (redDistance < 2.7) {
+                if (redDistance < 2.5) {
                     redPower = 0;
                 }
 

@@ -56,10 +56,10 @@ public class TeleopRobot {
 
     // Arm
     public static final int ANGLE_MOTOR_UP_LIMIT = 1600;
-    public static final int ANGLE_MOTOR_DOWN_LIMIT = -150;
+    public static final int ANGLE_MOTOR_DOWN_LIMIT = -350;
 
     public static final int EXTENSION_MOTOR_RETRACTED_LIMIT = 0;
-    public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1840;
+    public static final int EXTENSION_MOTOR_EXTENDED_LIMIT = 1900;
 
     public static final double GRABBER_SERVO_OPEN_POSITION = 0.5;
     public static final double GRABBER_SERVO_CLOSE_POSITION = 1.0;

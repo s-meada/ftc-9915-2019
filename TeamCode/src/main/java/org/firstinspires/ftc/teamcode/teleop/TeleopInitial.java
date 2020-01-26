@@ -62,22 +62,27 @@ public class TeleopInitial extends OpMode {
         double yChange = -gamepad2.right_stick_y * 0.2;
         yChange += gamepad2.right_trigger * 0.6;
 
-        if (gamepad1.a) yOverride = true;
-        if (gamepad1.b) yOverride = false;
+        if (gamepad1.dpad_down) yOverride = true;
+        if (gamepad1.dpad_up) yOverride = false;
         x += xChange;
         y += yChange;
-        if (x > 27.75) x = 27.75;
-        if (x < 14 && y < 0) x = 14;
+        if (x > 28) x = 28;
+        if (x < 13.5 && y < 0) x = 13.5;
         if (y > 23) y = 23;
         if (yOverride) {
-            if (y < -4.5) y = -4.5;
+            if (y < -5.5) y = -5.5;
         }
         else {
             if (y < -3.5) y = -3.5;
         }
         robot.moveArmXY(x,y);
 
-        if (gamepad2.right_stick_button) {y = -2.4; x = 14.0;}
+//Move the arm down FAST to get under the bridge if pressing right joystick:
+        if (gamepad2.right_stick_button) {
+            y = -2.4; x = 13.5;
+//Also lower/close the claw so it doesn't get stuck on the bridge either:
+            robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_CLOSED);
+        }
 
         double verticalAngleOffset = (((Math.toDegrees(Math.atan2(y, x)) + robot.ARM_INITIAL_ANGLE_STARTING_DIFFERENCE_FROM_0_DEG)) / 360) * verticalServoAngleFactor;
         double backlashAdjust = robot.backlash / robot.ARM_ANGLE_MOTOR_TICKS_PER_ROTATION * verticalServoAngleFactor;
@@ -101,10 +106,10 @@ public class TeleopInitial extends OpMode {
         }
 
         if (gamepad2.x) {
-            robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
+//            robot.foundationServo.setPosition(robot.FOUNDATION_SERVO_DOWN_POSITION);
             capstoneServoDown = true;
             double capstoneDistance = robot.capstoneSensor.getDistance(DistanceUnit.INCH);
-            x -= capstoneDistance - 2.7;
+            x -= capstoneDistance - 3.0;
             robot.moveArmXY(x,y);
             timer.reset();
             while (timer.milliseconds() <= 500) continue;
@@ -123,6 +128,9 @@ public class TeleopInitial extends OpMode {
 
         if (gamepad2.right_bumper) {
             robot.capstoneServoClaw.setPosition(robot.CAPSTONE_CLAW_OPEN);
+//moving the capstone arm angle up slightly when releasing the capstone avoids pushing the back of the capstone
+            if(robot.capstoneServo.getPosition()<=robot.CAPSTONE_ANGLE_DOWN +0.01)robot.capstoneServo.setPosition(robot.CAPSTONE_ANGLE_DOWN +.025);
+
         }
 
         if(gamepad2.dpad_right) {
