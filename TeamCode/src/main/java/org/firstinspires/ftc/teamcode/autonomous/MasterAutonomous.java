@@ -115,10 +115,10 @@ public class MasterAutonomous extends LinearOpMode {
     //variables
     double drivePower2 = 0.5;
     double strafePower2 = -0.75;
-//TODO:  Behind foundation position was reduced by 2 to prevent overrunning the parking tape, especially on red side.
-    double behindFoundationPosition = 32;
+//TODO:  Behind foundation position was reduced by 2 to prevent overrunning the parking tape, especially on red side. NOT ANYMORE
+    double behindFoundationPosition = 34; // BLUE: 36.75, RED: 34
     double towardsCenterPosition = 31;
-    double towardsRedLinePosition = 22;
+    double towardsRedLinePosition = 21; // BLUE: 22, RED 21
     boolean blueAlliance;
 
     //cases
